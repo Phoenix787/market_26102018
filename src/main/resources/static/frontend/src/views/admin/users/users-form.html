@@ -1,0 +1,46 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-layout.html">
+<link rel="import" href="../../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
+<link rel="import" href="../../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
+<link rel="import" href="../../../../bower_components/vaadin-text-field/src/vaadin-password-field.html">
+
+<link rel="import" href="../../../components/form-buttons-bar.html">
+
+<dom-module id="users-form">
+    <template>
+        <style>
+
+        </style>
+
+        <vaadin-form-layout id="form">
+            <h3 id="title"></h3>
+
+            <vaadin-text-field id="email" label="Email (логин)" colspan="2"></vaadin-text-field>
+            <vaadin-text-field id="first" label="Имя"></vaadin-text-field>
+            <vaadin-text-field id="last" label="Фамилия"></vaadin-text-field>
+            <vaadin-password-field id="password" label="Пароль" colspan="2"></vaadin-password-field>
+            <vaadin-combo-box id="role" label="Роль" colspan="2"></vaadin-combo-box>
+        </vaadin-form-layout>
+
+        <form-buttons-bar id="buttons"></form-buttons-bar>
+    </template>
+
+    <script>
+        class UsersForm extends Polymer.Element{
+            static get is(){
+                   return 'users-form';
+            }
+
+            ready(){
+                super.ready();
+                this.$.form.addEventListener('change', e => {
+                    this.$.buttons.$.save.disabled = false;
+                });
+            }
+        }
+
+        customElements.define(UsersForm.is, UsersForm);
+    </script>
+
+
+</dom-module>

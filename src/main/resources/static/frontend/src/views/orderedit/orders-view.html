@@ -1,0 +1,43 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/src/vaadin-grid.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
+
+<link rel="import" href="../../components/utils-mixin.html">
+
+<link rel="import" href="../../../styles/shared-styles.html">
+
+<dom-module>
+    <template>
+        <style>
+
+        </style>
+        <vaadin-grid id="grid"></vaadin-grid>
+    </template>
+    <script>
+        class OrdersView extends Polymer.Element {
+            static get is(){
+                return 'orders-view';
+            }
+            ready() {
+                super.ready();
+
+                // This method is overridden to measure the page load performance and can be safely removed
+                // if there is no need for that
+                const grid = this.$.grid;
+                let partsLoaded = 0;
+                const listener = () => {
+                    if (++partsLoaded === 2 && window.performance.mark) {
+                        // the 'loading-changed' event is fired separately for the headers (first)
+                        // and for the content (second). Waiting for the second time
+                        window.performance.mark('market-page-loaded');
+                        grid.removeEventListener('loading-changed', listener);
+                    }
+                };
+                grid.addEventListener('loading-changed', listener);
+            }
+        }
+
+        customElements.define(OrdersView.is, OrdersView);
+    </script>
+
+</dom-module>

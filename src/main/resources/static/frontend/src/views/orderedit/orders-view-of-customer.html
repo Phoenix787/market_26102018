@@ -1,0 +1,48 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/src/vaadin-grid.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
+
+<link rel="import" href="../../components/search-bar.html">
+<link rel="import" href="../../components/utils-mixin.html">
+
+<link rel="import" href="../../../styles/shared-styles.html">
+
+<dom-module id="orders-view-of-customer">
+    <template>
+        <style include="shared-styles">
+
+        </style>
+        <vaadin-text-field id="text"></vaadin-text-field>
+        <!--<vaadin-date-picker label="Выбрать дату" id="date"></vaadin-date-picker>-->
+        <search-bar id="search"></search-bar>
+        <!--<vaadin-button id="add" label="Новый заказ"></vaadin-button>-->
+        <vaadin-grid id="grid"></vaadin-grid>
+    </template>
+    <script>
+        class OrdersViewOdCustomer extends Polymer.Element {
+            static get is(){
+                return 'orders-view-of-customer';
+            }
+            ready() {
+                super.ready();
+
+                // This method is overridden to measure the page load performance and can be safely removed
+                // if there is no need for that
+                const grid = this.$.grid;
+                let partsLoaded = 0;
+                const listener = () => {
+                    if (++partsLoaded === 2 && window.performance.mark) {
+                        // the 'loading-changed' event is fired separately for the headers (first)
+                        // and for the content (second). Waiting for the second time
+                        window.performance.mark('market-page-loaded');
+                        grid.removeEventListener('loading-changed', listener);
+                    }
+                };
+                grid.addEventListener('loading-changed', listener);
+            }
+        }
+
+        customElements.define(OrdersViewOdCustomer.is, OrdersViewOdCustomer);
+    </script>
+
+</dom-module>
