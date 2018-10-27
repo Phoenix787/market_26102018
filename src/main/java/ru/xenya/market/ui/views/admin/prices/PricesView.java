@@ -58,6 +58,11 @@ public class PricesView extends PolymerTemplate<TemplateModel>
 
         search.setActionText("Новый прайс");
         search.setPlaceHolder("Поиск");
+        search.addActionClickListener(e->presenter.createNewPrice());
+
+        priceEditor.getButtons().addSaveListener(e -> presenter.save());
+        priceEditor.getButtons().addCancelListener(e -> presenter.cancel());
+        priceEditor.getButtons().addDeleteListener(e -> presenter.delete());
 
         setupGrid();
 

@@ -43,6 +43,9 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
     @Id("title")
     private H3 title;
 
+    @Id("metaContainer")
+    private Div metaContainer;
+
     @Id("date")
     private DatePicker date;
 
@@ -52,19 +55,24 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
     @Id("priceNumber")
     private Span priceNumber;
 
+    @Id("buttons")
+    private FormButtonsBar buttons;
+
     private PriceItemsEditor itemsEditor;
 
     private User currentUser;
 
     private Price currentPrice;
 
-    private FormButtonsBar buttons;
 
     BeanValidationBinder<Price> binder = new BeanValidationBinder<>(Price.class);
 
     public PriceEditor() {
       //  itemsEditor = new PriceItemsEditor();
       //  itemsContainer.add(itemsEditor);
+//todo why date not update
+        date.setRequired(true);
+        binder.bind(date, Price::getDate, Price::setDate);
 
     }
 
@@ -97,11 +105,17 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
     }
 
     public void read(Price price, boolean isNew) {
-        binder.readBean(price);
+//        binder.readBean(price);
+        binder.setBean(price);
 
         this.priceNumber.setText(isNew ? "" : price.getId().toString());
         title.setVisible(isNew);
+        metaContainer.setVisible(!isNew);
 
+    }
+
+    public FormButtonsBar getButtons() {
+        return buttons;
     }
 
 //    public Stream<HasValue<?, ?>> validate() {

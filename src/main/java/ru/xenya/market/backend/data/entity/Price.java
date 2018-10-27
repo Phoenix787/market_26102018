@@ -27,10 +27,15 @@ public class Price extends AbstractEntity {
     //множество позиций прайса
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderColumn
-    @JoinColumn
+    @JoinColumn(name = "item_id")
     private List<PriceItem> itemsPrice;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    /*todo разобраться с lazy failed to lazily initialize a collection of role:
+    ru.xenya.market.backend.data.entity.Price.history, could not initialize proxy -
+     no Session
+    */
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderColumn
     @JoinColumn
     private List<HistoryItem> history;
