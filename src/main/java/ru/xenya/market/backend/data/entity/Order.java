@@ -46,6 +46,7 @@ public class Order extends AbstractEntity {
 
     @NotNull
     @ManyToOne
+    //@JoinColumn(name = "customer_fk")
     private Customer customer;
 
 

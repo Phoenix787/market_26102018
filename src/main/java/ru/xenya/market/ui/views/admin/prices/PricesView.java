@@ -66,6 +66,18 @@ public class PricesView extends PolymerTemplate<TemplateModel>
 
         setupGrid();
 
+        getGrid().addSelectionListener(e->{
+            e.getFirstSelectedItem().ifPresent(entity->{
+                System.err.println(entity);
+
+                presenter.onNavigation(entity.getId(), true); //load(entity);
+                //UI.getCurrent().navigate(MarketConst.PAGE_STOREFRONT + "/" + entity.getId());
+//                getPresenter().load(entity);
+                //navigateToEntity(entity.getId().toString());
+                getGrid().deselectAll();
+            });
+        });
+
 
         presenter.init(this);
 
