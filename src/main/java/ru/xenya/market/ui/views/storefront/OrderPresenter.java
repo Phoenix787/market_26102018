@@ -1,4 +1,4 @@
-package ru.xenya.market.ui.crud;
+package ru.xenya.market.ui.views.storefront;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
@@ -10,6 +10,8 @@ import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.service.OrderService;
+import ru.xenya.market.ui.crud.CrudEntityPresenter;
+import ru.xenya.market.ui.crud.EntityPresenter;
 import ru.xenya.market.ui.utils.MarketConst;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 import ru.xenya.market.ui.utils.converters.OrderStateConverter;

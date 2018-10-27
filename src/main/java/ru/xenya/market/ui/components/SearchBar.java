@@ -80,7 +80,8 @@ public class SearchBar extends PolymerTemplate<SearchBar.Model> {
         actionButton.addClickListener(listener);
     }
 
-    @DomEvent(value = "value-changed", debounce = @DebounceSettings(timeout = 300, phases = DebouncePhase.TRAILING))
+    @DomEvent(value = "value-changed",
+            debounce = @DebounceSettings(timeout = 300, phases = DebouncePhase.TRAILING))
     public static class SearchValueChanged extends ComponentEvent<TextField> {
         /**
          * Creates a new event using the given source and indicator whether the

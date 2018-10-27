@@ -12,27 +12,54 @@
 
         </style>
 
-        <vaadin-form-layout id="form">
+        <vaadin-form-layout id="form1">
             <h3 id="title"></h3>
             <div class="meta-row" id="metaContainer">
                 <!--<vaadin-combo-box class="status" id="status">Статус</vaadin-combo-box>-->
                 <span class="dim">Прайс #<span id="priceNumber"></span></span>
             </div>
-            <vaadin-date-picker id="date" label="Дата прайса"></vaadin-date-picker>
-            <div id="itemsContainer" colspan="3"></div>
+            <vaadin-form-layout id="form2">
+                <vaadin-date-picker id="date" label="Дата прайса"></vaadin-date-picker>
+                <vaadin-checkbox id="checkbox" checked="{{checkboxChecked}}">По умолчанию</vaadin-checkbox>
+             </vaadin-form-layout>
+
+            <vaadin-form-layout id="form3" colspan="3">
+                <vaadin-form-item colspan="3">
+                    <label slot="label">Позиции</label>
+                </vaadin-form-item>
+                <div id="itemsContainer" colspan="3"></div>
+            </vaadin-form-layout>
+
         </vaadin-form-layout>
 
         <form-buttons-bar id="buttons"></form-buttons-bar>
     </template>
+
     <script>
-        class PriceEditor extends Polymer.Element {
+        class PriceEditor extends window.ScrollShadowMixin(Polymer.Element) {
             static get is() {
                 return 'price-editor';
             }
+
+            ready() {
+                super.ready();
+
+                // Not using attributes since Designer does not support single-quote attributes
+               this.$.form1.responsiveSteps = [
+                    {columns: 1, labelsPosition: 'top'},
+                    {minWidth: '600px', columns: 4, labelsPosition: 'top'}
+                ];
+                this.$.form2.responsiveSteps = [
+                    {columns: 1, labelsPosition: 'top'},
+                    {minWidth: '360px', columns: 2, labelsPosition: 'top'}
+                ];
+                this.$.form3.responsiveSteps = [
+                    {columns: 1, labelsPosition: 'top'},
+                    {minWidth: '500px', columns: 3, labelsPosition: 'top'}
+                ];
+            }
         }
-
-
-        customElements.define(PriceEditor.is, PriceEditor);
+        window.customElements.define(PriceEditor.is, PriceEditor);
     </script>
 
 

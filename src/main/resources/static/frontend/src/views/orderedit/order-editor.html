@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
@@ -9,7 +10,7 @@
 <link rel="import" href="../../../bower_components/vaadin-date-picker/src/vaadin-date-picker.html">
 <link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
 
-<link rel="import" href="../../components/form-buttons-bar.html">
+<link rel="import" href="../../components/buttons-bar.html">
 <link rel="import" href="../../components/utils-mixin.html">
 <!--<link rel="import" href="order-item-editor.html">-->
 
@@ -24,6 +25,23 @@
                     flex-direction: column;
                     flex: auto;
             }
+
+            .meta-row {
+                display: flex;
+                justify-content: space-between;
+                padding-bottom: var(--lumo-space-s);
+            }
+
+            .dim {
+                color: var(--lumo-secondary-text-color);
+                text-align: right;
+                white-space: nowrap;
+                line-height: 2.5em;
+            }
+
+            .status {
+                width: 10em;
+            }
         </style>
 
         <div class=" scrollable flex1" id="main">
@@ -31,8 +49,9 @@
 
             <div class="meta-row" id="metaContainer">
                 <!--<vaadin-combo-box class="status" id="status">Статус</vaadin-combo-box>-->
-                <span class="dim">Заказ #<span id="orderNumber"></span></span>
+                <span class="dim">Заказ # <span id="orderNumber"></span></span>
             </div>
+
             <vaadin-form-layout id="form1">
                 <vaadin-form-layout id="form2">
                     <vaadin-date-picker label="Дата заказа" id="dueDate"></vaadin-date-picker>

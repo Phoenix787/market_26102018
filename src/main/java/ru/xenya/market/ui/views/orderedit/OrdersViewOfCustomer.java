@@ -1,9 +1,6 @@
 package ru.xenya.market.ui.views.orderedit;
 
 import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.polymertemplate.Id;
@@ -16,7 +13,6 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
-import com.vaadin.flow.templatemodel.Encode;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.xenya.market.backend.data.entity.Customer;
@@ -24,19 +20,14 @@ import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.util.EntityUtil;
 import ru.xenya.market.ui.MainView;
 import ru.xenya.market.ui.components.SearchBar;
-import ru.xenya.market.ui.crud.CrudEntityPresenter;
 import ru.xenya.market.ui.crud.CrudView;
-import ru.xenya.market.ui.crud.OrderPresenter;
+import ru.xenya.market.ui.views.storefront.OrderPresenter;
 import ru.xenya.market.ui.utils.MarketConst;
 import ru.xenya.market.ui.utils.TemplateUtils;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
-import ru.xenya.market.ui.utils.converters.LongToStringEncoder;
-import ru.xenya.market.ui.utils.converters.OrderStateConverter;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.List;
 
 //todo попробовать сделать страницу похожую на reviewList в buddyApp
 

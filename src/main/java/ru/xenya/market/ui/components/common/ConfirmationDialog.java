@@ -37,7 +37,7 @@ public class ConfirmationDialog<T> extends Dialog {
         titleField.setClassName("confirm-title");
         add(titleField, labels, buttonBar);
     }
-
+//todo consumer vs runnable
     public void open(String title, String message, String additionalMessage, String actionName,
                      boolean isDistruptive, T item, Consumer<T> confirmHandler,
                      Runnable cancelHandler) {

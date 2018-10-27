@@ -4,6 +4,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasText;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
@@ -49,6 +50,9 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
     @Id("date")
     private DatePicker date;
 
+    @Id("checkbox")
+    private Checkbox isDefault;
+
     @Id("itemsContainer")
     private Div itemsContainer;
 
@@ -70,9 +74,10 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
     public PriceEditor() {
       //  itemsEditor = new PriceItemsEditor();
       //  itemsContainer.add(itemsEditor);
-//todo why date not update
         date.setRequired(true);
         binder.bind(date, Price::getDate, Price::setDate);
+
+        binder.bind(isDefault, Price::isDefaultPrice, Price::setDefaultPrice);
 
     }
 

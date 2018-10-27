@@ -83,6 +83,15 @@ public class PricePresenter extends CrudEntityPresenter<Price> {
         entityPresenter.close();
     }
 
+    //todo сделать удаление ( не работает в этом виде)
+    public void delete(){
+        super.delete(e->{
+            getView().showDeleteNotification();
+            view.getGrid().setItems(updateList());
+            closeSilently();
+        });
+    }
+
     private void open(Price price, boolean edit) {
         view.setDialogElementsVisibility(edit);
         view.setOpened(true);
