@@ -12,6 +12,7 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 //import ru.xenya.market.app.security.SecurityUtils;
 import ru.xenya.market.ui.components.AppNavigation;
+import ru.xenya.market.ui.components.common.ConfirmDialog;
 import ru.xenya.market.ui.components.common.ConfirmationDialog;
 import ru.xenya.market.ui.entities.PageInfo;
 import ru.xenya.market.ui.exceptions.AccessDeniedException;
@@ -36,11 +37,14 @@ public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
 
 
     //private final ConfirmationDialog confirmationDialog;
-    private final ConfirmationDialog confirmationDialog;
+    private final ConfirmDialog confirmationDialog;
 
    // @Autowired
     public MainView() {
-        this.confirmationDialog = new ConfirmationDialog();
+        this.confirmationDialog = new ConfirmDialog();
+        confirmationDialog.setCancelable(true);
+        confirmationDialog.setConfirmButtonTheme("raised tertiary error");
+        confirmationDialog.setCancelButtonTheme("raised tertiary");
 
         List<PageInfo> pages = new ArrayList<>();
         pages.add(new PageInfo(PAGE_STOREFRONT, ICON_STOREFRONT, TITLE_STOREFRONT));

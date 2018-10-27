@@ -16,7 +16,7 @@ import ru.xenya.market.app.HasLogger;
 import ru.xenya.market.backend.data.entity.AbstractEntity;
 import ru.xenya.market.ui.components.FormButtonsBar;
 import ru.xenya.market.ui.components.SearchBar;
-import ru.xenya.market.ui.components.common.ConfirmationDialog;
+import ru.xenya.market.ui.components.common.ConfirmDialog;
 import ru.xenya.market.ui.utils.TemplateUtils;
 import ru.xenya.market.ui.views.EntityView;
 
@@ -34,7 +34,8 @@ public abstract class CrudView<E extends AbstractEntity, T extends TemplateModel
 
     private final Dialog dialog = new Dialog();
 
-    private ConfirmationDialog<E> confirmationDialog;
+//    private ConfirmationDialog<E> confirmationDialog;
+    private ConfirmDialog confirmationDialog;
 
     private final CrudForm<E> form;
 
@@ -126,12 +127,12 @@ public abstract class CrudView<E extends AbstractEntity, T extends TemplateModel
     }
 
     @Override
-    public void setConfirmDialog(ConfirmationDialog<E> confirmDialog) {
+    public void setConfirmDialog(ConfirmDialog confirmDialog) {
         this.confirmationDialog = confirmDialog;
     }
 
     @Override
-    public ConfirmationDialog getConfirmDialog() {
+    public ConfirmDialog getConfirmDialog() {
         return confirmationDialog;
     }
 

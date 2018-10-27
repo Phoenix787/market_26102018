@@ -1,9 +1,10 @@
 package ru.xenya.market.ui.views;
 
+import ru.xenya.market.ui.components.common.ConfirmDialog;
 import ru.xenya.market.ui.components.common.ConfirmationDialog;
 
 public interface HasConfirmation<E> {
-    void setConfirmDialog(ConfirmationDialog<E> confirmDialog);
+    void setConfirmDialog(ConfirmDialog confirmDialog);
 
-    ConfirmationDialog getConfirmDialog();
+    ConfirmDialog getConfirmDialog();
 }

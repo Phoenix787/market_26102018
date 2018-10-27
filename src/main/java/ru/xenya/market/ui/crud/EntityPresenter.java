@@ -122,11 +122,24 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
         }
     }
 
-    private void showConfirmationRequest(Message message, Runnable onConfirmed, Runnable onCancelled) {
-        view.getConfirmDialog().open(message.getCaption(), message.getMessage(),"",
-                message.getOkText(), true, state.getEntity(),
-        this::doDelete, onCancelled);
+    private void showConfirmationRequest(Message message,
+                                         Runnable onConfirmed,
+                                         Runnable onCancelled) {
+//        view.getConfirmDialog().open(message.getCaption(), message.getMessage(),"",
+//                message.getOkText(), true, state.getEntity(),
+//        this::doDelete, onCancelled);
+        view.getConfirmDialog().setText(message.getMessage());
+        view.getConfirmDialog().setHeader(message.getCaption());
+        view.getConfirmDialog().setCancelText(message.getCancelText());
+        view.getConfirmDialog().setConfirmText(message.getOkText());
+        view.getConfirmDialog().setOpened(true);
 
+        final Registration okRegistration = view.getConfirmDialog()
+                .addConfirmListener(e -> onConfirmed.run());
+        final Registration cancelRegistrarion = view.getConfirmDialog()
+                .addCancelListener(e -> onCancelled.run());
+
+        state.updateRegistration(okRegistration, cancelRegistrarion);
        // final Registration okRegistration = view.getConfirmDialog().
     }
 

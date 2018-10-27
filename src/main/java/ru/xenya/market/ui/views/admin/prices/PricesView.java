@@ -1,6 +1,5 @@
 package ru.xenya.market.ui.views.admin.prices;
 
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -16,11 +15,9 @@ import ru.xenya.market.backend.data.entity.Price;
 import ru.xenya.market.backend.data.entity.util.EntityUtil;
 import ru.xenya.market.ui.MainView;
 import ru.xenya.market.ui.components.SearchBar;
+import ru.xenya.market.ui.components.common.ConfirmDialog;
 import ru.xenya.market.ui.components.common.ConfirmationDialog;
-import ru.xenya.market.ui.utils.MarketConst;
 import ru.xenya.market.ui.views.EntityView;
-
-import java.util.stream.Stream;
 
 import static ru.xenya.market.ui.utils.MarketConst.*;
 
@@ -45,7 +42,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
     @Id("dialog")
     private Dialog dialog;
 
-    private ConfirmationDialog<Price> confirmation;
+    private ConfirmDialog confirmation;
 
     private final PriceEditor priceEditor;
 
@@ -55,6 +52,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
     public PricesView(PriceEditor priceEditor, PricePresenter presenter) {
         this.priceEditor = priceEditor;
         this.presenter = presenter;
+        this.confirmation = new ConfirmDialog();
 
         search.setActionText("Новый прайс");
         search.setPlaceHolder("Поиск");
@@ -155,12 +153,12 @@ public class PricesView extends PolymerTemplate<TemplateModel>
     }
 
     @Override
-    public void setConfirmDialog(ConfirmationDialog<Price> confirmDialog) {
+    public void setConfirmDialog(ConfirmDialog confirmDialog) {
         this.confirmation = confirmDialog;
     }
 
     @Override
-    public ConfirmationDialog getConfirmDialog() {
+    public ConfirmDialog getConfirmDialog() {
         return confirmation;
     }
 
