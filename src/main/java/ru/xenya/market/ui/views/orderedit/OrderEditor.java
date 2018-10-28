@@ -33,6 +33,7 @@ import ru.xenya.market.ui.components.FormButtonsBar;
 import ru.xenya.market.ui.crud.CrudView.CrudForm;
 import ru.xenya.market.ui.dataproviders.DataProviderUtils;
 import ru.xenya.market.ui.events.CancelEvent;
+import ru.xenya.market.ui.events.DeleteEvent;
 import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
@@ -79,8 +80,12 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private Button cancel;
     @Id("save")
     private Button review;
+    @Id("delete")
+    private Button delete;
+
     @Id("itemsContainer")
     private Div itemsContainer;
+
 
 //    @Id("buttons")
 //    private FormButtonsBar buttons;
@@ -106,6 +111,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 //        customerPhone.setEnabled(false);
         cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
         review.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
+        delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
         status.setItemLabelGenerator(createItemLabelGenerator(OrderState::getDisplayName));
         status.setDataProvider(DataProvider.ofItems(OrderState.values()));
         status.addValueChangeListener(

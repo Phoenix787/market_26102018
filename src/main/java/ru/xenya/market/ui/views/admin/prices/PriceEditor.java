@@ -4,6 +4,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasText;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -26,6 +27,7 @@ import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.ui.components.FormButtonsBar;
 import ru.xenya.market.ui.crud.CrudView.CrudForm;
 import ru.xenya.market.ui.events.CancelEvent;
+import ru.xenya.market.ui.events.DeleteEvent;
 import ru.xenya.market.ui.events.SaveEvent;
 
 import java.util.stream.Stream;
@@ -59,8 +61,18 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
     @Id("priceNumber")
     private Span priceNumber;
 
-    @Id("buttons")
-    private FormButtonsBar buttons;
+    @Id("cancel")
+    private Button cancelButton;
+
+    @Id("confirm")
+    private Button confirmButton;
+
+    @Id("delete")
+    private Button deleteButton;
+
+//    @Id("buttons")
+//    private FormButtonsBar buttons;
+
 
     private PriceItemsEditor itemsEditor;
 
@@ -79,18 +91,48 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
 
         binder.bind(isDefault, Price::isDefaultPrice, Price::setDefaultPrice);
 
+        cancelButton.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
+        confirmButton.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
+        deleteButton.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
+
     }
 
     public void setCurrentPrice(Price currentPrice) {
         this.currentPrice = currentPrice;
     }
 
+//    public Registration addCancelListener(ComponentEventListener<CancelEvent> listener) {
+//        return cancelButton.addClickListener(
+//                e->listener.onComponentEvent(new CancelEvent(this, true)));
+//    }
+//
+//    public Registration addSaveListener(ComponentEventListener<SaveEvent> listener){
+//        return confirmButton.addClickListener
+//                (e -> listener.onComponentEvent(new SaveEvent(this, true)));
+//    }
+//
+//
+//    public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
+//        return deleteButton.addClickListener(e->
+//        listener.onComponentEvent(new DeleteEvent(this, true)));
+//
+//    }
+
+
     public Registration addCancelListener(ComponentEventListener<CancelEvent> listener) {
-        return addListener(CancelEvent.class, listener);
+        return addListener(
+                CancelEvent.class, listener);
     }
 
-    public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
-        return addListener(SaveEvent.class, listener);
+    public Registration addSaveListener(ComponentEventListener<SaveEvent> listener){
+        return addListener
+                (SaveEvent.class, listener);
+    }
+
+
+    public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
+        return addListener(DeleteEvent.class, listener);
+
     }
 
     public boolean hasChanges() {
@@ -119,9 +161,9 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
 
     }
 
-    public FormButtonsBar getButtons() {
-        return buttons;
-    }
+   // public FormButtonsBar getButtons() {
+      //  return buttons;
+   // }
 
 //    public Stream<HasValue<?, ?>> validate() {
 //        Stream<HasValue<?, ?>> errorFields =

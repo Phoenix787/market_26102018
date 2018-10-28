@@ -3,6 +3,8 @@ package ru.xenya.market.ui.crud;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
+import org.claspina.confirmdialog.ButtonOption;
+import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import ru.xenya.market.app.HasLogger;
@@ -122,24 +124,37 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
         }
     }
 
+    //todo разобраться с этим диалогом!!! почему view == null
     private void showConfirmationRequest(Message message,
                                          Runnable onConfirmed,
                                          Runnable onCancelled) {
-//        view.getConfirmDialog().open(message.getCaption(), message.getMessage(),"",
+
+//        ConfirmDialog.createQuestion().withCaption(message.getCaption()).withMessage(message.getMessage())
+//                .withOkButton(onConfirmed, ButtonOption.focus(), ButtonOption.caption("Yes"))
+//                .withCancelButton(onCancelled)
+//                .open();
+
+//                view.getConfirmDialog().open(message.getCaption(), message.getMessage(),"",
 //                message.getOkText(), true, state.getEntity(),
 //        this::doDelete, onCancelled);
-        view.getConfirmDialog().setText(message.getMessage());
+        System.err.println(view == null ? "===============view is null" : "========!!! view is present");
+        getView().getConfirmDialog().setText(message.getMessage());
         view.getConfirmDialog().setHeader(message.getCaption());
         view.getConfirmDialog().setCancelText(message.getCancelText());
         view.getConfirmDialog().setConfirmText(message.getOkText());
-        view.getConfirmDialog().setOpened(true);
+//
+        view.getConfirmDialog().open(onConfirmed, onCancelled);
+//       // view.getConfirmDialog().setOpened(true);
+//
+////        final Registration okRegistration = view.getConfirmDialog()
+////                .addConfirmListener(e -> onConfirmed.run());
+////        final Registration cancelRegistrarion = view.getConfirmDialog()
+////                .addCancelListener(e -> onCancelled.run());
+//
+        final Registration okRegistration = view.getConfirmDialog().getRegistrationForConfirm();
+        final Registration cancelRegistration = view.getConfirmDialog().getRegistrationForCancel();
 
-        final Registration okRegistration = view.getConfirmDialog()
-                .addConfirmListener(e -> onConfirmed.run());
-        final Registration cancelRegistrarion = view.getConfirmDialog()
-                .addCancelListener(e -> onCancelled.run());
-
-        state.updateRegistration(okRegistration, cancelRegistrarion);
+        state.updateRegistration(okRegistration, cancelRegistration);
        // final Registration okRegistration = view.getConfirmDialog().
     }
 
@@ -151,7 +166,7 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
         return executeOperation(()->{
             System.err.println("from loadEntity-EntitiPresenter: " + id);
             state.updateEntity(crudService.load(id), false);
-            System.err.println("from loadEntity-EntitiPresenter: " + (state.getEntity() == null));
+            System.err.println("from loadEntity-EntitiPresenter: " + (state.getEntity()!= null ? "not null" : "is null"));
             onSuccess.execute(state.getEntity());
         });
     }

@@ -1,0 +1,216 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/vaadin-themable-mixin/vaadin-themable-mixin.html">
+<link rel="import" href="../../bower_components/vaadin-element-mixin/vaadin-element-mixin.html">
+<link rel="import" href="../../bower_components/vaadin-button/src/vaadin-button.html">
+<link rel="import" href="../../bower_components/vaadin-dialog/src/vaadin-dialog.html">
+
+<dom-module id="confirm-dialog">
+    <template>
+        <style>
+            :host{
+                display: none;
+            }
+        </style>
+
+        <vaadin-dialog id="dialog" opened="{{opened}}" no-close-on-outside-click no-close-on-esc>
+            <template>
+                <div part="header">
+                    <slot name="header">
+                        <h3 class="header">[[header]]</h3>
+                    </slot>
+                </div>
+
+                <div part="message">
+                    <slot></slot>
+                    [[message]]
+                </div>
+
+                <div part="footer">
+                    <div class="cancel-button">
+                        <slot name="cancel-button">
+                            <vaadin-button id="cancel" theme$="[[cancelTheme]]" on-click="_cancel" hidden$="[[!cancel]]">
+                                [[cancelText]]
+                            </vaadin-button>
+                        </slot>
+                    </div>
+                    <div class="reject-button">
+                        <slot name="reject-button">
+                            <vaadin-button id="reject" theme$="[[rejectTheme]]" on-click="_reject" hidden$="[[!reject]]">
+                                [[rejectText]]
+                            </vaadin-button>
+                        </slot>
+                    </div>
+                    <div class="confirm-button">
+                        <slot name="confirm-button">
+                            <vaadin-button id="confirm" theme$="[[confirmTheme]]" on-click="_confirm" >
+                                [[confirmText]]
+                            </vaadin-button>
+                        </slot>
+                    </div>
+                </div>
+            </template>
+            <slot></slot>
+        </vaadin-dialog>
+    </template>
+    <script>
+        (function () {
+            /**
+             * `<vaadin-confirm-dialog>` is a Web Component for showing alerts and asking for user confirmation.
+             *
+             * ```
+             * <vaadin-confirm-dialog on-confirm="_doConfirm">
+             *  Sample confirmation question
+             * </vaadin-confirm-dialog>
+             * ```
+             *
+             * ### Styling
+             *
+             * The following Shadow DOM parts are available for styling the dialog parts:
+             *
+             * Part name  | Description
+             * -----------|---------------------------------------------------------|
+             * `header`   | Header of the confirmation dialog
+             * `message`  | Container for the message of the dialog
+             * `footer`   | Container for the buttons
+             *
+             * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
+             *
+             * ### Custom content
+             *
+             * The following parts are available for replacement:
+             *
+             * Slot name         | Description
+             * ------------------|---------------------------------------------------------|
+             * `header`          | Header of the confirmation dialog
+             * `message`         | Container for the message of the dialog
+             * `cancel-button`   | Container for the Cancel button
+             * `reject-button`   | Container for the Reject button
+             * `confirm-button`  | Container for the Confirm button
+             *
+             * See examples of setting custom buttons into slots in the live demos.
+             *
+             * @memberof Vaadin
+             * @mixes Vaadin.ElementMixin
+             * @mixes Vaadin.ThemableMixin
+             * @demo demo/index.html
+             */
+            class ConfirmDialogElement extends Vaadin.ElementMixin(Vaadin.ThemableMixin(Polymer.Element)){
+                static get is(){
+                    return 'confirm-dialog';
+                }
+
+                static get version(){
+                    return '1.0-beta';
+                }
+
+                static get properties(){
+                    return{
+                        /**
+                         * True if the overlay is currently displayed.
+                         */
+                        opened: {
+                            type: Boolean,
+                            value: false,
+                            notify: true,
+                            observer: '_openedChanged'
+                        },
+                        /**
+                         * set the confirmdialog title
+                         */
+                        header: {
+                            type: String
+                        },
+                        /**
+                         * set the message or question
+                         */
+                        message: {
+                            type: String
+                        },
+                        confirmText: {
+                            type: String,
+                            value: 'Confirm'
+                        },
+
+                        confirmTheme: {
+                            type: String,
+                            value: 'primary'
+                        },
+
+                        reject: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: false,
+                            notify: true
+                        },
+
+                        rejectText: {
+                            type: String,
+                            value:'Reject'
+                        },
+                        rejectTheme:{
+                            type: String,
+                            value:'error tertiary'
+                        },
+
+                        cancel: {
+                            type: Boolean,
+                            reflectToAttribute:true,
+                            value: false,
+                            notify:true
+                        },
+                        cancelText: {
+                            type: String,
+                            value: 'Cancel'
+                        },
+                        cancelTheme: {
+                            type: String,
+                            value:'tertiary'
+                        }
+
+                    };
+                }
+
+                ready(){
+                    super.ready();
+                    this.$.dialog.$.overlay.addEventListener('vaadin-overlay-escape-press', this._escPressed.bind(this));
+                }
+
+                _openedChanged(){
+                    if(!this.opened) {
+                        return;
+                    }
+                    Array.from(this.childNodes).forEach(c => this.$.dialog.$.overlay.$.content.appendChild(c));
+                }
+
+                _escPressed(event){
+                    if(this.cancel){
+                        this._cancel();
+                    } else {
+                        this.opened = false;
+                    }
+                }
+
+                _confirm() {
+                    this.dispatchEvent(new CustomEvent('confirm'));
+                    this.opened = true;
+                }
+
+                _cancel() {
+                    this.dispatchEvent(new CustomEvent('cancel'));
+                    this.opened = false;
+                }
+
+                _reject() {
+                    this.dispatchEvent(new CustomEvent('reject'));
+                    this.opened = false;
+                }
+            }
+
+            customElements.define(ConfirmDialogElement.is, ConfirmDialogElement);
+
+            window.Vaadin.ConfirmDialogElement = ConfirmDialogElement;
+
+        })();
+    </script>
+</dom-module>

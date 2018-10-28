@@ -3,6 +3,7 @@ package ru.xenya.market.ui;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.polymertemplate.Id;
@@ -37,14 +38,17 @@ public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
 
 
     //private final ConfirmationDialog confirmationDialog;
-    private final ConfirmDialog confirmationDialog;
+   private final ConfirmDialog confirmationDialog;
 
    // @Autowired
     public MainView() {
         this.confirmationDialog = new ConfirmDialog();
-        confirmationDialog.setCancelable(true);
-        confirmationDialog.setConfirmButtonTheme("raised tertiary error");
-        confirmationDialog.setCancelButtonTheme("raised tertiary");
+//        if (confirmationDialog == null) {
+//            System.err.println("==========Main confirmation dialog == null");
+//        }
+//        confirmationDialog.setCancelable(true);
+//        confirmationDialog.setConfirmButtonTheme("raised tertiary error");
+//        confirmationDialog.setCancelButtonTheme("raised tertiary");
 
         List<PageInfo> pages = new ArrayList<>();
         pages.add(new PageInfo(PAGE_STOREFRONT, ICON_STOREFRONT, TITLE_STOREFRONT));
@@ -77,7 +81,7 @@ public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
         }
         this.confirmationDialog.setOpened(false);
         if (content instanceof HasConfirmation) {
-            ((HasConfirmation) content).setConfirmDialog(this.confirmationDialog);
+           ((HasConfirmation) content).setConfirmDialog(this.confirmationDialog);
         }
     }
 

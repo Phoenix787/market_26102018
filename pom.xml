@@ -55,11 +55,6 @@
 		</repositories>
 
 	<dependencies>
-        <dependency>
-            <groupId>ru.xenya</groupId>
-            <artifactId>confirm-dialog</artifactId>
-			<version>1.0-beta</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -149,118 +144,124 @@
 			<version>${flow.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.vaadin.webjar</groupId>
-			<artifactId>vaadin-confirm-dialog</artifactId>
-			<version>1.0.0-beta1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.webjars.bowergithub.vaadin</groupId>
-					<artifactId>vaadin-button</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.webjars.bowergithub.vaadin</groupId>
-					<artifactId>vaadin-dialog</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>org.claspina</groupId>
+            <artifactId>confirm-dialog</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.polymer</groupId>
-			<artifactId>polymer</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.vaadin.webjar</groupId>-->
+			<!--<artifactId>vaadin-confirm-dialog</artifactId>-->
+			<!--<version>1.0.0-beta1</version>-->
+			<!--<exclusions>-->
+				<!--<exclusion>-->
+					<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+					<!--<artifactId>vaadin-button</artifactId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+					<!--<artifactId>vaadin-dialog</artifactId>-->
+				<!--</exclusion>-->
+			<!--</exclusions>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.webcomponents</groupId>
-			<artifactId>webcomponentsjs</artifactId>
-			<version>2.0.2</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.polymer</groupId>-->
+			<!--<artifactId>polymer</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.webcomponents</groupId>
-			<artifactId>shadycss</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.webcomponents</groupId>-->
+			<!--<artifactId>webcomponentsjs</artifactId>-->
+			<!--<version>2.0.2</version>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.vaadin</groupId>
-			<artifactId>vaadin-element-mixin</artifactId>
-			<version>2.1.2</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.webcomponents</groupId>-->
+			<!--<artifactId>shadycss</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.vaadin</groupId>
-			<artifactId>vaadin-usage-statistics</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+			<!--<artifactId>vaadin-element-mixin</artifactId>-->
+			<!--<version>2.1.2</version>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.vaadin</groupId>
-			<artifactId>vaadin-development-mode-detector</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+			<!--<artifactId>vaadin-usage-statistics</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.vaadin</groupId>
-			<artifactId>vaadin-themable-mixin</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+			<!--<artifactId>vaadin-development-mode-detector</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.vaadin</groupId>
-			<artifactId>vaadin-lumo-styles</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+			<!--<artifactId>vaadin-themable-mixin</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.vaadin</groupId>
-			<artifactId>vaadin-button</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+			<!--<artifactId>vaadin-lumo-styles</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.vaadin</groupId>
-			<artifactId>vaadin-control-state-mixin</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+			<!--<artifactId>vaadin-button</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.vaadin</groupId>
-			<artifactId>vaadin-dialog</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+			<!--<artifactId>vaadin-control-state-mixin</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.vaadin</groupId>
-			<artifactId>vaadin-overlay</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+			<!--<artifactId>vaadin-dialog</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.polymerelements</groupId>
-			<artifactId>iron-icon</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.vaadin</groupId>-->
+			<!--<artifactId>vaadin-overlay</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.polymerelements</groupId>
-			<artifactId>iron-meta</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.polymerelements</groupId>-->
+			<!--<artifactId>iron-icon</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.polymerelements</groupId>
-			<artifactId>iron-iconset-svg</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.polymerelements</groupId>-->
+			<!--<artifactId>iron-meta</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.polymerelements</groupId>
-			<artifactId>iron-overlay-behavior</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.polymerelements</groupId>-->
+			<!--<artifactId>iron-iconset-svg</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.polymerelements</groupId>
-			<artifactId>iron-a11y-keys-behavior</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.polymerelements</groupId>-->
+			<!--<artifactId>iron-overlay-behavior</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.polymerelements</groupId>
-			<artifactId>iron-fit-behavior</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.polymerelements</groupId>-->
+			<!--<artifactId>iron-a11y-keys-behavior</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.webjars.bowergithub.polymerelements</groupId>
-			<artifactId>iron-resizable-behavior</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.polymerelements</groupId>-->
+			<!--<artifactId>iron-fit-behavior</artifactId>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.polymerelements</groupId>-->
+			<!--<artifactId>iron-resizable-behavior</artifactId>-->
+		<!--</dependency>-->
 
 
 

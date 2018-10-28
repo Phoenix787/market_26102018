@@ -31,17 +31,21 @@ public class PricePresenter extends CrudEntityPresenter<Price> {
                           User currentUser, PriceService priceService) {
         super(priceService, currentUser);
         this.entityPresenter = entityPresenter;
+
         this.currentUser = currentUser;
         this.priceService = priceService;
     }
 
     public void init(PricesView view) {
         this.view = view;
+        System.err.println("==============================> from init----> " + view.getClass().getName());
         this.entityPresenter.setView(view);
+        System.err.println(this.entityPresenter.getView().getClass().getName());
         this.view.getGrid().setItems(updateList());
-        this.view.getOpenedEditor().setCurrentPrice(currentPrice);
-        this.view.getOpenedEditor().addCancelListener(e -> cancel());
-        this.view.getOpenedEditor().addSaveListener(e -> save());
+        this.view.getForm().setCurrentPrice(currentPrice);
+        this.view.getForm().addCancelListener(e -> cancel());
+        this.view.getForm().addSaveListener(e -> save());
+        this.view.getForm().addDeleteListener(e->delete());
     }
 
 
@@ -85,6 +89,7 @@ public class PricePresenter extends CrudEntityPresenter<Price> {
 
     //todo сделать удаление ( не работает в этом виде)
     public void delete(){
+        view.getConfirmDialog();
         super.delete(e->{
             getView().showDeleteNotification();
             view.getGrid().setItems(updateList());

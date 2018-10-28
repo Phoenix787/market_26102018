@@ -1,7 +1,9 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-layout.html">
+<link rel="import" href="../../../../bower_components/vaadin-button/src/vaadin-button.html">
+<link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-item.html">
 
-<link rel="import" href="../../../components/form-buttons-bar.html">
+<link rel="import" href="../../../components/buttons-bar.html">
 <link rel="import" href="../../../components/utils-mixin.html">
 
 <link rel="import" href="../../../../styles/shared-styles.html">
@@ -11,28 +13,39 @@
         <style>
 
         </style>
+        <div class=" scrollable flex1" id="main">
+            <vaadin-form-layout id="form1">
+                <h3 id="title"></h3>
+                <div class="meta-row" id="metaContainer">
+                    <!--<vaadin-combo-box class="status" id="status">Статус</vaadin-combo-box>-->
+                    <span class="dim">Прайс #<span id="priceNumber"></span></span>
+                </div>
+                <vaadin-form-layout id="form2">
+                    <vaadin-date-picker id="date" label="Дата прайса"></vaadin-date-picker>
+                    <vaadin-checkbox id="checkbox" checked="{{checkboxChecked}}">По умолчанию</vaadin-checkbox>
+                 </vaadin-form-layout>
 
-        <vaadin-form-layout id="form1">
-            <h3 id="title"></h3>
-            <div class="meta-row" id="metaContainer">
-                <!--<vaadin-combo-box class="status" id="status">Статус</vaadin-combo-box>-->
-                <span class="dim">Прайс #<span id="priceNumber"></span></span>
-            </div>
-            <vaadin-form-layout id="form2">
-                <vaadin-date-picker id="date" label="Дата прайса"></vaadin-date-picker>
-                <vaadin-checkbox id="checkbox" checked="{{checkboxChecked}}">По умолчанию</vaadin-checkbox>
-             </vaadin-form-layout>
+                <vaadin-form-layout id="form3" colspan="3">
+                    <vaadin-form-item colspan="3">
+                        <label slot="label">Позиции</label>
+                    </vaadin-form-item>
+                    <div id="itemsContainer" colspan="3"></div>
+                </vaadin-form-layout>
 
-            <vaadin-form-layout id="form3" colspan="3">
-                <vaadin-form-item colspan="3">
-                    <label slot="label">Позиции</label>
-                </vaadin-form-item>
-                <div id="itemsContainer" colspan="3"></div>
             </vaadin-form-layout>
+        </div>
 
-        </vaadin-form-layout>
-
-        <form-buttons-bar id="buttons"></form-buttons-bar>
+        <buttons-bar id="footer" no-scroll$="[[niScroll]]">
+            <vaadin-button slot="left" id="cancel">Отменить</vaadin-button>
+            <vaadin-button slot="left" id="confirm" theme="primary">
+                Сохранить
+                <iron-icon icon="vaadin-arrow-right" slot="suffix"></iron-icon>
+            </vaadin-button>
+            <vaadin-button slot="right" id="delete" theme="error">
+                Удалить
+                <!--<iron-icon icon="vaadin-arrow-right" slot="suffix"></iron-icon>-->
+            </vaadin-button>
+        </buttons-bar>
     </template>
 
     <script>

@@ -1,6 +1,8 @@
 package ru.xenya.market.ui.views.admin.prices;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -11,6 +13,7 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.xenya.market.app.HasLogger;
+import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.Price;
 import ru.xenya.market.backend.data.entity.util.EntityUtil;
 import ru.xenya.market.ui.MainView;
@@ -52,19 +55,24 @@ public class PricesView extends PolymerTemplate<TemplateModel>
     public PricesView(PriceEditor priceEditor, PricePresenter presenter) {
         this.priceEditor = priceEditor;
         this.presenter = presenter;
-        this.confirmation = new ConfirmDialog();
+        this.presenter.init(this);
 
-        search.setActionText("Новый прайс");
-        search.setPlaceHolder("Поиск");
-        search.addActionClickListener(e->presenter.createNewPrice());
-
-        priceEditor.getButtons().addSaveListener(e -> presenter.save());
-        priceEditor.getButtons().addCancelListener(e -> presenter.cancel());
-        priceEditor.getButtons().addDeleteListener(e -> presenter.delete());
+        dialog.add((Component) getForm());
+        dialog.setHeight("100%");
+        dialog.getElement().addAttachListener(event -> UI.getCurrent().getPage().executeJavaScript(
+                "$0.$.overlay.setAttribute('theme', 'right');", dialog.getElement()
+        ));
 
         setupGrid();
+        setupListeners();
 
-        getGrid().addSelectionListener(e->{
+
+        // grid.addColumn()
+    }
+
+    private void setupListeners() {
+
+        grid.addSelectionListener(e->{
             e.getFirstSelectedItem().ifPresent(entity->{
                 System.err.println(entity);
 
@@ -76,8 +84,12 @@ public class PricesView extends PolymerTemplate<TemplateModel>
             });
         });
 
+        search.setActionText("Новый прайс");
+        search.setPlaceHolder("Поиск");
+        search.addActionClickListener(e->presenter.createNewPrice());
 
-        presenter.init(this);
+//        priceEditor.getButtons().addSaveListener(e -> presenter.save());
+//        priceEditor.getButtons().addCancelListener(e -> presenter.cancel());
 
         dialog.getElement().addEventListener("opened-changed", e->{
             if (!dialog.isOpened()){
@@ -85,7 +97,9 @@ public class PricesView extends PolymerTemplate<TemplateModel>
             }
         });
 
-       // grid.addColumn()
+//        priceEditor.getButtons().addDeleteListener(e -> presenter.delete());
+
+
     }
 
     private void setupGrid() {
@@ -110,9 +124,11 @@ public class PricesView extends PolymerTemplate<TemplateModel>
     }
 
 
+
     public Grid<Price> getGrid() {
         return grid;
     }
+
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long idPrice) {
       //  boolean editView = event.getLocation().getPath().contains(PAGE_PRODUCTS_EDIT);
@@ -154,6 +170,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
 
     @Override
     public void setConfirmDialog(ConfirmDialog confirmDialog) {
+        System.err.println("=================== confirm in price view set by confirmdialog from mainview");
         this.confirmation = confirmDialog;
     }
 
@@ -165,5 +182,9 @@ public class PricesView extends PolymerTemplate<TemplateModel>
     public void setDialogElementsVisibility(boolean editing) {
         dialog.add(priceEditor);
         priceEditor.setVisible(editing);
+    }
+
+    public PriceEditor getForm() {
+        return priceEditor;
     }
 }
