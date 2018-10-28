@@ -3,8 +3,6 @@ package ru.xenya.market.ui.crud;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
-import org.claspina.confirmdialog.ButtonOption;
-import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import ru.xenya.market.app.HasLogger;
@@ -21,7 +19,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.function.UnaryOperator;
 
-public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> implements HasLogger {
+public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>>
+        implements HasLogger {
     private CrudService<T> crudService;
     private User currentUser;
     private V view;
@@ -53,7 +52,7 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
     }
 
     public void save(CrudOperationListener<T> onSuccess) {
-        if (executeOperation(this::saveEntity)){
+        if (executeOperation(()->saveEntity())){
             onSuccess.execute(state.getEntity());
         }
     }
@@ -138,7 +137,7 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
 //                message.getOkText(), true, state.getEntity(),
 //        this::doDelete, onCancelled);
         System.err.println(view == null ? "===============view is null" : "========!!! view is present");
-        getView().getConfirmDialog().setText(message.getMessage());
+        view.getConfirmDialog().setText(message.getMessage());
         view.getConfirmDialog().setHeader(message.getCaption());
         view.getConfirmDialog().setCancelText(message.getCancelText());
         view.getConfirmDialog().setConfirmText(message.getOkText());
@@ -164,16 +163,13 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
 
     public boolean loadEntity(Long id, CrudOperationListener<T> onSuccess) {
         return executeOperation(()->{
-            System.err.println("from loadEntity-EntitiPresenter: " + id);
             state.updateEntity(crudService.load(id), false);
-            System.err.println("from loadEntity-EntitiPresenter: " + (state.getEntity()!= null ? "not null" : "is null"));
             onSuccess.execute(state.getEntity());
         });
     }
 
     public T createNew() {
         state.updateEntity(crudService.createNew(currentUser), true);
-        System.err.println("from entityPresenter-State: " + state.getEntityName());
         return state.getEntity();
     }
 
@@ -186,7 +182,7 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
     }
 
     @FunctionalInterface
-    public interface CrudOperationListener<T extends AbstractEntity>{
+    public interface CrudOperationListener<T>{
         void execute(T entity);
     }
 }

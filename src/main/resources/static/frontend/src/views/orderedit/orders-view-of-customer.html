@@ -17,6 +17,7 @@
         <search-bar id="search"></search-bar>
         <!--<vaadin-button id="add" label="Новый заказ"></vaadin-button>-->
         <vaadin-grid id="grid"></vaadin-grid>
+        <vaadin-dialog id="dialog" on-opened-changed="_onDialogOpen"></vaadin-dialog>
     </template>
     <script>
         class OrdersViewOdCustomer extends Polymer.Element {
@@ -39,6 +40,14 @@
                     }
                 };
                 grid.addEventListener('loading-changed', listener);
+            }
+            // Workaround for styling the dialog content https://github.com/vaadin/vaadin-dialog-flow/issues/69
+            _onDialogOpen(e) {
+                if (!e.detail.value) {
+                    return;
+                }
+                var content = this.$.dialog.$.overlay.content;
+                content.querySelector('flow-component-renderer').setAttribute('theme', 'dialog');
             }
         }
 

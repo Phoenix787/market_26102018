@@ -45,5 +45,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByCustomerAndDueDate(Customer customer, LocalDate dueDateFilter);
 
 
-
+    long countByCustomerFullNameContainingIgnoreCaseAndDueDateAfter(String s, LocalDate date);
 }

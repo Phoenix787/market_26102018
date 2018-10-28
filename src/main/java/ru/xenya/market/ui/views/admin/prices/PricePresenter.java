@@ -15,13 +15,13 @@ import java.util.List;
 
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class PricePresenter extends CrudEntityPresenter<Price> {
+public class PricePresenter {
 
     private PricesView view;
 
     private final EntityPresenter<Price, PricesView> entityPresenter;
 
-    private User currentUser;
+    private final User currentUser;
 
     private final PriceService priceService;
 
@@ -29,23 +29,22 @@ public class PricePresenter extends CrudEntityPresenter<Price> {
 
     public PricePresenter(EntityPresenter<Price, PricesView> entityPresenter,
                           User currentUser, PriceService priceService) {
-        super(priceService, currentUser);
-        this.entityPresenter = entityPresenter;
-
-        this.currentUser = currentUser;
         this.priceService = priceService;
+        this.entityPresenter = entityPresenter;
+        this.currentUser = currentUser;
+
     }
 
     public void init(PricesView view) {
+        this.entityPresenter.setView(view);
         this.view = view;
         System.err.println("==============================> from init----> " + view.getClass().getName());
-        this.entityPresenter.setView(view);
         System.err.println(this.entityPresenter.getView().getClass().getName());
-        this.view.getGrid().setItems(updateList());
-        this.view.getForm().setCurrentPrice(currentPrice);
-        this.view.getForm().addCancelListener(e -> cancel());
-        this.view.getForm().addSaveListener(e -> save());
-        this.view.getForm().addDeleteListener(e->delete());
+        view.getGrid().setItems(updateList());
+        view.getForm().setCurrentPrice(currentPrice);
+        view.getForm().addCancelListener(e -> cancel());
+        view.getForm().addSaveListener(e -> save());
+        view.getForm().addDeleteListener(e->delete());
     }
 
 
@@ -61,9 +60,10 @@ public class PricePresenter extends CrudEntityPresenter<Price> {
         entityPresenter.cancel(()->close(), ()->view.setOpened(true));
     }
 
-    @Override
+
     public void closeSilently() {
         entityPresenter.close();
+        view.getConfirmDialog().setOpened(false);
         view.setOpened(false);
     }
 
@@ -89,9 +89,8 @@ public class PricePresenter extends CrudEntityPresenter<Price> {
 
     //todo сделать удаление ( не работает в этом виде)
     public void delete(){
-        view.getConfirmDialog();
-        super.delete(e->{
-            getView().showDeleteNotification();
+        entityPresenter.delete(e->{
+            view.showDeleteNotification();
             view.getGrid().setItems(updateList());
             closeSilently();
         });

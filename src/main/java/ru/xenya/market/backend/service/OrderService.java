@@ -208,4 +208,18 @@ public class OrderService implements FilterableCrudService<Order> {
         return filterableText.toLowerCase();
     }
 
+    public long countAnyMatchingAfterDueDate(Optional<String> filter, Optional<LocalDate> filterDate) {
+        if (filter.isPresent() && filterDate.isPresent()) {
+            return orderRepository.countByCustomerFullNameContainingIgnoreCaseAndDueDateAfter(filter.get(),
+                    filterDate.get());
+        } else if (filter.isPresent()) {
+            return orderRepository.countByCustomerFullNameContainingIgnoreCase(filter.get());
+        } else if (filterDate.isPresent()) {
+            return orderRepository.countByDueDateAfter(filterDate.get());
+        } else {
+            return orderRepository.count();
+        }
+
+
+    }
 }
