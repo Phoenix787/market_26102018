@@ -1,5 +1,6 @@
 package ru.xenya.market.backend.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,7 +23,9 @@ import java.util.stream.Stream;
 public class PriceService implements FilterableCrudService<Price> {
 
     private PriceRepository repository;
+    private LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
 
+    @Autowired
     public PriceService(PriceRepository repository) {
         this.repository = repository;
     }
@@ -48,7 +51,13 @@ public class PriceService implements FilterableCrudService<Price> {
     @Override
     public Page<Price> findAnyMatching(Optional<String> filter, Pageable pageable) {
 
-       return null;
+        if (filter.isPresent()) {
+            String repositoryFilter = "%" + filter.get() + "%";
+            return repository.findByDate(localDateToStringEncoder.decode(repositoryFilter), pageable);
+        } else {
+            return find(pageable);
+        }
+
     }
 
     private Page<Price> find(Pageable pageable) {
@@ -57,7 +66,12 @@ public class PriceService implements FilterableCrudService<Price> {
 
     @Override
     public long countAnyMatching(Optional<String> filter) {
-        return 0;
+        if (filter.isPresent()){
+            String repositoryFilter = "%" + filter.get() + "%";
+            return repository.countByDate(localDateToStringEncoder.decode(repositoryFilter));
+        } else {
+            return count();
+        }
     }
 
     @Override
@@ -86,5 +100,9 @@ public class PriceService implements FilterableCrudService<Price> {
         String filterableText = Stream.of(dateConverter.encode(price.getDate()))
                 .collect(Collectors.joining("\t"));
         return filterableText.toLowerCase();
+    }
+
+    public List<Price> findPricesByDefault(boolean isDefault) {
+        return repository.findByDefaultPrice(isDefault);
     }
 }

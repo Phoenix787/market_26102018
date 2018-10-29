@@ -47,6 +47,7 @@ public class Price extends AbstractEntity {
     }
     public Price(User createdBy){
         this.date = LocalDate.now();
+    //todo когда будет авторизация раскомментировать    addHistoryItem(createdBy, "Прайс создан");
         this.itemsPrice = new ArrayList<>();
     }
 
@@ -66,16 +67,17 @@ public class Price extends AbstractEntity {
     public void changeDefault(User user, boolean isDefault){
         boolean createHistory = this.defaultPrice != isDefault;
         this.defaultPrice = isDefault;
-        if (createHistory) {
-            String message;
-
-            if (isDefault){
-                message = "Прайс установлен по умолчанию";
-            } else {
-                message = "Статус прайса - не по умолчанию";
-            }
-            addHistoryItem(user, message);
-        }
+        //todo когда будет авторизация - будет user - раскомментировать
+//        if (createHistory) {
+//            String message;
+//
+//            if (isDefault){
+//                message = "Прайс установлен по умолчанию";
+//            } else {
+//                message = "Статус прайса - не по умолчанию";
+//            }
+//            addHistoryItem(user, message);
+//        }
     }
 
     private void addHistoryItem(User createdBy, String message) {

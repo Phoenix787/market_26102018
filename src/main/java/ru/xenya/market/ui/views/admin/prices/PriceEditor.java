@@ -30,6 +30,8 @@ import ru.xenya.market.ui.events.CancelEvent;
 import ru.xenya.market.ui.events.DeleteEvent;
 import ru.xenya.market.ui.events.SaveEvent;
 
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 /**
@@ -86,6 +88,21 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
     public PriceEditor() {
       //  itemsEditor = new PriceItemsEditor();
       //  itemsContainer.add(itemsEditor);
+        date.setI18n(new DatePicker.DatePickerI18n()
+                .setWeek("неделя")
+                .setCalendar("календарь")
+                .setToday("сегодня")
+                .setCancel("отмена")
+                .setFirstDayOfWeek(1)
+        .setMonthNames(Arrays.asList("январь", "февраль", "март",
+                "апрель", "май", "июнь",
+                "июль", "август", "сентябрь",
+                "октябрь", "ноябрь", "декабрь"))
+                .setWeekdays(
+                        Arrays.asList("воскресенье", "понедельник", "вторник",
+                        "среда", "четверг", "пятница", "суббота"))
+        .setWeekdaysShort(Arrays.asList("вс", "пн", "вт", "ср", "чт", "пт", "сб")));
+        date.setLocale(Locale.UK);
         date.setRequired(true);
         binder.bind(date, Price::getDate, Price::setDate);
 
@@ -161,7 +178,11 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
 
     }
 
-   // public FormButtonsBar getButtons() {
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    // public FormButtonsBar getButtons() {
       //  return buttons;
    // }
 

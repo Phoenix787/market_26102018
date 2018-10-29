@@ -42,6 +42,7 @@ public class PricePresenter {
         System.err.println(this.entityPresenter.getView().getClass().getName());
         view.getGrid().setItems(updateList());
         view.getForm().setCurrentPrice(currentPrice);
+        view.getForm().setCurrentUser(currentUser);
         view.getForm().addCancelListener(e -> cancel());
         view.getForm().addSaveListener(e -> save());
         view.getForm().addDeleteListener(e->delete());
@@ -70,6 +71,11 @@ public class PricePresenter {
     public void save() {
         entityPresenter.save(e->{
             if (entityPresenter.isNew()) {
+                List<Price> prices = priceService.findPricesByDefault(true);
+                for (Price price : prices) {
+                    price.changeDefault(currentUser, false);
+                    priceService.save(currentUser, price);
+                }
                 view.showCreatedNotification();
                 view.getGrid().setItems(updateList());
             } else {

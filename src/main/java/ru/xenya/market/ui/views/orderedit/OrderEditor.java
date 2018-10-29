@@ -40,6 +40,9 @@ import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 
 //todo
 
+import java.util.Arrays;
+import java.util.Locale;
+
 import static ru.xenya.market.ui.dataproviders.DataProviderUtils.createItemLabelGenerator;
 
 @Tag("order-editor")
@@ -113,7 +116,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         save.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
         delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
 
-        status.setItemLabelGenerator(createItemLabelGenerator(OrderState::getDisplayName));
+        status.setItemLabelGenerator(createItemLabelGenerator(OrderState::toString));
         status.setDataProvider(DataProvider.ofItems(OrderState.values()));
         status.addValueChangeListener(
                 e->getModel().setStatus(DataProviderUtils.convertIfNotNull(e.getValue(), OrderState::toString)));
@@ -123,9 +126,24 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
                 .bind(Order::getOrderState, (o, s)->{
                     o.changeState(currentUser, s);
                 });
+
+        dueDate.setI18n(new DatePicker.DatePickerI18n()
+                .setWeek("неделя")
+                .setCalendar("календарь")
+                .setToday("сегодня")
+                .setCancel("отмена")
+                .setFirstDayOfWeek(1)
+                .setMonthNames(Arrays.asList("январь", "февраль", "март",
+                        "апрель", "май", "июнь",
+                        "июль", "август", "сентябрь",
+                        "октябрь", "ноябрь", "декабрь"))
+                .setWeekdays(
+                        Arrays.asList("воскресенье", "понедельник", "вторник",
+                                "среда", "четверг", "пятница", "суббота"))
+                .setWeekdaysShort(Arrays.asList("вс", "пн", "вт", "ср", "чт", "пт", "сб")));
+        dueDate.setLocale(Locale.UK);
         dueDate.setRequired(true);
         binder.bind(dueDate, "dueDate");
-//        //todo для поля дата установить валидатор
 //
         payment.setItemLabelGenerator(createItemLabelGenerator(Payment::toString));
         payment.setDataProvider(DataProvider.ofItems(Payment.values()));

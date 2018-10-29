@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 public class HistoryItem extends AbstractEntity {
+
     private OrderState newState;
 
     @NotBlank

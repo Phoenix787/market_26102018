@@ -6,9 +6,12 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,9 @@ import ru.xenya.market.ui.components.SearchBar;
 import ru.xenya.market.ui.components.common.ConfirmDialog;
 import ru.xenya.market.ui.components.common.ConfirmationDialog;
 import ru.xenya.market.ui.views.EntityView;
+
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 import static ru.xenya.market.ui.utils.MarketConst.*;
 
@@ -68,6 +74,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
         setupListeners();
     }
 
+
     private void setupListeners() {
 
         grid.addSelectionListener(e->{
@@ -92,8 +99,15 @@ public class PricesView extends PolymerTemplate<TemplateModel>
 
     private void setupGrid() {
         grid.addColumn(Price::getId).setHeader("№").setWidth("50px").setFlexGrow(10);
-        grid.addColumn(Price::getDate).setHeader("Дата").setFlexGrow(10);
+        grid.addColumn(new LocalDateRenderer<>(Price::getDate,
+                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
+                .setHeader("Дата")
+                .setWidth("100px")
+                .setFlexGrow(10);
         //todo вставить поле с checkbox
+        grid.addColumn(new ComponentRenderer<>(Div::new,
+                (div, price) -> div.setText(price.isDefaultPrice() ? "По умолчанию" : ""))).setHeader("Статус")
+        .setWidth("100px").setFlexGrow(5);
        // grid.setSelectionMode(Grid.SelectionMode.NONE);
 
     }
