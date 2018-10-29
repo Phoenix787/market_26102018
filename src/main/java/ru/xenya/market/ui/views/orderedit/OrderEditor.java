@@ -79,7 +79,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     @Id("cancel")
     private Button cancel;
     @Id("save")
-    private Button review;
+    private Button save;
     @Id("delete")
     private Button delete;
 
@@ -110,8 +110,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 //        customerName.setEnabled(false);
 //        customerPhone.setEnabled(false);
         cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
-        review.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
+        save.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
         delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
+
         status.setItemLabelGenerator(createItemLabelGenerator(OrderState::getDisplayName));
         status.setDataProvider(DataProvider.ofItems(OrderState.values()));
         status.addValueChangeListener(
@@ -181,7 +182,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             getModel().setStatus(order.getOrderState().name());
         }
 
-//        review.setEnabled(false);
+//        save.setEnabled(false);
     }
 
     private void save(){
@@ -209,6 +210,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
         return addListener(DeleteEvent.class, listener);
     }
+
     private void setTotalPrice(int totalPrice) {
         getModel().setTotalPrice(FormattingUtils.formatAsCurrency(totalPrice));
     }
@@ -272,9 +274,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 //        itemsEditor.setValue(null);
     }
 
-//    public boolean hasChanges() {
-//        return binder.hasChanges() /*|| itemsEditor.hasChanges()*/;
-//    }
 
 
 

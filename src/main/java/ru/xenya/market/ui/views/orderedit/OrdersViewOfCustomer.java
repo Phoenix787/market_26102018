@@ -1,6 +1,8 @@
 package ru.xenya.market.ui.views.orderedit;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -41,8 +43,8 @@ import java.time.format.FormatStyle;
 //todo разобраться с удалением и сохранением заказов
 
 @Tag("orders-view-of-customer")
-@Route(value = MarketConst.PAGE_STOREFRONT, layout = MainView.class)
 @HtmlImport("src/views/orderedit/orders-view-of-customer.html")
+@Route(value = MarketConst.PAGE_STOREFRONT, layout = MainView.class)
 @SpringComponent
 @UIScope
 public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
@@ -73,20 +75,28 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
     @Autowired
     public OrdersViewOfCustomer(OrderPresenter presenter, OrderEditor form) {
        // super(EntityUtil.getName(Order.class), form);
-        this.presenter = presenter;
         this.form = form;
-      //  this.form = form;
+        this.presenter = presenter;
+        this.confirmation = new ConfirmDialog();
+        presenter.init(this);
+        //  this.form = form;
 //        presenter.setView(this);
       //  presenter.init(this);
         setupGrid();
         setupEventListeners();
+
+        dialog.add(getForm());
+        dialog.setHeight("100%");
+        dialog.getElement().addAttachListener(event -> UI.getCurrent().getPage().executeJavaScript(
+                "$0.$.overlay.setAttribute('theme', 'right');", dialog.getElement()
+        ));
       //  form.setBinder(binder);
     }
 
 
     public void open(Customer customer) {
         text.setValue(customer.getFullName());
-        presenter.init(this);
+       // presenter.init(this);
         presenter.setCurrentCustomer(customer);
         grid.setItems(presenter.updateList());
     }
@@ -108,9 +118,10 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
             e.getFirstSelectedItem().ifPresent(entity->{
                 System.err.println(entity);
 
-                presenter.onNavigation(entity.getId(), true); //load(entity);
+//                presenter.onNavigation(entity.getId(), true);
+                presenter.load(entity.getId());
                 //UI.getCurrent().navigate(MarketConst.PAGE_STOREFRONT + "/" + entity.getId());
-//                getPresenter().load(entity);
+              //  getPresenter().load(entity);
                 //navigateToEntity(entity.getId().toString());
                 getGrid().deselectAll();
             });
@@ -119,17 +130,19 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
         //   getForm().getButtons().addSaveListener(e -> getPresenter().save());
         //   getForm().getButtons().addCancelListener(e -> getPresenter().cancel());
 
+
+        getSearchBar().setActionText("Новый заказ");
+        getSearchBar().setPlaceHolder("Поиск");
+        getSearchBar().addActionClickListener(e -> presenter.createNewOrder());
+        getSearchBar().addFilterChangeListener(e->presenter.filter(getSearchBar().getFilter()));
+
         dialog.getElement().addEventListener("opened-changed", e->{
             if (!dialog.isOpened()) {
-                  presenter.cancel();
+                presenter.cancel();
             }
         });
 
 //        getForm().getButtons().addDeleteListener(e -> getPresenter().delete());
-
-       getSearchBar().addActionClickListener(e -> presenter.createNewOrder());
-       getSearchBar().addFilterChangeListener(e->presenter.filter(getSearchBar().getFilter()));
-        getSearchBar().setActionText("New " + EntityUtil.getName(Order.class));
         // getBinder().addValueChangeListener(e -> getPresenter().onValueChange(isDirty()));
     }
 
@@ -155,6 +168,28 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
         return form;
     }
 
+    public void navigateToMainView() {
+        getUI().ifPresent(ui -> ui.navigate(MarketConst.PAGE_CUSTOMERS));
+    }
+
+    public OrderEditor getOpenedOrderEditor() {
+        return getForm();
+    }
+
+    public void setOpened(boolean isOpened) {
+        dialog.setOpened(isOpened);
+    }
+
+    public void setDialogElementsVisibility(boolean editing) {
+        dialog.add(form);
+        form.setVisible(editing);
+    }
+
+    @Override
+    public boolean isDirty() {
+        return getForm().hasChanges();
+    }
+
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long orderId) {
         boolean editView = event.getLocation().getPath().contains(MarketConst.PAGE_STOREFRONT_EDIT);
@@ -165,44 +200,23 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
             presenter.closeSilently();
         }
     }
-    public void navigateToMainView() {
-        getUI().ifPresent(ui -> ui.navigate(MarketConst.PAGE_CUSTOMERS));
-    }
-
-
     @Override
-    public boolean isDirty() {
-        return getForm().hasChanges();
-    }
-
-
     public void write(Order entity) throws ValidationException {
         getForm().write(entity);
 
     }
+    //        //dialog.add(editing ? orderEditor : orderDetails);
+    //        getForm().setVisible(editing);
+    //       // orderDetails.setVisible(!editing);
 
 //    public void setDialogElementsVisibility(boolean editing) {
-//        //dialog.add(editing ? orderEditor : orderDetails);
-//        getForm().setVisible(editing);
-//       // orderDetails.setVisible(!editing);
+    //        getUI().ifPresent(ui-> ui.navigate(TemplateUtils.generateLocation(getBasePage(), id)));
+    //
 //    }
 
 //    public void navigateToEntity(String id) {
-//        getUI().ifPresent(ui-> ui.navigate(TemplateUtils.generateLocation(getBasePage(), id)));
-//
+
 //    }
-public void setDialogElementsVisibility(boolean editing) {
-    dialog.add(form);
-    form.setVisible(editing);
-}
-
-    public OrderEditor getOpenedOrderEditor() {
-        return getForm();
-    }
-
-    public void setOpened(boolean isOpened) {
-        dialog.setOpened(isOpened);
-    }
 
     @Override
     public void clear() {
@@ -216,12 +230,24 @@ public void setDialogElementsVisibility(boolean editing) {
 
     @Override
     public void setConfirmDialog(ConfirmDialog confirmDialog) {
-
+        System.err.println("=================== confirm in orders view set by confirmdialog from mainview");
         this.confirmation = confirmDialog;
     }
 
     @Override
     public ConfirmDialog getConfirmDialog() {
         return confirmation;
+    }
+
+    void updateTitle(boolean newEntity) {
+        getForm().getTitle().setText((newEntity ? "New" : "Edit") + " " + getEntityName());
+    }
+
+    void openDialog(){
+        dialog.setOpened(true);
+    }
+
+    void closeDialog() {
+        dialog.setOpened(false);
     }
 }

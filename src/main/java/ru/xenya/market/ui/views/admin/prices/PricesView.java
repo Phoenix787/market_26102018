@@ -57,6 +57,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
         this.presenter = presenter;
         this.presenter.init(this);
 
+        //для того, чтобы открывающееся окно было высотой 100% и прижималось к правому краю
         dialog.add((Component) getForm());
         dialog.setHeight("100%");
         dialog.getElement().addAttachListener(event -> UI.getCurrent().getPage().executeJavaScript(
@@ -65,9 +66,6 @@ public class PricesView extends PolymerTemplate<TemplateModel>
 
         setupGrid();
         setupListeners();
-
-
-        // grid.addColumn()
     }
 
     private void setupListeners() {
@@ -76,10 +74,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
             e.getFirstSelectedItem().ifPresent(entity->{
                 System.err.println(entity);
 
-                presenter.onNavigation(entity.getId(), true); //load(entity);
-                //UI.getCurrent().navigate(MarketConst.PAGE_STOREFRONT + "/" + entity.getId());
-//                getPresenter().load(entity);
-                //navigateToEntity(entity.getId().toString());
+                presenter.onNavigation(entity.getId(), true);
                 getGrid().deselectAll();
             });
         });
@@ -88,23 +83,17 @@ public class PricesView extends PolymerTemplate<TemplateModel>
         search.setPlaceHolder("Поиск");
         search.addActionClickListener(e->presenter.createNewPrice());
 
-//        priceEditor.getButtons().addSaveListener(e -> presenter.save());
-//        priceEditor.getButtons().addCancelListener(e -> presenter.cancel());
-
         dialog.getElement().addEventListener("opened-changed", e->{
             if (!dialog.isOpened()){
                 presenter.cancel();
             }
         });
-
-//        priceEditor.getButtons().addDeleteListener(e -> presenter.delete());
-
-
     }
 
     private void setupGrid() {
         grid.addColumn(Price::getId).setHeader("№").setWidth("50px").setFlexGrow(10);
         grid.addColumn(Price::getDate).setHeader("Дата").setFlexGrow(10);
+        //todo вставить поле с checkbox
        // grid.setSelectionMode(Grid.SelectionMode.NONE);
 
     }

@@ -136,13 +136,20 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 //        System.err.println("from load of OrderPresenter: # order " + order.getId());
 //        System.err.println("from load of OrderPresenter: " + loadEntity(order.getId(), this::open));
 //    }
+
+
+    public void load(Long id) {
+
+        entityPresenter.loadEntity(id, this::open);
+    }
+
     public Order open(Order entity){
         System.err.println("from OrderPresenter-> open()" + entity);
        // view.getBinder().readBean(entity);
         view.getForm().read(entity, false);
         view.setOpened(true);
-//        view.updateTitle(false);
-//        view.openDialog();
+        view.updateTitle(false);
+        view.openDialog();
 //        view.getDialog().add(view.getForm());
 //        view.getDialog().open();
 
@@ -221,8 +228,11 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     }
 
     public void closeSilently() {
-        entityPresenter.close();
+       // view.getOpenedOrderEditor().close();
+        view.closeDialog();
         view.getConfirmDialog().setOpened(false);
+        view.navigateToMainView();
+        entityPresenter.close();
     }
 
     void addComment(String comment){

@@ -40,19 +40,17 @@ public class Price extends AbstractEntity {
     @JoinColumn
     private List<HistoryItem> history;
 
-    private boolean defaultPrice;
+    private boolean defaultPrice = false;
 
     public Price(){
 
     }
     public Price(User createdBy){
-        this.defaultPrice = true;
         this.date = LocalDate.now();
         this.itemsPrice = new ArrayList<>();
     }
 
     public Price(Price other, User createdBy){
-        this.defaultPrice = true;
         this.date = LocalDate.now();
         ArrayList<PriceItem> itemsPrice = new ArrayList<>();
         Iterator<PriceItem> iterator = other.itemsPrice.iterator();

@@ -123,7 +123,6 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>>
         }
     }
 
-    //todo разобраться с этим диалогом!!! почему view == null
     private void showConfirmationRequest(Message message,
                                          Runnable onConfirmed,
                                          Runnable onCancelled) {

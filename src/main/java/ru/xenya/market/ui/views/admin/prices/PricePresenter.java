@@ -87,7 +87,7 @@ public class PricePresenter {
         entityPresenter.close();
     }
 
-    //todo сделать удаление ( не работает в этом виде)
+
     public void delete(){
         entityPresenter.delete(e->{
             view.showDeleteNotification();
