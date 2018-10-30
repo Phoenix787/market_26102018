@@ -15,7 +15,9 @@ import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import ru.xenya.market.app.HasLogger;
+import ru.xenya.market.backend.data.Role;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.Price;
 import ru.xenya.market.backend.data.entity.util.EntityUtil;
@@ -32,13 +34,12 @@ import static ru.xenya.market.ui.utils.MarketConst.*;
 
 // это как сustomerviewtemplate
 
-//todo почему не отображается ни поиск ни таблица???
 @Tag("prices-view")
 @HtmlImport("src/views/admin/prices/prices-view.html")
 @Route(value = PAGE_PRODUCTS, layout = MainView.class)
 @PageTitle(TITLE_PRODUCTS)
+@Secured(Role.ADMIN)
 
-//может сделать  CrudView<Customer, TemplateModel>
 public class PricesView extends PolymerTemplate<TemplateModel>
         implements HasLogger, HasUrlParameter<Long>, EntityView<Price> {
 

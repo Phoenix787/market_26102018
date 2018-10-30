@@ -1,6 +1,6 @@
 {
-  "name": "###Bakery###",
-  "short_name": "###Bakery###",
+  "name": "###Market###",
+  "short_name": "###Market###",
   "start_url": "login",
   "display": "standalone",
   "theme_color": "#227aef",

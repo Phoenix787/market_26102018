@@ -17,6 +17,7 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.xenya.market.backend.data.Role;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.ui.components.FormButtonsBar;
@@ -46,11 +47,12 @@ public class UserFormT extends PolymerTemplate<TemplateModel> implements CrudFor
     @Id("role")
     private ComboBox<String> role;
 
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
- //   @Autowired
-    public UserFormT() {
+    @Autowired
+    public UserFormT(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -73,15 +75,15 @@ public class UserFormT extends PolymerTemplate<TemplateModel> implements CrudFor
         binder.bind(last, "lastName");
         binder.bind(email, "email");
         binder.bind(role, "role");
-        binder.bind(password, "passwordHash");
-//        binder.forField(password).withValidator(pass -> {
-//            return pass.matches("^(|(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,})$");
-//        }, "need 6 or more chars, mixing digits, lowercase and uppercase letters")
-//                .bind(user -> password.getEmptyValue(), (user, pass) -> {
-//                    if (!password.getEmptyValue().equals(pass)) {
-//                        user.setPasswordHash(passwordEncoder.encode(pass));
-//                    }
-//                });
+//        binder.bind(password, "passwordHash");
+        binder.forField(password).withValidator(pass -> {
+            return pass.matches("^(|(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,})$");
+        }, "need 6 or more chars, mixing digits, lowercase and uppercase letters")
+                .bind(user -> password.getEmptyValue(), (user, pass) -> {
+                    if (!password.getEmptyValue().equals(pass)) {
+                        user.setPasswordHash(passwordEncoder.encode(pass));
+                    }
+                });
 
     }
 }

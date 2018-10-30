@@ -19,10 +19,10 @@ import ru.xenya.market.ui.views.orderedit.OrdersViewOfCustomer;
 @Configuration
 public class PresenterFactory {
 
-    @Bean
-    public User getUser() {
-        return new User();
-    }
+//    @Bean
+//    public User getUser() {
+//        return new User();
+//    }
 
     @Bean
     public Customer getCustomer() {

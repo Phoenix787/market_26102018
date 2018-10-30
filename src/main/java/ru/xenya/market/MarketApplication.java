@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 //import ru.xenya.market.app.security.SecurityConfiguration;
+import ru.xenya.market.app.security.SecurityConfiguration;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.CustomerRepository;
 import ru.xenya.market.backend.repositories.PriceRepository;
@@ -23,7 +24,7 @@ import ru.xenya.market.backend.service.UserService;
 import ru.xenya.market.ui.MainView;
 import ru.xenya.market.ui.crud.CrudEntityPresenter;
 
-@SpringBootApplication(scanBasePackageClasses = {/*SecurityConfiguration.class,*/ MainView.class, MarketApplication.class,
+@SpringBootApplication(scanBasePackageClasses = {SecurityConfiguration.class, MainView.class, MarketApplication.class,
 		CustomerService.class, UserService.class, PriceService.class}, exclude = ErrorMvcAutoConfiguration.class)
 @EnableJpaRepositories(basePackageClasses = { UserRepository.class, CustomerRepository.class, PriceRepository.class})
 @EntityScan(basePackageClasses = { User.class })
@@ -39,26 +40,6 @@ public class MarketApplication extends SpringBootServletInitializer {
 		return application.sources(MarketApplication.class);
 	}
 
-//	@Bean
-//	public User getUser() {
-//		return new User();
-//	}
-//
-//	@Bean
-//	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-//	public CrudEntityPresenter<User> userPresenter(UserService crudService, User currentUser) {
-//		return new CrudEntityPresenter<>(crudService, currentUser);
-//	}
-
-//	@Bean
-//	public CommandLineRunner loadData(OrderRepository orderRepository, CustomerRepository customerRepository) {
-//
-//
-//		return (args)->{
-//			orderRepository.save(new Order(LocalDate.now(), Payment.CASH, OrderState.NEW, customerRepository.getOne(2L) ));
-//			orderRepository.save(new Order(LocalDate.now().minusDays(1), Payment.NONCASH, OrderState.READY, customerRepository.getOne(2L) ));
-//		};
-//	}
 
 
 }
