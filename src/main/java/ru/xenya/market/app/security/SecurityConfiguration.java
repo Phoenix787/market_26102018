@@ -129,39 +129,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/frontend-es5/**", "/frontend-es6/**");
     }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        //Roles -> Access
-//        http
-//                .authorizeRequests()
-//                .antMatchers("**/secured/**").authenticated()
-//                .anyRequest().permitAll()
-//                .and()
-//                .formLogin().loginPage(LOGIN_URL).permitAll().loginProcessingUrl(LOGIN_PROCESSING_URL)
-//                .failureUrl(LOGIN_FAILURE_URL)
-//
-//                // Register the success handler that redirects users to the page they last tried
-//                // to access
-//                .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
-//
-//                // Configure logout
-//                .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
-//        // .and().csrf().disable();
-//
-//
-//
-//
-//
-//
-//        /*
-//        .httpBasic()
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/secured/**").hasRole("USER") //к данному узлу есть доступ у user
-//                .antMatchers("/**").hasRole("ADMIN") // у admin есть доступ к любому урлу
-//                .and().csrf().disable()
-//                .headers().frameOptions().disable();
-//         */
-//    }
-
 }
