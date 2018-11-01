@@ -1,0 +1,78 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../../bower_components/vaadin-button/src/vaadin-button.html">
+<link rel="import" href="../../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
+<link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-layout.html">
+<link rel="import" href="../../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
+
+<link rel="import" href="../../../../styles/shared-styles.html">
+
+<dom-module id="price-item-editor">
+    <template>
+        <style include="shared-style">
+            .price {
+                margin-bottom: 1em;
+           }
+
+           .delete {
+                min-width: 2em;
+                padding: 0;
+           }
+
+           @media (max-width: 700px) {
+            vaadin-form-layout {
+                --vaadin-form-layout-column-spacing: 1em;
+            }
+           }
+
+           .money {
+                text-align: right;
+                line-height: 2.5em;
+           }
+
+           .self-start {
+                align-self: flex-start;
+           }
+
+        </style>
+
+        <vaadin-form-layout id="form1">
+
+            <vaadin-form-layout id="form2" colspan="16" class="price" style="...">
+                <vaadin-combo-box id="services" colspan="8" index="[[index]]"></vaadin-combo-box>
+                <vaadin-combo-box id="units" colspan="2" index="[[index]]"></vaadin-combo-box>
+                <vaadin-text-field id="price" colspan="2" index="[[index]]"></vaadin-text-field>
+                <vaadin-text-field id="name" colspan="12" placeholder="Наименование позиции прайса" index="[[index]]"></vaadin-text-field>
+            </vaadin-form-layout>
+
+            <vaadin-button class="delete self-start" id="delete" colspan="2" index="[[index]]">
+                <iron-icon icon="vaadin:close-small"></iron-icon>
+            </vaadin-button>
+
+        </vaadin-form-layout>
+    </template>
+
+    <script>
+        class PriceItemEditor extends Polymer.Element {
+            static get is() {
+                return 'price-item-editor';
+            }
+
+            ready() {
+                super.ready();
+
+                this.$.form1.responsiveSteps = [
+                    {columns: 24}
+                ];
+                this.$.form2.responsiveSteps = [
+                    {columns: 8, labelsPosition: 'top'},
+                    {minWidth: '500px', columns: 16, labelPosition: 'top'}
+                ];
+            }
+        }
+
+        window.customElements.define(PriceItemEditor.is, PriceItemEditor);
+    </script>
+
+</dom-module>
+

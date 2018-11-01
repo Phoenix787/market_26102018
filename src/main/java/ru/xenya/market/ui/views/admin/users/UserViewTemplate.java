@@ -9,6 +9,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import ru.xenya.market.backend.data.Role;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.data.entity.util.EntityUtil;
 import ru.xenya.market.ui.MainView;
@@ -23,6 +25,7 @@ import static ru.xenya.market.ui.utils.MarketConst.PAGE_USERS;
 @HtmlImport("src/views/admin/users/users-view.html")
 @Route(value = PAGE_USERS, layout = MainView.class)
 @PageTitle(MarketConst.TITLE_USERS)
+@Secured(Role.ADMIN)
 public class UserViewTemplate extends CrudView<User, TemplateModel> {
 
     @Id("search")
@@ -49,7 +52,8 @@ public class UserViewTemplate extends CrudView<User, TemplateModel> {
     }
 
     private void setupGrid() {
-        grid.setWidth("100vh");
+        grid.setWidth("100vw");
+        grid.setHeight("100vh");
         grid.addColumn(User::getEmail).setWidth("270px").setHeader("Email").setFlexGrow(5);
         grid.addColumn(u -> u.getFirstName() + " " + u.getLastName()).setHeader("Имя, Фамилия").setWidth("200px").setFlexGrow(5);
         grid.addColumn(User::getRole).setHeader("Роль").setWidth("150px");

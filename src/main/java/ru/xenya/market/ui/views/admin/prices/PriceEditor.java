@@ -1,9 +1,6 @@
 package ru.xenya.market.ui.views.admin.prices;
 
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasText;
-import com.vaadin.flow.component.HasValue;
-import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -20,6 +17,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.templatemodel.TemplateModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import ru.xenya.market.backend.data.entity.Price;
@@ -29,6 +27,7 @@ import ru.xenya.market.ui.crud.CrudView.CrudForm;
 import ru.xenya.market.ui.events.CancelEvent;
 import ru.xenya.market.ui.events.DeleteEvent;
 import ru.xenya.market.ui.events.SaveEvent;
+import ru.xenya.market.ui.views.admin.prices.events.ValueChangeEvent;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -57,9 +56,6 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
     @Id("checkbox")
     private Checkbox isDefault;
 
-    @Id("itemsContainer")
-    private Div itemsContainer;
-
     @Id("priceNumber")
     private Span priceNumber;
 
@@ -72,9 +68,8 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
     @Id("delete")
     private Button deleteButton;
 
-//    @Id("buttons")
-//    private FormButtonsBar buttons;
-
+    @Id("itemsContainer")
+    private Div itemsContainer;
 
     private PriceItemsEditor itemsEditor;
 
@@ -82,12 +77,18 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
 
     private Price currentPrice;
 
-
     BeanValidationBinder<Price> binder = new BeanValidationBinder<>(Price.class);
 
+    @Autowired
     public PriceEditor() {
-      //  itemsEditor = new PriceItemsEditor();
-      //  itemsContainer.add(itemsEditor);
+        itemsEditor = new PriceItemsEditor();
+
+        itemsContainer.add(itemsEditor);
+
+        cancelButton.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
+        confirmButton.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
+        deleteButton.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
+
         date.setI18n(new DatePicker.DatePickerI18n()
                 .setWeek("неделя")
                 .setCalendar("календарь")
@@ -108,15 +109,25 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
 
         binder.bind(isDefault, Price::isDefaultPrice, Price::setDefaultPrice);
 
-        cancelButton.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
-        confirmButton.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
-        deleteButton.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
+
+        itemsEditor.setRequiredIndicatorVisible(true);
+        binder.bind(itemsEditor, "itemsPrice");
+
+        ComponentUtil.addListener(itemsEditor, ValueChangeEvent.class, e -> confirmButton.setEnabled(hasChanges()));
+        binder.addValueChangeListener(e->{
+            if (e.getOldValue() != null) {
+                confirmButton.setEnabled(hasChanges());
+            }
+        });
 
     }
 
     public void setCurrentPrice(Price currentPrice) {
         this.currentPrice = currentPrice;
     }
+
+    public Price getCurrentPrice() { return currentPrice; }
+
 
 //    public Registration addCancelListener(ComponentEventListener<CancelEvent> listener) {
 //        return cancelButton.addClickListener(
@@ -153,11 +164,13 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
     }
 
     public boolean hasChanges() {
-        return binder.hasChanges();
+        return binder.hasChanges() || itemsEditor.hasChanges();
     }
 
-    public void clear() {
+    public void clear()
+    {
         binder.readBean(null);
+        itemsEditor.setValue(null);
     }
 
     public void write(Price price) throws ValidationException {
@@ -176,6 +189,8 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
         title.setVisible(isNew);
         metaContainer.setVisible(!isNew);
 
+        confirmButton.setEnabled(false);
+
     }
 
     public void setCurrentUser(User currentUser) {
@@ -186,10 +201,10 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
       //  return buttons;
    // }
 
-//    public Stream<HasValue<?, ?>> validate() {
-//        Stream<HasValue<?, ?>> errorFields =
-//                binder.validate().getFieldValidationErrors().stream()
-//                .map(BindingValidationStatus::getField);
-//        return Stream.concat(errorFields, itemsEditor.validate());
-//    }
+    public Stream<HasValue<?, ?>> validate() {
+        Stream<HasValue<?, ?>> errorFields =
+                binder.validate().getFieldValidationErrors().stream()
+                .map(BindingValidationStatus::getField);
+        return Stream.concat(errorFields, itemsEditor.validate());
+    }
 }

@@ -9,11 +9,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-/**
- * класс для истории изменений прайса
- */
 @Entity
-public class HistoryItem extends AbstractEntity {
+public class OrderHistoryItem extends AbstractEntity {
+
+    private OrderState newState;
 
     @NotBlank
     @Size(max = 255)
@@ -26,20 +25,25 @@ public class HistoryItem extends AbstractEntity {
     @NotNull
     private User createdBy;
 
-    @java.beans.ConstructorProperties({"message", "timestamp", "createdBy"})
-    public HistoryItem(@NotBlank @Size(max = 255) String message, @NotNull LocalDateTime timestamp, @NotNull User createdBy) {
+    @java.beans.ConstructorProperties({"newState", "message", "timestamp", "createdBy"})
+    public OrderHistoryItem(OrderState newState, @NotBlank @Size(max = 255) String message, @NotNull LocalDateTime timestamp, @NotNull User createdBy) {
+        this.newState = newState;
         this.message = message;
         this.timestamp = timestamp;
         this.createdBy = createdBy;
     }
 
-    public HistoryItem() {
+    public OrderHistoryItem() {
     }
 
-    public HistoryItem(User createdBy, String comment) {
+    public OrderHistoryItem(User createdBy, String comment) {
         this.createdBy = createdBy;
         this.message = comment;
         this.timestamp = LocalDateTime.now();
+    }
+
+    public OrderState getNewState() {
+        return this.newState;
     }
 
     public @NotBlank @Size(max = 255) String getMessage() {
@@ -52,6 +56,10 @@ public class HistoryItem extends AbstractEntity {
 
     public @NotNull User getCreatedBy() {
         return this.createdBy;
+    }
+
+    public void setNewState(OrderState newState) {
+        this.newState = newState;
     }
 
     public void setMessage(@NotBlank @Size(max = 255) String message) {
@@ -68,9 +76,12 @@ public class HistoryItem extends AbstractEntity {
 
     public boolean equals(Object o) {
         if (o == this) return true;
-        if (!(o instanceof HistoryItem)) return false;
-        final HistoryItem other = (HistoryItem) o;
+        if (!(o instanceof OrderHistoryItem)) return false;
+        final OrderHistoryItem other = (OrderHistoryItem) o;
         if (!other.canEqual((Object) this)) return false;
+        final Object this$newState = this.getNewState();
+        final Object other$newState = other.getNewState();
+        if (this$newState == null ? other$newState != null : !this$newState.equals(other$newState)) return false;
         final Object this$message = this.getMessage();
         final Object other$message = other.getMessage();
         if (this$message == null ? other$message != null : !this$message.equals(other$message)) return false;
@@ -86,6 +97,8 @@ public class HistoryItem extends AbstractEntity {
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
+        final Object $newState = this.getNewState();
+        result = result * PRIME + ($newState == null ? 43 : $newState.hashCode());
         final Object $message = this.getMessage();
         result = result * PRIME + ($message == null ? 43 : $message.hashCode());
         final Object $timestamp = this.getTimestamp();
@@ -96,10 +109,10 @@ public class HistoryItem extends AbstractEntity {
     }
 
     protected boolean canEqual(Object other) {
-        return other instanceof HistoryItem;
+        return other instanceof OrderHistoryItem;
     }
 
     public String toString() {
-        return "HistoryItem(message=" + this.getMessage() + ", timestamp=" + this.getTimestamp() + ", createdBy=" + this.getCreatedBy() + ")";
+        return "HistoryItem(newState=" + this.getNewState() + ", message=" + this.getMessage() + ", timestamp=" + this.getTimestamp() + ", createdBy=" + this.getCreatedBy() + ")";
     }
 }

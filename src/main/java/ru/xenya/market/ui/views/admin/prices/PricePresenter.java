@@ -38,7 +38,6 @@ public class PricePresenter {
     public void init(PricesView view) {
         this.entityPresenter.setView(view);
         this.view = view;
-        System.err.println("==============================> from init----> " + view.getClass().getName());
         System.err.println(this.entityPresenter.getView().getClass().getName());
         view.getGrid().setItems(updateList());
         view.getForm().setCurrentPrice(currentPrice);
@@ -79,6 +78,7 @@ public class PricePresenter {
                 view.showCreatedNotification();
                 view.getGrid().setItems(updateList());
             } else {
+                addComment("Прайс изменён");
                 view.showUpdateNotification();
                 view.getGrid().setItems(updateList());
             }
@@ -97,6 +97,7 @@ public class PricePresenter {
     public void delete(){
         entityPresenter.delete(e->{
             view.showDeleteNotification();
+            addComment("Прайс удалён");
             view.getGrid().setItems(updateList());
             closeSilently();
         });
@@ -119,6 +120,13 @@ public class PricePresenter {
             return priceService.findPricesByDate(filter);
         } else {
             return priceService.findAll();
+        }
+    }
+
+    void addComment(String comment) {
+        if (entityPresenter.executeUpdate(e -> priceService.addComment(currentUser, e, comment))) {
+            // You can only add comments when in view mode, so reopening in that state.
+            open(entityPresenter.getEntity(), false);
         }
     }
 }

@@ -2,15 +2,15 @@ package ru.xenya.market.backend.data.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.Payment;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity(name = "orders")
 @Data
 @AllArgsConstructor
@@ -36,10 +36,10 @@ public class Order extends AbstractEntity {
 //    @JoinColumn(name = "fk_invoice_id", referencedColumnName = "invoice_id")
 //    private Invoice invoice;
 //
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @OrderColumn
-//    @JoinColumn
-//    private List<HistoryItem> history;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OrderColumn
+    @JoinColumn(name = "fk_oder_id")
+    private List<OrderHistoryItem> history;
 
     @NotNull(message = "{market.status.required}")
     private OrderState orderState;
@@ -59,7 +59,7 @@ public class Order extends AbstractEntity {
         this.dueDate = LocalDate.now();
         setCustomer(customer);
         //this.items = new ArrayList<>();
-       // addHistoryItem(createdBy, "Заказ размещён");
+        addHistoryItem(createdBy, "Заказ размещён");
     }
 
     public Order(User createdBy){
@@ -72,12 +72,12 @@ public class Order extends AbstractEntity {
     }
 
     public void addHistoryItem(User createdBy, String comment) {
-//        HistoryItem item = new HistoryItem(createdBy, comment);
-//        item.setNewState(orderState);
-//        if (history == null) {
-//            history = new LinkedList<>();
-//        }
-//        history.add(item);
+        OrderHistoryItem item = new OrderHistoryItem(createdBy, comment);
+        item.setNewState(orderState);
+        if (history == null) {
+            history = new LinkedList<>();
+        }
+        history.add(item);
     }
 
     public LocalDate getDueDate() {
@@ -104,13 +104,13 @@ public class Order extends AbstractEntity {
 //        this.items = items;
 //    }
 //
-//    public List<HistoryItem> getHistory() {
-//        return history;
-//    }
-//
-//    public void setHistory(List<HistoryItem> history) {
-//        this.history = history;
-//    }
+    public List<OrderHistoryItem> getHistory() {
+        return history;
+    }
+
+    public void setHistory(List<OrderHistoryItem> history) {
+        this.history = history;
+    }
 
     public OrderState getOrderState() {
         return orderState;
@@ -144,5 +144,51 @@ public class Order extends AbstractEntity {
                 ", orderState=" + orderState.name() +
                 ", customer=" + customer.getFullName() +
                 '}';
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Order)) return false;
+        final Order other = (Order) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (!super.equals(o)) return false;
+        final Object this$dueDate = this.getDueDate();
+        final Object other$dueDate = other.getDueDate();
+        if (this$dueDate == null ? other$dueDate != null : !this$dueDate.equals(other$dueDate)) return false;
+        final Object this$payment = this.getPayment();
+        final Object other$payment = other.getPayment();
+        if (this$payment == null ? other$payment != null : !this$payment.equals(other$payment)) return false;
+        final Object this$history = this.getHistory();
+        final Object other$history = other.getHistory();
+        if (this$history == null ? other$history != null : !this$history.equals(other$history)) return false;
+        final Object this$orderState = this.getOrderState();
+        final Object other$orderState = other.getOrderState();
+        if (this$orderState == null ? other$orderState != null : !this$orderState.equals(other$orderState))
+            return false;
+        final Object this$customer = this.getCustomer();
+        final Object other$customer = other.getCustomer();
+        if (this$customer == null ? other$customer != null : !this$customer.equals(other$customer)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $dueDate = this.getDueDate();
+        result = result * PRIME + ($dueDate == null ? 43 : $dueDate.hashCode());
+        final Object $payment = this.getPayment();
+        result = result * PRIME + ($payment == null ? 43 : $payment.hashCode());
+        final Object $history = this.getHistory();
+        result = result * PRIME + ($history == null ? 43 : $history.hashCode());
+        final Object $orderState = this.getOrderState();
+        result = result * PRIME + ($orderState == null ? 43 : $orderState.hashCode());
+        final Object $customer = this.getCustomer();
+        result = result * PRIME + ($customer == null ? 43 : $customer.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof Order;
     }
 }

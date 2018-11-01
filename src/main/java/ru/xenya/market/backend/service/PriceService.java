@@ -105,4 +105,10 @@ public class PriceService implements FilterableCrudService<Price> {
     public List<Price> findPricesByDefault(boolean isDefault) {
         return repository.findByDefaultPrice(isDefault);
     }
+
+    @Transactional(rollbackOn = Exception.class)
+    public Price addComment(User currentUser, Price price, String comment) {
+        price.addHistoryItem(currentUser, comment);
+        return repository.save(price);
+    }
 }

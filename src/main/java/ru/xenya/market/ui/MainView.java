@@ -12,12 +12,15 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 //import ru.xenya.market.app.security.SecurityUtils;
+import ru.xenya.market.app.security.SecurityUtils;
 import ru.xenya.market.ui.components.AppNavigation;
 import ru.xenya.market.ui.components.common.ConfirmDialog;
 import ru.xenya.market.ui.components.common.ConfirmationDialog;
 import ru.xenya.market.ui.entities.PageInfo;
 import ru.xenya.market.ui.exceptions.AccessDeniedException;
 import ru.xenya.market.ui.views.HasConfirmation;
+import ru.xenya.market.ui.views.admin.prices.PricesView;
+import ru.xenya.market.ui.views.admin.users.UserViewTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,11 +56,14 @@ public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
         List<PageInfo> pages = new ArrayList<>();
         pages.add(new PageInfo(PAGE_STOREFRONT, ICON_STOREFRONT, TITLE_STOREFRONT));
         pages.add(new PageInfo(PAGE_CUSTOMERS, ICON_CUSTOMERS, TITLE_CUSTOMERS));
-        pages.add(new PageInfo(PAGE_PRODUCTS, ICON_PRODUCTS, TITLE_PRODUCTS));
-        pages.add(new PageInfo(PAGE_USERS, ICON_USERS, TITLE_USERS));
-//        if (SecurityUtils.isAccessGranted(UsersView.class)){
-//            pages.add(new PageInfo(PAGE_USERS, ICON_USERS, TITLE_USERS));
-//        }
+        if (SecurityUtils.isAccessGranted(PricesView.class)){
+            pages.add(new PageInfo(PAGE_PRODUCTS, ICON_PRODUCTS, TITLE_PRODUCTS));
+        }
+//        pages.add(new PageInfo(PAGE_PRODUCTS, ICON_PRODUCTS, TITLE_PRODUCTS));
+//        pages.add(new PageInfo(PAGE_USERS, ICON_USERS, TITLE_USERS));
+        if (SecurityUtils.isAccessGranted(UserViewTemplate.class)){
+            pages.add(new PageInfo(PAGE_USERS, ICON_USERS, TITLE_USERS));
+        }
         pages.add(new PageInfo(PAGE_LOGOUT, ICON_LOGOUT, TITLE_LOGOUT));
         appNavigation.init(pages, PAGE_DEFAULT, PAGE_LOGOUT);
        // add(appNavigation);

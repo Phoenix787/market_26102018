@@ -12,6 +12,7 @@ import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.TemplateModel;
@@ -79,13 +80,19 @@ public class CustomerViewTemplate extends CrudView<Customer, TemplateModel>/**/ 
     }
 
     private void setupGrid() {
+        grid.setWidth("100vw");
         grid.setHeight("100vh");
         grid.addColumn(Customer::getId).setWidth("50px").setFlexGrow(0);
-        grid.addColumn(Customer::getFullName).setWidth("250px").setHeader("Наименование").setFlexGrow(5);
-        grid.addColumn(Customer::getAddress).setWidth("200px").setHeader("Адрес").setFlexGrow(5);
-        grid.addColumn(Customer::getPhoneNumbers).setWidth("250px").setFlexGrow(5);
+        grid.addColumn(Customer::getFullName).setWidth("300px").setHeader("Наименование").setResizable(true).setFlexGrow(5);
+        grid.addColumn(TemplateRenderer.<Customer> of(
+                "<div>[[item.address]]<br><small>[[item.phonenumbers]]</small></div>")
+        .withProperty("address", Customer::getAddress)
+        .withProperty("phonenumbers", Customer::getPhoneNumbers))
+                .setHeader("Адрес, телефон").setWidth("250px").setResizable(true).setFlexGrow(5);
+//        grid.addColumn(Customer::getAddress).setWidth("200px").setHeader("Адрес").setFlexGrow(5);
+//        grid.addColumn(Customer::getPhoneNumbers).setWidth("250px").setFlexGrow(5);
 //        grid.addColumn(new ComponentRenderer<>(this::createEditButton)).setFlexGrow(2);
-        grid.addColumn(new ComponentRenderer<>(this::openOrdersButton)).setFlexGrow(2);
+        grid.addColumn(new ComponentRenderer<>(this::openOrdersButton)).setWidth("100px").setFlexGrow(2).setFrozen(true);
     }
 
     private Button openOrdersButton(Customer customer) {

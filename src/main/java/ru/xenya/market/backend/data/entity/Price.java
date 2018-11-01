@@ -19,7 +19,7 @@ import java.util.List;
 @Entity(name = "prices")
 @Data
 @AllArgsConstructor
-public class Price extends AbstractEntity {
+public class Price extends AbstractEntity implements PriceSummary {
 
     @NotNull(message = "{market.due.dueDate.required}")
     private LocalDate date;
@@ -35,7 +35,6 @@ public class Price extends AbstractEntity {
     ru.xenya.market.backend.data.entity.Price.history, could not initialize proxy -
      no Session
     */
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderColumn
     @JoinColumn
     private List<HistoryItem> history;
@@ -43,14 +42,15 @@ public class Price extends AbstractEntity {
     private boolean defaultPrice = false;
 
     public Price(){
-
+        //Empty constructor is needed by Spring Data / JPA
     }
     public Price(User createdBy){
+        this.defaultPrice = true;
         this.date = LocalDate.now();
-    //todo когда будет авторизация раскомментировать    addHistoryItem(createdBy, "Прайс создан");
+        addHistoryItem(createdBy, "Прайс создан");
         this.itemsPrice = new ArrayList<>();
     }
-
+    //копирующий конструктор
     public Price(Price other, User createdBy){
         this.date = LocalDate.now();
         ArrayList<PriceItem> itemsPrice = new ArrayList<>();
@@ -67,20 +67,19 @@ public class Price extends AbstractEntity {
     public void changeDefault(User user, boolean isDefault){
         boolean createHistory = this.defaultPrice != isDefault;
         this.defaultPrice = isDefault;
-        //todo когда будет авторизация - будет user - раскомментировать
-//        if (createHistory) {
-//            String message;
-//
-//            if (isDefault){
-//                message = "Прайс установлен по умолчанию";
-//            } else {
-//                message = "Статус прайса - не по умолчанию";
-//            }
-//            addHistoryItem(user, message);
-//        }
+        if (createHistory) {
+            String message;
+
+            if (isDefault){
+                message = "Прайс установлен по умолчанию";
+            } else {
+                message = "Статус прайса - не по умолчанию";
+            }
+            addHistoryItem(user, message);
+        }
     }
 
-    private void addHistoryItem(User createdBy, String message) {
+    public void addHistoryItem(User createdBy, String message) {
         HistoryItem item = new HistoryItem(createdBy, message);
         if (history == null) {
             history = new LinkedList<>();
@@ -88,5 +87,13 @@ public class Price extends AbstractEntity {
         history.add(item);
     }
 
+    @Override
+    public Boolean isDefault() {
+        return defaultPrice;
+    }
 
+    @Override
+    public List<PriceItem> getItems() {
+        return itemsPrice;
+    }
 }

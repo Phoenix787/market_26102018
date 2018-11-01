@@ -104,7 +104,6 @@ public class OrderService implements FilterableCrudService<Order> {
     @Transactional
     public Order createNew(User currentUser) {
         Order order = new Order(currentCustomer, currentUser);
-        System.out.println("from orderservice->createNew: " + order);
         order.setDueDate(LocalDate.now());
 //        order.setOrderState(OrderState.NEW);
 //        order.setPayment(Payment.CASH);
