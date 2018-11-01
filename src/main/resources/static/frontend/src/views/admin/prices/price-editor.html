@@ -16,22 +16,23 @@
 
         </style>
         <div class=" scrollable flex1" id="main">
+            <h3 id="title"></h3>
+            <div class="meta-row" id="metaContainer">
+                <!--<vaadin-combo-box class="status" id="status">Статус</vaadin-combo-box>-->
+                <span class="dim">Прайс #<span id="priceNumber"></span></span>
+            </div>
             <vaadin-form-layout id="form1">
-                <h3 id="title"></h3>
-                <div class="meta-row" id="metaContainer">
-                    <!--<vaadin-combo-box class="status" id="status">Статус</vaadin-combo-box>-->
-                    <span class="dim">Прайс #<span id="priceNumber"></span></span>
-                </div>
-                <vaadin-form-layout id="form2">
+
+                <vaadin-form-layout id="form2" colspan="3">
                     <vaadin-date-picker id="date" label="Дата прайса"></vaadin-date-picker>
                     <vaadin-checkbox id="checkbox" checked="{{checkboxChecked}}">По умолчанию</vaadin-checkbox>
                  </vaadin-form-layout>
 
-                <vaadin-form-layout id="form3" colspan="3">
-                    <vaadin-form-item colspan="3">
+                <vaadin-form-layout id="form3" colspan="8">
+                    <vaadin-form-item colspan="8">
                         <label slot="label">Позиции</label>
                     </vaadin-form-item>
-                    <div id="itemsContainer" colspan="3"></div>
+                    <div id="itemsContainer" colspan="8"></div>
                 </vaadin-form-layout>
 
             </vaadin-form-layout>

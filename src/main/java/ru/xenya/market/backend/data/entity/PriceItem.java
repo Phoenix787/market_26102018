@@ -80,6 +80,14 @@ public class PriceItem extends AbstractEntity {
         this.unit = unit;
     }
 
+    public void changeService(Service service) {
+        this.service = service;
+    }
+
+    public void changeUnit(Unit unit) {
+        this.unit = unit;
+    }
+
     @Override
     public String toString() {
         return name + ' ' + price.toString();

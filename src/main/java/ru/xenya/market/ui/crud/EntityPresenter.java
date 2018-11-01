@@ -135,25 +135,24 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>>
 //                view.getConfirmDialog().open(message.getCaption(), message.getMessage(),"",
 //                message.getOkText(), true, state.getEntity(),
 //        this::doDelete, onCancelled);
-        System.err.println(view == null ? "===============view is null" : "========!!! view is present");
+
         view.getConfirmDialog().setText(message.getMessage());
         view.getConfirmDialog().setHeader(message.getCaption());
         view.getConfirmDialog().setCancelText(message.getCancelText());
         view.getConfirmDialog().setConfirmText(message.getOkText());
 //
-        view.getConfirmDialog().open(onConfirmed, onCancelled);
-//       // view.getConfirmDialog().setOpened(true);
+//        view.getConfirmDialog().open(onConfirmed, onCancelled);
+         view.getConfirmDialog().setOpened(true);
 //
-////        final Registration okRegistration = view.getConfirmDialog()
-////                .addConfirmListener(e -> onConfirmed.run());
-////        final Registration cancelRegistrarion = view.getConfirmDialog()
-////                .addCancelListener(e -> onCancelled.run());
-//
-        final Registration okRegistration = view.getConfirmDialog().getRegistrationForConfirm();
-        final Registration cancelRegistration = view.getConfirmDialog().getRegistrationForCancel();
+       final Registration okRegistration = view.getConfirmDialog()
+                .addConfirmListener(e -> onConfirmed.run());
+       final Registration cancelRegistration = view.getConfirmDialog()
+                .addCancelListener(e -> onCancelled.run());
+
+//        final Registration okRegistration = view.getConfirmDialog().getRegistrationForConfirm();
+//        final Registration cancelRegistration = view.getConfirmDialog().getRegistrationForCancel();
 
         state.updateRegistration(okRegistration, cancelRegistration);
-       // final Registration okRegistration = view.getConfirmDialog().
     }
 
     private void doDelete(Object entity) {

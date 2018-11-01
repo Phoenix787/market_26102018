@@ -7,7 +7,10 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.shared.Registration;
+import ru.xenya.market.backend.data.Service;
+import ru.xenya.market.backend.data.Unit;
 import ru.xenya.market.backend.data.entity.PriceItem;
+import ru.xenya.market.ui.views.admin.prices.events.NewEditorEvent;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +26,8 @@ public class PriceItemsEditor extends Div
     private boolean hasChanges = false;
 
     private final AbstractFieldSupport<PriceItemsEditor, List<PriceItem>> fieldSupport;
+
+    private PriceItem currentPriceItem;
 
     public PriceItemsEditor() {
 
@@ -61,6 +66,9 @@ public class PriceItemsEditor extends Div
     private PriceItemEditor createEditor(PriceItem value) {
         PriceItemEditor editor = new PriceItemEditor();
         getElement().appendChild(editor.getElement());
+        editor.addServiceListener(e -> serviceChanged(e.getSource(), e.getService()));
+        editor.addNameListener(e -> setHasChanges(true));
+        editor.addUnitListener(e -> unitChanged(e.getSource(), e.getUnit()));
         editor.addDeleteListener(e->{
             PriceItemEditor priceItemEditor = e.getSource();
             if (priceItemEditor != empty) {
@@ -73,6 +81,32 @@ public class PriceItemsEditor extends Div
 
         editor.setValue(value);
         return editor;
+    }
+
+    private void unitChanged(PriceItemEditor item, Unit unit) {
+        setHasChanges(true);
+        if (empty == item) {
+            currentPriceItem.setUnit(unit);
+            item.setValue(currentPriceItem);
+            setValue(Stream.concat(getValue().stream(), Stream.of(currentPriceItem)).collect(Collectors.toList()));
+            fireEvent(new NewEditorEvent(this));
+        }
+    }
+
+    private void serviceChanged(PriceItemEditor item, Service service) {
+        setHasChanges(true);
+        if (empty == item) {
+            createEmptyElement();
+            PriceItem priceItem = new PriceItem();
+            this.currentPriceItem = priceItem;
+            priceItem.setService(service);
+            priceItem.setUnit(Unit.cm2);
+            priceItem.setName("");
+            priceItem.setPrice(0);
+            item.setValue(priceItem);
+            setValue(Stream.concat(getValue().stream(), Stream.of(priceItem)).collect(Collectors.toList()));
+            fireEvent(new NewEditorEvent(this));
+        }
     }
 
     @Override

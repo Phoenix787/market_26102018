@@ -9,10 +9,20 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.shared.Registration;
-
+import ru.xenya.market.ui.events.CancelEvent;
+import ru.xenya.market.ui.events.SaveEvent;
 
 
 public class ConfirmDialog extends Dialog {
+
+//    @DomEvent("confirm")
+        public static class ConfirmEvent extends ComponentEvent<ConfirmDialog> {
+
+        public ConfirmEvent(ConfirmDialog source, boolean fromClient) {
+             super(source, fromClient);
+        }
+}
+
     private final H3 title = new H3();
     private final Div message = new Div();
     private final Button confirmButton = new Button();
@@ -37,6 +47,7 @@ public class ConfirmDialog extends Dialog {
 
         confirmButton.getElement().setAttribute("theme", "tertiary");
         confirmButton.setAutofocus(true);
+        confirmButton.addClickListener(e -> fireEvent(new ConfirmEvent(this, false)));
 
         cancelButton.addClickListener(e -> close());
         cancelButton.getElement().setAttribute("theme", "tertiary");
@@ -65,6 +76,8 @@ public class ConfirmDialog extends Dialog {
         confirmButton.setText(text);
     }
 
+
+
    public void open(Runnable confirmHandler, Runnable cancelHandler){
        if (registrationForConfirm != null) {
            registrationForConfirm.remove();
@@ -76,11 +89,11 @@ public class ConfirmDialog extends Dialog {
        }
        registrationForCancel = cancelButton.addClickListener(e -> cancelHandler.run());
 
-//       this.addOpenedChangeListener(e->{
-//           if (!e.isOpened()) {
-//               cancelHandler.run();
-//           }
-//       });
+       this.addOpenedChangeListener(e->{
+           if (!e.isOpened()) {
+               cancelHandler.run();
+           }
+       });
        open();
    }
 
@@ -91,6 +104,27 @@ public class ConfirmDialog extends Dialog {
     public Registration getRegistrationForCancel() {
         return registrationForCancel;
     }
+
+    public Registration addCancelListener(ComponentEventListener<CancelEvent> listener) {
+        return ComponentUtil.addListener(this, CancelEvent.class, listener);
+    }
+
+    public Registration addConfirmListener(ComponentEventListener<ConfirmEvent> listener) {
+        return ComponentUtil.addListener(this, ConfirmEvent.class, listener);
+    }
+
+    public void close() {
+//        clearRegistration(registrationForConfirm);
+//        clearRegistration(registrationForCancel);
+        super.close();
+    }
+
+    private void clearRegistration(Registration registration) {
+        if (registration != null) {
+            registration.remove();
+        }
+    }
+
 }
 
 //@Tag("confirm-dialog")
