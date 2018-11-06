@@ -33,10 +33,6 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-/**
- * посмотреть как сделано в ordereditor bakery про добавление позиций... сделать так же
- */
-
 @Tag("price-editor")
 @HtmlImport("src/views/admin/prices/price-editor.html")
 @SpringComponent
@@ -107,6 +103,12 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
         date.setRequired(true);
         binder.bind(date, Price::getDate, Price::setDate);
 
+        isDefault.addValueChangeListener(event->{
+
+                confirmButton.setEnabled(true);
+
+        });
+
         binder.bind(isDefault, Price::isDefaultPrice, Price::setDefaultPrice);
 
 
@@ -114,11 +116,12 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
         binder.bind(itemsEditor, "itemsPrice");
 
         ComponentUtil.addListener(itemsEditor, ValueChangeEvent.class, e -> confirmButton.setEnabled(hasChanges()));
-        binder.addValueChangeListener(e->{
-            if (e.getOldValue() != null) {
-                confirmButton.setEnabled(hasChanges());
-            }
-        });
+
+//        binder.addValueChangeListener(e->{
+//            if (e.getOldValue() != null) {
+//                confirmButton.setEnabled(hasChanges());
+//            }
+//        });
 
     }
 
@@ -197,9 +200,6 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements Cr
         this.currentUser = currentUser;
     }
 
-    // public FormButtonsBar getButtons() {
-      //  return buttons;
-   // }
 
     public Stream<HasValue<?, ?>> validate() {
         Stream<HasValue<?, ?>> errorFields =

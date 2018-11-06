@@ -58,8 +58,6 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     void init(OrdersViewOfCustomer view) {
         this.entityPresenter.setView(view);
         this.view = view;
-        System.err.println("==============================> from init----> " + view.getClass().getName());
-
         view.getGrid().setItems(updateList());
         view.getOpenedOrderEditor().setCurrentUser(currentUser);
         view.getOpenedOrderEditor().addCancelListener(e -> cancel());
@@ -123,10 +121,8 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 
     public Order createNew() {
        // orderService.setCurrentCustomer(currentCustomer);
-        System.out.println("from orderpresenter->createNew->currentCustomer: " + orderService.getCurrentCustomer().getFullName());
 //        Order order = orderService.createNew(currentUser);
         Order order = entityPresenter.createNew();
-        System.err.println("from orderPresenter->create order " + order);
 //        open(entityPresenter.createNew(), true);
         open(order, true);
         return /*orderService.createNew(currentUser)*/  order;
@@ -144,7 +140,6 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     }
 
     public Order open(Order entity){
-        System.err.println("from OrderPresenter-> open()" + entity);
        // view.getBinder().readBean(entity);
         view.getForm().read(entity, false);
         view.setOpened(true);
@@ -175,8 +170,6 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     public void save() {
         currentOrder = entityPresenter.getEntity();
         //Order order = view.getForm().getBinder().getBean();
-
-        System.err.println("from save currentOrder = entityPresenter.getEntity() " + entityPresenter.getEntity());
         try {
             view.write(currentOrder);
         } catch (ValidationException e) {
@@ -184,10 +177,10 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         }
         entityPresenter.save(e->{
                 if (entityPresenter.isNew()){
-                    view.showCreatedNotification();
+                    view.showCreatedNotification("Заказ");
                     view.getGrid().setItems(updateList());
                 } else {
-                    view.showUpdateNotification();
+                    view.showUpdateNotification("Заказ # " + e.getId());
                     view.getGrid().setItems(updateList());
                 }
 
@@ -214,7 +207,7 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 
     public void delete(){
         entityPresenter.delete(e->{
-            view.showDeleteNotification();
+            view.showDeleteNotification("Заказ # " + e.getId());
             view.getGrid().setItems(updateList());
             closeSilently();
         });

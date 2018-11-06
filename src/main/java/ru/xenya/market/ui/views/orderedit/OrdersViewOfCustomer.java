@@ -6,6 +6,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.TextField;
@@ -50,8 +51,8 @@ import java.time.format.FormatStyle;
 public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
         implements HasLogger, HasUrlParameter<Long>, EntityView<Order> /*CrudView<Order, TemplateModel> */{
 
-    @Id("text")
-    private TextField text;
+    @Id("customer_name")
+    private Span customerName;
 
     @Id("search")
     private SearchBar searchBar;
@@ -68,20 +69,20 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
 
     private final OrderPresenter presenter;
 
-   private OrderEditor form;
+    private OrderEditor form;
 
-  //  private final BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
+    //  private final BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
 
     @Autowired
     public OrdersViewOfCustomer(OrderPresenter presenter, OrderEditor form) {
-       // super(EntityUtil.getName(Order.class), form);
+        // super(EntityUtil.getName(Order.class), form);
         this.form = form;
         this.presenter = presenter;
         this.confirmation = new ConfirmDialog();
         presenter.init(this);
         //  this.form = form;
 //        presenter.setView(this);
-      //  presenter.init(this);
+        //  presenter.init(this);
         setupGrid();
         setupEventListeners();
 
@@ -90,13 +91,13 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
         dialog.getElement().addAttachListener(event -> UI.getCurrent().getPage().executeJavaScript(
                 "$0.$.overlay.setAttribute('theme', 'right');", dialog.getElement()
         ));
-      //  form.setBinder(binder);
+        //  form.setBinder(binder);
     }
 
 
     public void open(Customer customer) {
-        text.setValue(customer.getFullName());
-       // presenter.init(this);
+        customerName.setText(customer.getFullName());
+        // presenter.init(this);
         presenter.setCurrentCustomer(customer);
         grid.setItems(presenter.updateList());
     }
@@ -121,7 +122,7 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
 //                presenter.onNavigation(entity.getId(), true);
                 presenter.load(entity.getId());
                 //UI.getCurrent().navigate(MarketConst.PAGE_STOREFRONT + "/" + entity.getId());
-              //  getPresenter().load(entity);
+                //  getPresenter().load(entity);
                 //navigateToEntity(entity.getId().toString());
                 getGrid().deselectAll();
             });

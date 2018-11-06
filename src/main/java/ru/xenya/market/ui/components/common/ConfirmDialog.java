@@ -23,6 +23,13 @@ public class ConfirmDialog extends Dialog {
         }
 }
 
+    public static class CancelEvent extends ComponentEvent<ConfirmDialog> {
+
+        public CancelEvent(ConfirmDialog source, boolean fromClient) {
+            super(source, fromClient);
+        }
+    }
+
     private final H3 title = new H3();
     private final Div message = new Div();
     private final Button confirmButton = new Button();
@@ -49,7 +56,7 @@ public class ConfirmDialog extends Dialog {
         confirmButton.setAutofocus(true);
         confirmButton.addClickListener(e -> fireEvent(new ConfirmEvent(this, false)));
 
-        cancelButton.addClickListener(e -> close());
+        cancelButton.addClickListener(e->fireEvent(new CancelEvent(this, false)));
         cancelButton.getElement().setAttribute("theme", "tertiary");
 
         HorizontalLayout buttonsBar = new HorizontalLayout(confirmButton, cancelButton);

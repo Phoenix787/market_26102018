@@ -1,6 +1,7 @@
 package ru.xenya.market.ui.views.login;
 
 
+import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.page.Viewport;
@@ -24,6 +25,8 @@ public class LoginView extends PolymerTemplate<LoginView.Model> implements PageC
 
     public LoginView() {
        // getElement().appendChild()
+        getElement().addPropertyChangeListener("checkBoxChecked",
+                e -> fireEvent(new FilterChanged(this, false)));
     }
 
     @Override
@@ -45,5 +48,18 @@ public class LoginView extends PolymerTemplate<LoginView.Model> implements PageC
 
     public interface Model extends TemplateModel {
         void setError(boolean error);
+    }
+
+    public static class FilterChanged extends ComponentEvent<LoginView> {
+        /**
+         * Creates a new event using the given source and indicator whether the
+         * event originated from the client side or the server side.
+         *
+         * @param source     the source component
+         * @param fromClient <code>true</code> if the event originated from the client
+         */
+        public FilterChanged(LoginView source, boolean fromClient) {
+            super(source, fromClient);
+        }
     }
 }

@@ -36,16 +36,16 @@ public interface EntityView<T> extends HasConfirmation<T>, HasNotifications {
 
     String getEntityName();
 
-    default void showCreatedNotification(){
-        showNotification(getEntityName() + " создан");
+    default void showCreatedNotification(String message){
+        showNotification(message + " создан");
     }
 
-    default void showUpdateNotification() {
-        showNotification(getEntityName() + " обновлен");
+    default void showUpdateNotification(String message) {
+        showNotification(message + " обновлен");
     }
 
-    default void showDeleteNotification() {
-        showNotification(getEntityName() + " удален");
+    default void showDeleteNotification(String message) {
+        showNotification(message + " удален");
     }
 
 }

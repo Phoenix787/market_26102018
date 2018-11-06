@@ -127,37 +127,22 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>>
                                          Runnable onConfirmed,
                                          Runnable onCancelled) {
 
-//        ConfirmDialog.createQuestion().withCaption(message.getCaption()).withMessage(message.getMessage())
-//                .withOkButton(onConfirmed, ButtonOption.focus(), ButtonOption.caption("Yes"))
-//                .withCancelButton(onCancelled)
-//                .open();
-
-//                view.getConfirmDialog().open(message.getCaption(), message.getMessage(),"",
-//                message.getOkText(), true, state.getEntity(),
-//        this::doDelete, onCancelled);
-
         view.getConfirmDialog().setText(message.getMessage());
         view.getConfirmDialog().setHeader(message.getCaption());
         view.getConfirmDialog().setCancelText(message.getCancelText());
         view.getConfirmDialog().setConfirmText(message.getOkText());
-//
-//        view.getConfirmDialog().open(onConfirmed, onCancelled);
-         view.getConfirmDialog().setOpened(true);
-//
+        view.getConfirmDialog().setOpened(true);
        final Registration okRegistration = view.getConfirmDialog()
                 .addConfirmListener(e -> onConfirmed.run());
        final Registration cancelRegistration = view.getConfirmDialog()
                 .addCancelListener(e -> onCancelled.run());
 
-//        final Registration okRegistration = view.getConfirmDialog().getRegistrationForConfirm();
-//        final Registration cancelRegistration = view.getConfirmDialog().getRegistrationForCancel();
-
         state.updateRegistration(okRegistration, cancelRegistration);
     }
 
-    private void doDelete(Object entity) {
+   /* private void doDelete(Object entity) {
         crudService.delete(currentUser, (T) entity);
-    }
+    }*/
 
     public boolean loadEntity(Long id, CrudOperationListener<T> onSuccess) {
         return executeOperation(()->{

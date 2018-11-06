@@ -90,6 +90,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
         search.setActionText("Новый прайс");
         search.setPlaceHolder("Поиск");
         search.addActionClickListener(e->presenter.createNewPrice());
+        search.addFilterChangeListener(e->presenter.filter(search.getFilter()));
 
         dialog.getElement().addEventListener("opened-changed", e->{
             if (!dialog.isOpened()){
@@ -174,7 +175,6 @@ public class PricesView extends PolymerTemplate<TemplateModel>
 
     @Override
     public void setConfirmDialog(ConfirmDialog confirmDialog) {
-        System.err.println("=================== confirm in price view set by confirmdialog from mainview");
         this.confirmation = confirmDialog;
     }
 

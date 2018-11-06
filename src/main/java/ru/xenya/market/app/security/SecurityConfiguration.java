@@ -15,11 +15,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.xenya.market.backend.data.Role;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.UserRepository;
 import ru.xenya.market.ui.utils.MarketConst;
+
+import javax.sql.DataSource;
 
 @EnableWebSecurity
 @Configuration
@@ -33,6 +37,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     public SecurityConfiguration(UserDetailsService userDetailsService){
@@ -63,7 +70,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         super.configure(auth);
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -92,8 +100,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // to access
                 .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
 
+                .and().rememberMe()
+                        .tokenRepository(persistentTokenRepository())
+                        .rememberMeCookieName("remember-me")
+                        .tokenValiditySeconds(1209600)                      //14 days
+
+                        /*.rememberMeCookieName("remember-me")
+                        .tokenValiditySeconds(604800)
+                        .userDetailsService(userDetailsService)*/
+
+
                 // Configure logout
-                .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
+                .and()
+                    .logout()
+                    .deleteCookies("JSESSIONID")
+                    .logoutSuccessUrl(LOGOUT_SUCCESS_URL);
+
     }
     /**
      * Allows access to static resources, bypassing Spring security.
@@ -127,6 +149,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // (production mode) static resources
                 "/frontend-es5/**", "/frontend-es6/**");
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository(){
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
     }
 
 }

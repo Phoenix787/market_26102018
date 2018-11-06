@@ -1,99 +1,87 @@
 package ru.xenya.market.ui.views.admin.users;
 
+import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.polymertemplate.Id;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.templatemodel.TemplateModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import ru.xenya.market.backend.data.Role;
 import ru.xenya.market.backend.data.entity.User;
-import ru.xenya.market.backend.repositories.UserRepository;
+import ru.xenya.market.backend.data.entity.util.EntityUtil;
+import ru.xenya.market.ui.MainView;
 import ru.xenya.market.ui.components.SearchBar;
-import ru.xenya.market.ui.components.common.AbstractEditorDialog;
+import ru.xenya.market.ui.crud.CrudEntityPresenter;
+import ru.xenya.market.ui.crud.CrudView;
+import ru.xenya.market.ui.utils.MarketConst;
 
-import java.util.List;
+import static ru.xenya.market.ui.utils.MarketConst.PAGE_USERS;
 
-/*@Route(value = PAGE_USERS, layout = MainView.class)
-@PageTitle(MarketConst.TITLE_USERS)*/
-//@Secured(Role.ADMIN)
-public class UserView extends VerticalLayout {
+@Tag("users-view")
+@HtmlImport("src/views/admin/users/users-view.html")
+@Route(value = PAGE_USERS, layout = MainView.class)
+@PageTitle(MarketConst.TITLE_USERS)
+@Secured(Role.ADMIN)
+public class UserView extends CrudView<User, TemplateModel> {
 
+    @Id("search")
     private SearchBar search;
 
+    @Id("grid")
     private Grid<User> grid;
 
-    private UserForm form;
+    private final CrudEntityPresenter<User> presenter;
 
-    private UserRepository repository;
+    private final BeanValidationBinder<User> binder = new BeanValidationBinder<>(User.class);
 
-    public UserView(UserRepository repository) {
-        this.repository = repository;
-        form = new UserForm(this::saveUpdate, this::deleteUpdate);
 
-        setupSearchBar();
-        setupGrid();
+    @Autowired
+    public UserView(CrudEntityPresenter<User> presenter, UserForm form) {
+        super(EntityUtil.getName(User.class), form);
+        this.presenter = presenter;
+
+        form.setBinder(binder);
+
         setupEventListeners();
-    }
-
-    private void deleteUpdate(User user) {
-        repository.delete(user);
-        updateList(search.getFilter());
-        Notification.show("Пользователь успешно удалён", 3000, Notification.Position.BOTTOM_START);
-
-    }
-
-    private void saveUpdate(User user, AbstractEditorDialog.Operation operation) {
-        repository.save(user);
-        updateList(search.getFilter());
-        Notification.show("Пользователь успешно " + operation.getNameInText(), 3000, Notification.Position.BOTTOM_START);
-    }
-
-    private void setupSearchBar() {
-        search = new SearchBar();
-        search.getFilterTextField().addValueChangeListener(e->updateList(search.getFilter()));
-        search.setActionText("Новый пользователь");
-        search.addActionClickListener(e -> openForm(new User(), AbstractEditorDialog.Operation.ADD));
-        add(search);
+        setupGrid();
+        presenter.setView(this);
     }
 
     private void setupGrid() {
-        this.grid = new Grid<>();
+        grid.setWidth("100vw");
         grid.setHeight("100vh");
         grid.addColumn(User::getEmail).setWidth("270px").setHeader("Email").setFlexGrow(5);
         grid.addColumn(u -> u.getFirstName() + " " + u.getLastName()).setHeader("Имя, Фамилия").setWidth("200px").setFlexGrow(5);
         grid.addColumn(User::getRole).setHeader("Роль").setWidth("150px");
-        add(grid);
-        updateList(search.getFilter());
     }
 
 
-
-    private void setupEventListeners() {
-        grid.addSelectionListener(e->{
-            e.getFirstSelectedItem().ifPresent(entity ->{
-                //  navigateToEntity(entity.getId().toString());
-                navigateToEntity(entity);
-                grid.deselectAll();
-            });
-        });
+    @Override
+    protected CrudEntityPresenter<User> getPresenter() {
+        return presenter;
     }
 
-    private void navigateToEntity(String id) {
-        // getUI().ifPresent(ui -> ui.navigate(TemplateUtils.generateLocation(getBasePage(), id)));
-    }
-    private void navigateToEntity(User user) {
-        openForm(user, AbstractEditorDialog.Operation.EDIT);
+    @Override
+    protected String getBasePage() {
+        return PAGE_USERS;
     }
 
-    private void openForm(User user, AbstractEditorDialog.Operation operation) {
-        if (form.getElement().getParent() == null) {
-            getUI().ifPresent(ui->ui.add(form));
-        }
-        form.open(user, operation);
+    @Override
+    protected BeanValidationBinder<User> getBinder() {
+        return binder;
     }
 
-    private void updateList(String filter) {
-        List<User> users = repository.findAll();
-//                //findByEmailLikeIgnoreCaseOrFirstNameLikeIgnoreCaseOrLastNameIgnoreCaseOrRoleLikeIgnoreCase(
-//                filter, filter, filter, filter
-//        );
-        grid.setItems(users);
+    @Override
+    protected SearchBar getSearchBar() {
+        return search;
+    }
+
+    @Override
+    protected Grid<User> getGrid() {
+        return grid;
     }
 }

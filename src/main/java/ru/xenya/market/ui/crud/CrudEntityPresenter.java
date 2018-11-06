@@ -56,10 +56,10 @@ public class CrudEntityPresenter<T extends AbstractEntity> extends EntityPresent
         if (writeEntity()){
             super.save(e->{
                 if (isNew()) {
-                    getView().showCreatedNotification();
+                    getView().showCreatedNotification("Объект");
                     filteredDataProvider.refreshAll();
                 } else {
-                    getView().showUpdateNotification();
+                    getView().showUpdateNotification("Объект");
                     filteredDataProvider.refreshItem(e);
                 }
                 closeSilently();
@@ -69,7 +69,7 @@ public class CrudEntityPresenter<T extends AbstractEntity> extends EntityPresent
 
     public void delete(){
         super.delete(e->{
-            getView().showDeleteNotification();
+            getView().showDeleteNotification("Объект");
             filteredDataProvider.refreshAll();
             closeSilently();
         });

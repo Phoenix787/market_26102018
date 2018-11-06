@@ -6,6 +6,7 @@
 <link rel="import" href="../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
 <link rel="import" href="../../../bower_components/vaadin-text-field/src/vaadin-password-field.html">
 <link rel="import" href="../../../bower_components/vaadin-button/src/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-checkbox/src/vaadin-checkbox.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
@@ -151,6 +152,7 @@
                     <div class="login__layout">
                         <vaadin-text-field id="username" name="username" label="Email" autofocus required></vaadin-text-field>
                         <vaadin-password-field id="password" name="password" label="Пароль" required on-keydown="_onPasswordKeydown"></vaadin-password-field>
+                        <vaadin-checkbox id="remember-me" name="remember-me" checked="{{checkboxChecked}}">Запомнить</vaadin-checkbox>
                         <vaadin-button class="login__button" on-tap="login" theme="primary">Войти</vaadin-button>
                     </div>
                     <template is="dom-if" if="[[error]]">

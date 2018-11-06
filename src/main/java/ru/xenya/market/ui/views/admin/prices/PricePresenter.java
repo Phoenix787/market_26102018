@@ -75,11 +75,11 @@ public class PricePresenter {
                     price.changeDefault(currentUser, false);
                     priceService.save(currentUser, price);
                 }
-                view.showCreatedNotification();
+                view.showCreatedNotification("Прайс");
                 view.getGrid().setItems(updateList());
             } else {
                 addComment("Прайс изменён");
-                view.showUpdateNotification();
+                view.showUpdateNotification("Прайс # " + e.getId());
                 view.getGrid().setItems(updateList());
             }
             close();
@@ -96,8 +96,8 @@ public class PricePresenter {
 
     public void delete(){
         entityPresenter.delete(e->{
-            view.showDeleteNotification();
-            addComment("Прайс удалён");
+            view.showDeleteNotification("Прайс #" + e.getId());
+//            addComment("Прайс удалён");       //может добавить какую-то таблицу-сущность куда сохранять все изменения сделанные конкретным пользователем
             view.getGrid().setItems(updateList());
             closeSilently();
         });
@@ -127,6 +127,14 @@ public class PricePresenter {
         if (entityPresenter.executeUpdate(e -> priceService.addComment(currentUser, e, comment))) {
             // You can only add comments when in view mode, so reopening in that state.
             open(entityPresenter.getEntity(), false);
+        }
+    }
+
+    public void filter(String filter) {
+        if (filter != null && !filter.isEmpty()) {
+            view.getGrid().setItems(updateList(filter));
+        } else {
+            view.getGrid().setItems(updateList());
         }
     }
 }
