@@ -13,13 +13,13 @@ public enum OrderState {
     CONFIRMED{
         @Override
         public String toString() {
-            return "Подтвержденный";
+            return "Утвержден, ожидает оплаты";
         }
     },
     READY{
         @Override
         public String toString() {
-            return "Готовый";
+            return "Исполнен";
         }
     },
     PROBLEM {

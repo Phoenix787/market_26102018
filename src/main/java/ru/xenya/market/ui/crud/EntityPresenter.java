@@ -47,7 +47,7 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>>
                 onSuccess.execute(state.getEntity());
             }
         }, ()->{
-
+            view.getConfirmDialog().setOpened(false);
         });
     }
 

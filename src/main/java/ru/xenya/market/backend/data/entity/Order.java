@@ -31,11 +31,12 @@ public class Order extends AbstractEntity {
 //    @Valid
 //    private List<OrderItem> items;
 //    //множество позиций платежей
+
 //    //счет
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "fk_invoice_id", referencedColumnName = "invoice_id")
-//    private Invoice invoice;
-//
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn/*(name = "fk_invoice_id", referencedColumnName = "invoice_id")*/
+    private Invoice invoice;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderColumn
     @JoinColumn(name = "fk_oder_id")
@@ -57,6 +58,7 @@ public class Order extends AbstractEntity {
         this.orderState = OrderState.NEW;
         this.payment = Payment.CASH;
         this.dueDate = LocalDate.now();
+      //  this.invoice = new Invoice();
         setCustomer(customer);
         //this.items = new ArrayList<>();
         addHistoryItem(createdBy, "Заказ размещён");
@@ -65,6 +67,7 @@ public class Order extends AbstractEntity {
     public Order(User createdBy){
         this.orderState = OrderState.NEW;
         this.payment = Payment.CASH;
+      //  this.invoice = new Invoice();
         setCustomer(new Customer());
         addHistoryItem(createdBy, "Заказ размещен");
      //   this.items = new ArrayList<>();
@@ -127,6 +130,10 @@ public class Order extends AbstractEntity {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
+    public Invoice getInvoice() { return invoice; }
+
+    public void setInvoice(Invoice invoice) {this.invoice = invoice; }
 
     public void changeState(User user, OrderState orderState) {
         boolean createHistory = this.orderState != orderState && this.orderState != null && orderState != null;

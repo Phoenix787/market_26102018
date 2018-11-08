@@ -9,6 +9,7 @@
 <link rel="import" href="../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
 <link rel="import" href="../../../bower_components/vaadin-date-picker/src/vaadin-date-picker.html">
 <link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../../../bower_components/vaadin-checkbox/src/vaadin-checkbox.html">
 
 <link rel="import" href="../../components/buttons-bar.html">
 <link rel="import" href="../../components/utils-mixin.html">
@@ -16,10 +17,12 @@
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
+<link rel="import" href="invoice/invoice-editor.html">
+
 <dom-module id="order-editor">
 
     <template>
-        <style include="shared-style">
+<style include="shared-style">
             :host {
                     display: flex;
                     flex-direction: column;
@@ -43,54 +46,61 @@
                 width: 10em;
             }
         </style>
-
-        <div class=" scrollable flex1" id="main">
-            <h2 id="title">Новый заказ</h2>
-
-            <div class="meta-row" id="metaContainer">
-                <!--<vaadin-combo-box class="status" id="status">Статус</vaadin-combo-box>-->
-                <span class="dim">Заказ # <span id="orderNumber"></span></span>
-            </div>
-
-            <vaadin-form-layout id="form1">
-                <vaadin-form-layout id="form2">
-                    <vaadin-date-picker label="Дата заказа" id="dueDate"></vaadin-date-picker>
-                    <vaadin-combo-box id="status" label="Статус заказа">
-                        <iron-icon slot="prefix" iron="vaadin:clock"></iron-icon>
-                    </vaadin-combo-box>
-                    <vaadin-combo-box id="payment" label="Форма оплаты" colspan="2">
-                        <iron-icon slot="prefix" iron="vaadin:at"></iron-icon>
-                    </vaadin-combo-box>
-                </vaadin-form-layout>
-
-                <vaadin-form-layout id="form3" colspan="3">
-                    <vaadin-text-field id="customerName" label="Customer" colspan="2">
-                        <iron-icon slot="prefix" icon="vaadin:user"></iron-icon>
-                    </vaadin-text-field>
-                    <vaadin-text-field id="customerPhone" label="Phone number">
-                        <iron-icon slot="prefix" icon="vaadin:phone"></iron-icon>
-                    </vaadin-text-field>
-
-                    <vaadin-form-item colspan="3">
-                        <label slot="label">Products</label>
-                    </vaadin-form-item>
-                    <div id="itemsContainer" colspan="3"></div>
-                </vaadin-form-layout>
-
-            </vaadin-form-layout>
-        </div>
-
-        <!--<form-buttons-bar id="buttons"></form-buttons-bar>-->
-        <buttons-bar id="footer" no-scroll$="[[niScroll]]">
-            <vaadin-button slot="left" id="cancel">Отменить</vaadin-button>
-            <vaadin-button slot="left" id="delete" theme="error">Удалить</vaadin-button>
-            <div slot="info" class="total">Total [[totalPrice]]</div>
-            <vaadin-button slot="right" id="save" theme="primary">
-                Сохранить
-                <iron-icon icon="vaadin-arrow-right" slot="suffix"></iron-icon>
-            </vaadin-button>
-        </buttons-bar>
-    </template>
+<div class=" scrollable flex1" id="main">
+ <h2 id="title">Новый заказ</h2>
+ <div class="meta-row" id="metaContainer">
+  <!--<vaadin-combo-box class="status" id="status">Статус</vaadin-combo-box>-->
+  <span class="dim">Заказ # <span id="orderNumber"></span></span>
+ </div>
+ <vaadin-form-layout id="form1">
+  <vaadin-form-layout id="form2">
+   <vaadin-date-picker label="Дата заказа" id="dueDate"></vaadin-date-picker>
+   <vaadin-combo-box id="status" label="Статус заказа">
+    <iron-icon slot="prefix" iron="vaadin:clock"></iron-icon>
+   </vaadin-combo-box>
+   <vaadin-combo-box id="payment" label="Форма оплаты" colspan="2">
+    <iron-icon slot="prefix" iron="vaadin:at"></iron-icon>
+   </vaadin-combo-box>
+   <vaadin-form-item>
+    <label slot="label">Счет</label>
+   </vaadin-form-item>
+   <div id="invoiceContainer">
+    <vaadin-checkbox id="needInvoice">
+     Ввести счет
+    </vaadin-checkbox>
+   </div>
+  </vaadin-form-layout>
+  <vaadin-form-layout id="form3" colspan="3">
+   <vaadin-text-field id="customerName" label="Customer" colspan="2">
+    <iron-icon slot="prefix" icon="vaadin:user"></iron-icon>
+   </vaadin-text-field>
+   <vaadin-text-field id="customerPhone" label="Phone number">
+    <iron-icon slot="prefix" icon="vaadin:phone"></iron-icon>
+   </vaadin-text-field>
+   <vaadin-form-item colspan="3">
+    <label slot="label">Products</label>
+   </vaadin-form-item>
+   <div id="itemsContainer" colspan="3"></div>
+  </vaadin-form-layout>
+ </vaadin-form-layout>
+</div>
+<!--<form-buttons-bar id="buttons"></form-buttons-bar>-->
+<buttons-bar id="footer" no-scroll$="[[niScroll]]">
+ <vaadin-button slot="left" id="cancel">
+   Отменить 
+ </vaadin-button>
+ <vaadin-button slot="left" id="delete" theme="error">
+   Удалить 
+ </vaadin-button>
+ <div slot="info" class="total">
+   Total [[totalPrice]] 
+ </div>
+ <vaadin-button slot="right" id="save" theme="primary">
+   Сохранить 
+  <iron-icon icon="vaadin-arrow-right" slot="suffix"></iron-icon>
+ </vaadin-button>
+</buttons-bar>
+</template>
 
     <script>
         class OrderEditor extends window.ScrollShadowMixin(Polymer.Element) {

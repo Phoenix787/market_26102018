@@ -168,7 +168,9 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     }
 
     public void save() {
+
         currentOrder = entityPresenter.getEntity();
+
         //Order order = view.getForm().getBinder().getBean();
         try {
             view.write(currentOrder);

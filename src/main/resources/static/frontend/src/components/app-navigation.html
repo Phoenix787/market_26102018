@@ -13,6 +13,11 @@
             }
 
             .toolbar {
+                display: flex;
+                justify-content: center;
+                background-color: var(--lumo-base-color);
+                align-items: center;
+                position: relative;
             }
 
             vaadin-tab {
@@ -22,6 +27,7 @@
             }
 
             .branding {
+                display:none;
             }
 
             .navigation-tabs a {
@@ -30,6 +36,14 @@
             @media(min-width: 600px) {
             }
             @media(min-width: 1000px) {
+            .branding {
+                display: block;
+                font-size: var(--lumo-font-size-m);
+                line-height: normal;
+                position: absolute;
+                left: 0;
+                padding-left: var(--lumo-space-m);
+            }
             }
         </style>
 

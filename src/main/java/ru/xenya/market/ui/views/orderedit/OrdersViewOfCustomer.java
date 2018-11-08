@@ -105,7 +105,7 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
     private void setupGrid() {
         LocalDateToStringEncoder dateConverter = new LocalDateToStringEncoder();
         grid.setHeight("100vh");
-        grid.addColumn(Order::getId).setWidth("50px").setFlexGrow(0);
+        grid.addColumn(Order::getId).setWidth("80px").setFlexGrow(0);
         grid.addColumn(new LocalDateRenderer<>(Order::getDueDate,
                 DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Дата заказа").setFlexGrow(5);
         grid.addColumn(Order::getOrderState).setWidth("150px").setHeader("Статус").setFlexGrow(5);

@@ -1,9 +1,11 @@
 package ru.xenya.market.ui.views.orderedit;
 
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HasText;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -26,6 +28,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.entity.Customer;
+import ru.xenya.market.backend.data.entity.Invoice;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.Payment;
 import ru.xenya.market.backend.data.entity.User;
@@ -36,10 +39,16 @@ import ru.xenya.market.ui.events.CancelEvent;
 import ru.xenya.market.ui.events.DeleteEvent;
 import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.FormattingUtils;
+import ru.xenya.market.ui.utils.TemplateUtils;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
+import ru.xenya.market.ui.views.orderedit.invoice.InvoiceEditor;
+import ru.xenya.market.ui.views.orderedit.invoice.NewInvoiceEvent;
+import ru.xenya.market.ui.views.orderedit.invoice.ValueChangeEvent;
 
 //todo
 
+import java.awt.*;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -69,16 +78,22 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     @Id("orderNumber")
     private Span orderNumber;
+
     @Id("status")
     private ComboBox<OrderState> status;
+
     @Id("dueDate")
     private DatePicker dueDate;
+
     @Id("payment")
     private ComboBox<Payment> payment;
+
     @Id("customerName")
     private TextField customerName;
+
     @Id("customerPhone")
     private TextField customerPhone;
+
     @Id("cancel")
     private Button cancel;
     @Id("save")
@@ -89,11 +104,19 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     @Id("itemsContainer")
     private Div itemsContainer;
 
+    @Id("needInvoice")
+    private Checkbox needInvoice;
+
+    @Id("invoiceContainer")
+    private Div invoiceContainer;
+
 
 //    @Id("buttons")
 //    private FormButtonsBar buttons;
 
 //    private OrderItemsEditor itemsEditor;
+
+    private InvoiceEditor invoiceEditor;
 
     private User currentUser;
     private Order currentOrder;
@@ -109,9 +132,12 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     public OrderEditor() {
 
 ////        itemsEditor = new OrderItemsEditor()
-////        itemsContainer.addClassName(itemsEditor);
+////        itemsContainer.add(itemsEditor);
 //        customerName.setEnabled(false);
 //        customerPhone.setEnabled(false);
+
+        invoiceEditor = new InvoiceEditor();
+
         cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
         save.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
         delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
@@ -127,20 +153,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
                     o.changeState(currentUser, s);
                 });
 
-        dueDate.setI18n(new DatePicker.DatePickerI18n()
-                .setWeek("неделя")
-                .setCalendar("календарь")
-                .setToday("сегодня")
-                .setCancel("отмена")
-                .setFirstDayOfWeek(1)
-                .setMonthNames(Arrays.asList("январь", "февраль", "март",
-                        "апрель", "май", "июнь",
-                        "июль", "август", "сентябрь",
-                        "октябрь", "ноябрь", "декабрь"))
-                .setWeekdays(
-                        Arrays.asList("воскресенье", "понедельник", "вторник",
-                                "среда", "четверг", "пятница", "суббота"))
-                .setWeekdaysShort(Arrays.asList("вс", "пн", "вт", "ср", "чт", "пт", "сб")));
+        dueDate.setI18n(TemplateUtils.setupDatePicker());
         dueDate.setLocale(Locale.UK);
         dueDate.setRequired(true);
         binder.bind(dueDate, "dueDate");
@@ -150,15 +163,22 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         binder.bind(payment, "payment");
         payment.setRequired(true);
 
+        needInvoice.addValueChangeListener(e -> addInvoice(e.getValue()));
+        binder.bind(invoiceEditor, "invoice");
+
         binder.bind(customerName, "customer.fullName");
         binder.bind(customerPhone, "customer.phoneNumbers");
 
         if (currentOrder != null) {
-
             customerName.setValue(binder.getBean().getCustomer().getFullName());
             customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
+
+            if (currentOrder.getInvoice() != null) {
+                invoiceEditor.setCurrentInvoice(currentOrder.getInvoice());
+            }
         }
 
+        ComponentUtil.addListener(invoiceEditor, ValueChangeEvent.class, e -> save.setEnabled(true));
 //
 ////        itemsEditor.setRequiredIndicatorVisible(true);
 ////        binder.bind(itemsEditor, "items");
@@ -167,9 +187,15 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     }
 
+    private void addInvoice(Boolean value) {
+        invoiceEditor.setInvoiceEnabled(value);
+    }
 
     public void close(){
+
         setTotalPrice(0);
+        invoiceEditor.clear();
+
     }
 
     public boolean hasChanges() {
@@ -177,6 +203,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     }
 
     public void write(Order order) throws ValidationException {
+
         binder.writeBean(order);
     }
 
@@ -184,6 +211,15 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     public void read(Order order, boolean isNew) {
         if (isNew) {
             order.setCustomer(currentCustomer);
+        }
+        if (order.getInvoice() != null){
+            needInvoice.setValue(true);
+        }
+
+        if (needInvoice.getValue()) {
+            createInvoice(order.getInvoice());
+        } else {
+            createInvoice(null);
         }
 
         binder.setBean(order);
@@ -196,11 +232,19 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         customerName.setValue(order.getCustomer().getFullName());
         customerPhone.setValue(order.getCustomer().getPhoneNumbers());
 
+
         if (order.getOrderState() != null) {
             getModel().setStatus(order.getOrderState().name());
         }
 
 //        save.setEnabled(false);
+    }
+
+    private void createInvoice(Invoice invoice) {
+        invoiceContainer.add(invoiceEditor);
+        invoiceEditor.addInvoiceDateListener(e->invoiceDateChange(invoiceEditor, e.getDate()));
+        invoiceEditor.addInvoiceNumberListener(e -> invoiceNumberChange(invoiceEditor, e.getNumber()));
+        invoiceEditor.setValue(invoice);
     }
 
     private void save(){
@@ -264,8 +308,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
                 });
         dueDate.setRequired(true);
         binder.bind(dueDate, "dueDate");
-//        //todo для поля дата установить валидатор
-//
         payment.setItemLabelGenerator(createItemLabelGenerator(Payment::name));
         payment.setDataProvider(DataProvider.ofItems(Payment.values()));
         binder.bind(payment, "payment");
@@ -273,6 +315,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
         binder.bind(customerName, "customer.fullName");
         binder.bind(customerPhone, "customer.phoneNumbers");
+
+//        binder.bind(invoiceDate, "invoice.dateInvoice");
+//        binder.bind(invoiceNumber, "invoice.numberInvoice");
 
         if (currentOrder != null) {
 
@@ -289,12 +334,30 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     public void clear() {
         binder.readBean(null);
+        invoiceEditor.setValue(null);
+        needInvoice.setValue(false);
+
+
 //        itemsEditor.setValue(null);
     }
 
 
 
+    private void invoiceDateChange(InvoiceEditor editor, LocalDate value) {
+        if (editor.getCurrentInvoice() == null) {
+            Invoice invoice = new Invoice();
+            editor.setCurrentInvoice(invoice);
+            invoice.setDateInvoice(value);
+            invoice.setNumberInvoice("");
+            editor.setValue(invoice);
+        }
+    }
 
+    private void invoiceNumberChange(InvoiceEditor editor,String value) {
+        editor.setHasChanges(true);
+        editor.getCurrentInvoice().setNumberInvoice(value);
+        editor.setValue(editor.getCurrentInvoice());
+    }
 
     //    private DatePicker dueDate;
 //    private ComboBox<Payment> payment;

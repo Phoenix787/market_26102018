@@ -131,7 +131,8 @@ public class PriceItemEditor extends PolymerTemplate<PriceItemEditor.Model>
     }
 
     public Stream<HasValue<?,?>> validate(){
-        return binder.validate().getFieldValidationErrors().stream().map(BindingValidationStatus::getField);
+        return binder.validate().getFieldValidationErrors().stream()
+                .map(BindingValidationStatus::getField);
     }
 
     public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {

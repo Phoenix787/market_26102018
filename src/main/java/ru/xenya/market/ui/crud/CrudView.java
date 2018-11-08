@@ -87,7 +87,7 @@ public abstract class CrudView<E extends AbstractEntity, T extends TemplateModel
 
         getSearchBar().addActionClickListener(e -> getPresenter().createNew());
         getSearchBar().addFilterChangeListener(e->getPresenter().filter(getSearchBar().getFilter()));
-        getSearchBar().setActionText("Новый клиент");
+        getSearchBar().setActionText("Добавить");
         getBinder().addValueChangeListener(e -> getPresenter().onValueChange(isDirty()));
     }
 

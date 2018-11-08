@@ -31,6 +31,7 @@ public class CrudEntityPresenter<T extends AbstractEntity> extends EntityPresent
 
     public void closeSilently() {
         close();
+        getView().getConfirmDialog().setOpened(false);
         getView().closeDialog();
     }
 

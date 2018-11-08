@@ -1,0 +1,33 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-layout.html">
+<link rel="import" href="../../../../bower_components/vaadin-date-picker/src/vaadin-date-picker.html">
+<link rel="import" href="../../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
+
+<dom-module id="invoice-editor">
+    <template>
+<style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+<vaadin-form-layout colspan="" style="width=100%">
+ <vaadin-date-picker id="invoiceDate" label="Дата счета"></vaadin-date-picker>
+ <vaadin-text-field id="invoiceNumber" label="№ счета"></vaadin-text-field>
+</vaadin-form-layout>
+</template>
+
+    <script>
+        class InvoiceEditor extends Polymer.Element {
+            static get is() {
+                return 'invoice-editor';
+            }
+
+            static get properties() {
+                return {
+                    // Declare your properties here.
+                };
+            }
+        }
+        customElements.define(InvoiceEditor.is, InvoiceEditor);
+    </script>
+</dom-module>

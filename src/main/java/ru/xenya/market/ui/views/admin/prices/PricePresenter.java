@@ -44,7 +44,7 @@ public class PricePresenter {
         view.getForm().setCurrentUser(currentUser);
         view.getForm().addCancelListener(e -> cancel());
         view.getForm().addSaveListener(e -> save());
-        view.getForm().addDeleteListener(e->delete());
+        view.getForm().addDeleteListener(e -> delete());
     }
 
 
