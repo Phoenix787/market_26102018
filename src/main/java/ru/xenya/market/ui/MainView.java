@@ -54,11 +54,10 @@ public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
         if (SecurityUtils.isAccessGranted(PricesView.class)){
             pages.add(new PageInfo(PAGE_PRODUCTS, ICON_PRODUCTS, TITLE_PRODUCTS));
         }
-//        pages.add(new PageInfo(PAGE_PRODUCTS, ICON_PRODUCTS, TITLE_PRODUCTS));
-//        pages.add(new PageInfo(PAGE_USERS, ICON_USERS, TITLE_USERS));
         if (SecurityUtils.isAccessGranted(UserView.class)){
             pages.add(new PageInfo(PAGE_USERS, ICON_USERS, TITLE_USERS));
         }
+        pages.add(new PageInfo(PAGE_SETTINGS, ICON_SETTINGS, TITLE_SETTINGS));
         pages.add(new PageInfo(PAGE_LOGOUT, ICON_LOGOUT, TITLE_LOGOUT));
         appNavigation.init(pages, PAGE_DEFAULT, PAGE_LOGOUT);
        // add(appNavigation);

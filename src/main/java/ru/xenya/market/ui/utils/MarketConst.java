@@ -15,6 +15,7 @@ public class MarketConst {
     public static final String PAGE_USERS = "users";
     public static final String PAGE_PRODUCTS = "products";
     public static final String PAGE_PRODUCTS_EDIT = "products/edit";
+    public static final String PAGE_SETTINGS = "settings";
     public static final String PAGE_LOGOUT = "logout";
     public static final String PAGE_DEFAULT = PAGE_STOREFRONT;
 
@@ -22,12 +23,14 @@ public class MarketConst {
     public static final String ICON_CUSTOMERS = "group";
     public static final String ICON_USERS = "users";
     public static final String ICON_PRODUCTS = "calendar";
+    public static final String ICON_SETTINGS = "cog-o";
     public static final String ICON_LOGOUT = "arrow-right";
 
     public static final String TITLE_STOREFRONT = "Заказы";
     public static final String TITLE_CUSTOMERS = "Контрагенты";
     public static final String TITLE_USERS = "Пользователи";
     public static final String TITLE_PRODUCTS = "Прайс";
+    public static final String TITLE_SETTINGS = "Настройки";
     public static final String TITLE_LOGOUT = "Выход";
     public static final String TITLE_NOT_FOUND = "Страница не найдена";
 

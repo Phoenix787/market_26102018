@@ -21,17 +21,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static ru.xenya.market.ui.utils.MarketConst.APP_LOCALE;
 
 @Service
 public class ScheduleDatesService{
 
     private ScheduleDatesRepository repository;
-
-//    private Map<Integer, String> weekDays = Collections.unmodifiableMap(new HashMap<Integer, String>(){{
-//        put(1, "Понедельник"); put(2, "Вторник"); put(3, "Среда");
-//        put(4, "Четверг"); put(5, "Пятница"); put(6, "Суббота"); put(7, "Воскресенье");
-//    }});
-
 
     @Autowired
     public ScheduleDatesService(ScheduleDatesRepository repository) {
@@ -39,24 +34,20 @@ public class ScheduleDatesService{
     }
 
 
-
     public void createNew(LocalDate start, LocalDate end) {
-      //  long daysBetween = DAYS.between(start, end);
-        Period period = Period.between(start, end);
 
-        LocalDate current = start;
-        for (int i = 0; i < period.getDays(); i++) {
-            if (current.getDayOfWeek() == DayOfWeek.TUESDAY ||
-                    current.getDayOfWeek() == DayOfWeek.THURSDAY ||
-                    current.getDayOfWeek() == DayOfWeek.SATURDAY) {
-                //String nameDay = weekDays.get(start.getDayOfWeek().getValue());
-                repository.save(new ScheduleDates(current,
-                        current.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("ru"))));
-               current = current.plusDays(i++);
+        while (!start.isAfter(end)) {
+            System.out.println(start);
+            if (start.getDayOfWeek() == DayOfWeek.TUESDAY ||
+                    start.getDayOfWeek() == DayOfWeek.THURSDAY ||
+                    start.getDayOfWeek() == DayOfWeek.SATURDAY) {
+                repository.save(new ScheduleDates(start, start.getDayOfWeek().getDisplayName(TextStyle.FULL, APP_LOCALE)));
 
             }
-        }
+            start = start.plusDays(1);
 
+
+        }
     }
 
 
