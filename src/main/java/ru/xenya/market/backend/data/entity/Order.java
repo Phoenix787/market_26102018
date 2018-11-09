@@ -16,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Order extends AbstractEntity {
 
-  //  @Temporal(TemporalType.TIMESTAMP)
     @NotNull(message = "{market.due.dueDate.required}")
     private LocalDate dueDate;
 

@@ -27,10 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import ru.xenya.market.backend.data.OrderState;
+import ru.xenya.market.backend.data.Payment;
 import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Invoice;
 import ru.xenya.market.backend.data.entity.Order;
-import ru.xenya.market.backend.data.Payment;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.ui.components.FormButtonsBar;
 import ru.xenya.market.ui.crud.CrudView.CrudForm;
@@ -42,17 +42,14 @@ import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.TemplateUtils;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 import ru.xenya.market.ui.views.orderedit.invoice.InvoiceEditor;
-import ru.xenya.market.ui.views.orderedit.invoice.NewInvoiceEvent;
 import ru.xenya.market.ui.views.orderedit.invoice.ValueChangeEvent;
 
-//todo
-
-import java.awt.*;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Locale;
 
 import static ru.xenya.market.ui.dataproviders.DataProviderUtils.createItemLabelGenerator;
+
+//todo orderitem
 
 @Tag("order-editor")
 @HtmlImport("src/views/orderedit/order-editor.html")
@@ -62,71 +59,46 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         implements CrudForm<Order> /*AbstractEditorDialog<Order>*/ {
 
 
-
-
-    public interface Model extends TemplateModel{
-        void setTotalPrice(String totalPrice);
-
-        void setStatus(String status);
-    }
-
     @Id("title")
     private H2 title;
-
     @Id("metaContainer")
     private Div metaContainer;
-
     @Id("orderNumber")
     private Span orderNumber;
-
     @Id("status")
     private ComboBox<OrderState> status;
-
     @Id("dueDate")
     private DatePicker dueDate;
-
     @Id("payment")
     private ComboBox<Payment> payment;
-
     @Id("customerName")
     private TextField customerName;
-
     @Id("customerPhone")
     private TextField customerPhone;
-
     @Id("cancel")
     private Button cancel;
     @Id("save")
     private Button save;
     @Id("delete")
     private Button delete;
-
     @Id("itemsContainer")
     private Div itemsContainer;
-
     @Id("needInvoice")
     private Checkbox needInvoice;
-
     @Id("invoiceContainer")
     private Div invoiceContainer;
+    private InvoiceEditor invoiceEditor;
 
 
 //    @Id("buttons")
 //    private FormButtonsBar buttons;
 
 //    private OrderItemsEditor itemsEditor;
-
-    private InvoiceEditor invoiceEditor;
-
     private User currentUser;
     private Order currentOrder;
     private Customer currentCustomer;
-
     private BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
-
     private LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
-
-
 
     @Autowired
     public OrderEditor() {
@@ -145,11 +117,11 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         status.setItemLabelGenerator(createItemLabelGenerator(OrderState::toString));
         status.setDataProvider(DataProvider.ofItems(OrderState.values()));
         status.addValueChangeListener(
-                e->getModel().setStatus(DataProviderUtils.convertIfNotNull(e.getValue(), OrderState::toString)));
+                e -> getModel().setStatus(DataProviderUtils.convertIfNotNull(e.getValue(), OrderState::toString)));
 
         binder.forField(status)
                 .withValidator(new BeanValidator(Order.class, "orderState"))
-                .bind(Order::getOrderState, (o, s)->{
+                .bind(Order::getOrderState, (o, s) -> {
                     o.changeState(currentUser, s);
                 });
 
@@ -157,7 +129,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         dueDate.setLocale(Locale.UK);
         dueDate.setRequired(true);
         binder.bind(dueDate, "dueDate");
-//
+
         payment.setItemLabelGenerator(createItemLabelGenerator(Payment::toString));
         payment.setDataProvider(DataProvider.ofItems(Payment.values()));
         binder.bind(payment, "payment");
@@ -191,7 +163,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         invoiceEditor.setInvoiceEnabled(value);
     }
 
-    public void close(){
+    public void close() {
 
         setTotalPrice(0);
         invoiceEditor.clear();
@@ -207,12 +179,11 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         binder.writeBean(order);
     }
 
-
     public void read(Order order, boolean isNew) {
         if (isNew) {
             order.setCustomer(currentCustomer);
         }
-        if (order.getInvoice() != null){
+        if (order.getInvoice() != null) {
             needInvoice.setValue(true);
         }
 
@@ -224,7 +195,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
         binder.setBean(order);
         System.err.println("from orderEditor->read: " + order);
-      //  binder.readBean(order);
         this.orderNumber.setText(isNew ? "" : order.getId().toString());
 
         title.setVisible(isNew);
@@ -242,13 +212,17 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     private void createInvoice(Invoice invoice) {
         invoiceContainer.add(invoiceEditor);
-        invoiceEditor.addInvoiceDateListener(e->invoiceDateChange(invoiceEditor, e.getDate()));
+        invoiceEditor.addInvoiceDateListener(e -> invoiceDateChange(invoiceEditor, e.getDate()));
         invoiceEditor.addInvoiceNumberListener(e -> invoiceNumberChange(invoiceEditor, e.getNumber()));
         invoiceEditor.setValue(invoice);
     }
 
-    private void save(){
+    private void save() {
         Notification.show("Save click");
+    }
+
+    public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
+        return addListener(SaveEvent.class, listener);
     }
 
 
@@ -258,16 +232,11 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 //                    .map(BindingValidationStatus::getField);
 //    public Stream<HasValue<?, ?>> validate() {
 //        return Stream.concat(errorFields, itemsEditor.validate());
- //   }
-
-    public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
-        return addListener(SaveEvent.class, listener);
-    }
+    //   }
 
     public Registration addCancelListener(ComponentEventListener<CancelEvent> listener) {
         return addListener(CancelEvent.class, listener);
     }
-
 
     public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
         return addListener(DeleteEvent.class, listener);
@@ -285,14 +254,14 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         this.currentOrder = currentOrder;
     }
 
-//    private boolean hasChanges(){
-//        return getBinder().hasChanges();     // itemEditor.hasChanges();
-//    }
-
     @Override
     public FormButtonsBar getButtons() {
         return null;
     }
+
+//    private boolean hasChanges(){
+//        return getBinder().hasChanges();     // itemEditor.hasChanges();
+//    }
 
     @Override
     public HasText getTitle() {
@@ -301,9 +270,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     @Override
     public void setBinder(BeanValidationBinder<Order> binder) {
-       binder.forField(status)
+        binder.forField(status)
                 .withValidator(new BeanValidator(Order.class, "orderState"))
-                .bind(Order::getOrderState, (o, s)->{
+                .bind(Order::getOrderState, (o, s) -> {
                     o.changeState(currentUser, s);
                 });
         dueDate.setRequired(true);
@@ -328,8 +297,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     public void setCurrentCustomer(Customer currentCustomer) {
         this.currentCustomer = currentCustomer;
-
-       // customerName.setValue(currentCustomer.getFullName());
     }
 
     public void clear() {
@@ -341,8 +308,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 //        itemsEditor.setValue(null);
     }
 
-
-
     private void invoiceDateChange(InvoiceEditor editor, LocalDate value) {
         if (editor.getCurrentInvoice() == null) {
             Invoice invoice = new Invoice();
@@ -353,10 +318,16 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         }
     }
 
-    private void invoiceNumberChange(InvoiceEditor editor,String value) {
+    private void invoiceNumberChange(InvoiceEditor editor, String value) {
         editor.setHasChanges(true);
         editor.getCurrentInvoice().setNumberInvoice(value);
         editor.setValue(editor.getCurrentInvoice());
+    }
+
+    public interface Model extends TemplateModel {
+        void setTotalPrice(String totalPrice);
+
+        void setStatus(String status);
     }
 
     //    private DatePicker dueDate;

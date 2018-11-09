@@ -1,0 +1,44 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/vaadin-button/src/vaadin-button.html">
+<link rel="import" href="../../../../bower_components/vaadin-item/src/vaadin-item.html">
+<link rel="import" href="../../../../bower_components/vaadin-dialog/src/vaadin-dialog.html">
+
+<dom-module id="settings-view">
+    <template>
+<style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+<h4>Настройки</h4>
+<div style="width: 100%; height: 100%;">
+ <label style="padding-right: 1em;">Сформировать график выходов газеты</label>
+ <vaadin-button id="scheduleButton">
+  Сформировать
+ </vaadin-button>
+ <vaadin-dialog id="dialog">
+  <template>
+   <div>
+     Content 
+   </div>
+  </template>
+ </vaadin-dialog>
+</div>
+<vaadin-item></vaadin-item>
+</template>
+
+    <script>
+        class SettingsView extends Polymer.Element {
+            static get is() {
+                return 'settings-view';
+            }
+
+            static get properties() {
+                return {
+                    // Declare your properties here.
+                };
+            }
+        }
+        customElements.define(SettingsView.is, SettingsView);
+    </script>
+</dom-module>

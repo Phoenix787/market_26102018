@@ -26,8 +26,6 @@ import java.util.Objects;
 public class InvoiceEditor extends PolymerTemplate<TemplateModel>
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<InvoiceEditor, Invoice>, Invoice> {
 
-    //    @Id("check")
-//    private Checkbox check;
     @Id("invoiceDate")
     private DatePicker invoiceDate;
 
@@ -46,8 +44,6 @@ public class InvoiceEditor extends PolymerTemplate<TemplateModel>
         this.fieldSupport = new AbstractFieldSupport<>(this, null,
                 Objects::equals, c->{} );
 
-     //   check.addValueChangeListener(e -> addInvoice(e.getValue()));
-
         invoiceDate.addValueChangeListener(e ->
                 fireEvent(new InvoiceDateEvent(this, e.getValue())));
 
@@ -61,35 +57,8 @@ public class InvoiceEditor extends PolymerTemplate<TemplateModel>
         binder.bind(invoiceNumber, "numberInvoice");
     }
 
-//    private void invoiceNumberChange(String value) {
-//        setHasChanges(true);
-//        currentInvoice.setNumberInvoice(value);
-//        binder.setBean(currentInvoice);
-//        setValue(currentInvoice);
-//        fireEvent(new NewInvoiceEvent(this));
-//    }
-
-//    private void invoiceDateChange(LocalDate value) {
-//        System.err.println(value == null ? "-----date value = null" : "date value not null");
-//        if (check.getValue() && value == null) {
-//            Invoice invoice = new Invoice();
-//            this.currentInvoice = invoice;
-//            invoice.setDateInvoice(value);
-//            binder.setBean(invoice);
-//            setValue(invoice);
-//            fireEvent(new NewInvoiceEvent(this));
-//        } else if (check.getValue() && currentInvoice != null){
-//            binder.setBean(currentInvoice);
-//            setValue(currentInvoice);
-//            fireEvent(new NewInvoiceEvent(this));
-//        }
-//
-//    }
-
     @Override
     public void setValue(Invoice value) {
-        System.err.println(value == null ? "--------value = null" : "----------value not null");
-
         fieldSupport.setValue(value);
         binder.setBean(value);
         boolean noDateSelected = value == null || value.getDateInvoice() == null;
@@ -123,7 +92,6 @@ public class InvoiceEditor extends PolymerTemplate<TemplateModel>
 
     public void setInvoiceEnabled(Boolean value) {
         invoiceDate.setEnabled(value);
-        //invoiceNumber.setEnabled(value);
     }
 
     public Invoice getCurrentInvoice() {
@@ -166,10 +134,5 @@ public class InvoiceEditor extends PolymerTemplate<TemplateModel>
     public Registration addInvoiceNumberListener(ComponentEventListener<InvoiceNumberEvent> listener) {
         return addListener(InvoiceNumberEvent.class, listener);
     }
-
-    public void clear() {
-      //  check.setValue(false);
-    }
-
 
 }

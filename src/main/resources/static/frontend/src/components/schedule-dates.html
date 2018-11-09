@@ -1,0 +1,35 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/vaadin-date-picker/src/vaadin-date-picker.html">
+<link rel="import" href="../../bower_components/vaadin-button/src/vaadin-button.html">
+
+<dom-module id="schedule-dates">
+    <template>
+<style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+<div style="width: 100%; height: 100%;">
+ <vaadin-date-picker id="start" label="Начало периода"></vaadin-date-picker>
+ <vaadin-date-picker id="end" label="Конец периода"></vaadin-date-picker>
+</div>
+<vaadin-button id="save" theme="primary" autofocus>
+ Заполнить
+</vaadin-button>
+</template>
+
+    <script>
+        class ScheduleDates extends Polymer.Element {
+            static get is() {
+                return 'schedule-dates';
+            }
+
+            static get properties() {
+                return {
+                    // Declare your properties here.
+                };
+            }
+        }
+        customElements.define(ScheduleDates.is, ScheduleDates);
+    </script>
+</dom-module>
