@@ -43,6 +43,7 @@ import ru.xenya.market.ui.utils.TemplateUtils;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 import ru.xenya.market.ui.views.orderedit.invoice.InvoiceEditor;
 import ru.xenya.market.ui.views.orderedit.invoice.ValueChangeEvent;
+import ru.xenya.market.ui.views.orderedit.orderitem.OrderItemsView;
 
 import java.time.LocalDate;
 import java.util.Locale;
@@ -73,8 +74,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private ComboBox<Payment> payment;
     @Id("customerName")
     private TextField customerName;
-    @Id("customerPhone")
-    private TextField customerPhone;
+//    @Id("customerPhone")
+//    private TextField customerPhone;
     @Id("cancel")
     private Button cancel;
     @Id("save")
@@ -89,6 +90,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private Div invoiceContainer;
     private InvoiceEditor invoiceEditor;
 
+    private OrderItemsView orderItemsView;
+
 
 //    @Id("buttons")
 //    private FormButtonsBar buttons;
@@ -102,9 +105,10 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     @Autowired
     public OrderEditor() {
-
+        this.orderItemsView = new OrderItemsView();
 ////        itemsEditor = new OrderItemsEditor()
-////        itemsContainer.add(itemsEditor);
+//        itemsContainer.add(itemsEditor);
+        itemsContainer.add(orderItemsView);
 //        customerName.setEnabled(false);
 //        customerPhone.setEnabled(false);
 
@@ -139,11 +143,11 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         binder.bind(invoiceEditor, "invoice");
 
         binder.bind(customerName, "customer.fullName");
-        binder.bind(customerPhone, "customer.phoneNumbers");
+//        binder.bind(customerPhone, "customer.phoneNumbers");
 
         if (currentOrder != null) {
             customerName.setValue(binder.getBean().getCustomer().getFullName());
-            customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
+//            customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
 
             if (currentOrder.getInvoice() != null) {
                 invoiceEditor.setCurrentInvoice(currentOrder.getInvoice());
@@ -153,7 +157,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         ComponentUtil.addListener(invoiceEditor, ValueChangeEvent.class, e -> save.setEnabled(true));
 //
 ////        itemsEditor.setRequiredIndicatorVisible(true);
-////        binder.bind(itemsEditor, "items");
+        binder.bind(orderItemsView, "items");
+
 //
 //
 
@@ -200,7 +205,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         title.setVisible(isNew);
         metaContainer.setVisible(!isNew);
         customerName.setValue(order.getCustomer().getFullName());
-        customerPhone.setValue(order.getCustomer().getPhoneNumbers());
+//        customerPhone.setValue(order.getCustomer().getPhoneNumbers());
 
 
         if (order.getOrderState() != null) {
@@ -283,7 +288,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         payment.setRequired(true);
 
         binder.bind(customerName, "customer.fullName");
-        binder.bind(customerPhone, "customer.phoneNumbers");
+//        binder.bind(customerPhone, "customer.phoneNumbers");
 
 //        binder.bind(invoiceDate, "invoice.dateInvoice");
 //        binder.bind(invoiceNumber, "invoice.numberInvoice");
@@ -291,7 +296,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         if (currentOrder != null) {
 
             customerName.setValue(binder.getBean().getCustomer().getFullName());
-            customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
+//            customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
         }
     }
 

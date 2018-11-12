@@ -22,7 +22,7 @@ import java.time.LocalDate;
 @HtmlImport("src/components/schedule-dates.html")
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ScheduleDates extends PolymerTemplate<TemplateModel> {
+public class ScheduleDatesComponent extends PolymerTemplate<TemplateModel> {
 
     @Id("start")
     private DatePicker start;
@@ -34,7 +34,7 @@ public class ScheduleDates extends PolymerTemplate<TemplateModel> {
     private final ScheduleDatesService scheduleDatesService;
 
     @Autowired
-    public ScheduleDates(ScheduleDatesService scheduleDatesService) {
+    public ScheduleDatesComponent(ScheduleDatesService scheduleDatesService) {
         this.scheduleDatesService = scheduleDatesService;
 
         save.addClickListener(e -> createPeriod());
@@ -59,8 +59,8 @@ public class ScheduleDates extends PolymerTemplate<TemplateModel> {
         fireEvent(new ScheduleDatesEvent(this));
     }
 
-    public class ScheduleDatesEvent extends ComponentEvent<ScheduleDates> {
-        public ScheduleDatesEvent(ScheduleDates scheduleDates) {
+    public class ScheduleDatesEvent extends ComponentEvent<ScheduleDatesComponent> {
+        public ScheduleDatesEvent(ScheduleDatesComponent scheduleDates) {
             super(scheduleDates, false);
         }
     }

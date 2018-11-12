@@ -51,5 +51,7 @@ public class ScheduleDatesService{
     }
 
 
-
+    public List<ScheduleDates> findAll() {
+        return repository.findAll();
+    }
 }

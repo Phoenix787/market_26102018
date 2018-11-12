@@ -1,0 +1,36 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid.html">
+<link rel="import" href="../../../components/buttons-bar.html">
+<link rel="import" href="../../../../bower_components/vaadin-button/src/vaadin-button.html">
+
+<dom-module id="order-items-view">
+    <template>
+<style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+<vaadin-grid items="[[items]]" id="grid"></vaadin-grid>
+<vaadin-dialog id="dialog" on-open-changed="_onDialogOpen"></vaadin-dialog>
+<buttons-bar>
+ <vaadin-button id="add" slot="left">
+   Добавить 
+ </vaadin-button>
+</buttons-bar>
+</template>
+
+    <script>
+        class OrderItemsView extends Polymer.Element {
+            static get is() {
+                return 'order-items-view';
+            }
+
+            static get properties() {
+                return {
+                    // Declare your properties here.
+                };
+            }
+        }
+        customElements.define(OrderItemsView.is, OrderItemsView);
+    </script>
+</dom-module>

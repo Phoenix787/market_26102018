@@ -1,0 +1,101 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-layout.html">
+<link rel="import" href="../../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
+<link rel="import" href="../../../../bower_components/vaadin-item/src/vaadin-item.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid-column.html">
+<link rel="import" href="../../../components/buttons-bar.html">
+<link rel="import" href="../../../../bower_components/vaadin-button/src/vaadin-button.html">
+<link rel="import" href="../../../../bower_components/vaadin-radio-button/src/vaadin-radio-group.html">
+
+<dom-module id="order-items-editor">
+    <template>
+<style include="shared-styles">
+    :host {
+        <!--display: flex;
+        flex-direction: column;
+        flex: auto;-->
+        display: block;
+    }
+.meta-row {
+                display: flex;
+                justify-content: space-between;
+                padding-bottom: var(--lumo-space-s);
+            }
+
+ .block {
+
+    
+ }
+
+ .h5 {
+        margin-top: var(--lumo-space-m);
+        margin-bottom: var(--lumo-space-s);
+}
+
+
+</style>
+<div class="meta-row">
+ <vaadin-item>
+  <vaadin-combo-box items="[[items]]" id="pricePlan" label="План цен"></vaadin-combo-box>
+ </vaadin-item>
+</div>
+<div id="main" class="scrollable flex1">
+ <vaadin-form-layout id="form1">
+  <vaadin-form-layout id="form2">
+   <vaadin-combo-box id="service" label="Вид услуги"></vaadin-combo-box>
+   <vaadin-combo-box id="unit" label="Ед. изм."></vaadin-combo-box>
+   <vaadin-combo-box id="price" label="Цена"></vaadin-combo-box>
+   <h5 class="h5">Скидка</h5>
+   <vaadin-radio-group value="value" style="font-size: var(--lumo-font-size-xs);" id="discount"></vaadin-radio-group>
+  </vaadin-form-layout>
+  <vaadin-form-layout id="form3">
+   <label style="font-size: var(--lumo-font-size-xs);">Даты заказа</label>
+   <vaadin-grid id="grid" class="crud"></vaadin-grid>
+  </vaadin-form-layout>
+ </vaadin-form-layout>
+ <div id="selectedDates" style="width: 100%; height: 100%;"></div>
+ <buttons-bar>
+  <vaadin-button id="add" theme="primary" slot="left">
+    Добавить 
+  </vaadin-button>
+  <vaadin-button theme="error" slot="right" id="delete">
+    Удалить 
+  </vaadin-button>
+ </buttons-bar>
+</div>
+</template>
+
+    <script>
+        class OrderItemsEditor extends Polymer.Element {
+            static get is() {
+                return 'order-items-editor';
+            }
+
+            static get properties() {
+                return {
+                    // Declare your properties here.
+                };
+            }
+
+            ready() {
+        super.ready();
+
+        // Not using attributes since Designer does not support single-quote attributes
+        this.$.form1.responsiveSteps = [
+          {columns: 1, labelsPosition: 'top'},
+          {minWidth: '600px', columns: 4, labelsPosition: 'top'}
+        ];
+        this.$.form2.responsiveSteps = [
+          {columns: 1, labelsPosition: 'top'},
+          {minWidth: '360px', columns: 2, labelsPosition: 'top'}
+        ];
+        this.$.form3.responsiveSteps = [
+          {columns: 1, labelsPosition: 'top'},
+          {minWidth: '500px', columns: 3, labelsPosition: 'top'}
+        ];
+      }
+        }
+        customElements.define(OrderItemsEditor.is, OrderItemsEditor);
+    </script>
+</dom-module>

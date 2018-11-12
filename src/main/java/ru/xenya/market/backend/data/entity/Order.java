@@ -8,6 +8,7 @@ import ru.xenya.market.backend.data.Payment;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,12 +24,12 @@ public class Order extends AbstractEntity {
     private Payment payment;
 
 //    //множество позиций заказа
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-//    @OrderColumn
-//    @JoinColumn
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OrderColumn
+    @JoinColumn
 //    @NotEmpty
 //    @Valid
-//    private List<OrderItem> items;
+    private List<OrderItem> items;
 //    //множество позиций платежей
 
 //    //счет
@@ -59,7 +60,7 @@ public class Order extends AbstractEntity {
         this.dueDate = LocalDate.now();
       //  this.invoice = new Invoice();
         setCustomer(customer);
-        //this.items = new ArrayList<>();
+        this.items = new ArrayList<>();
         addHistoryItem(createdBy, "Заказ размещён");
     }
 
@@ -69,7 +70,7 @@ public class Order extends AbstractEntity {
       //  this.invoice = new Invoice();
         setCustomer(new Customer());
         addHistoryItem(createdBy, "Заказ размещен");
-     //   this.items = new ArrayList<>();
+        this.items = new ArrayList<>();
 
     }
 
@@ -98,13 +99,13 @@ public class Order extends AbstractEntity {
         this.payment = payment;
     }
 
-//    public List<OrderItem> getItems() {
-//        return items;
-//    }
-//
-//    public void setItems(List<OrderItem> items) {
-//        this.items = items;
-//    }
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+    }
 //
     public List<OrderHistoryItem> getHistory() {
         return history;

@@ -1,26 +1,31 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../../bower_components/vaadin-button/src/vaadin-button.html">
-<link rel="import" href="../../../../bower_components/vaadin-item/src/vaadin-item.html">
 <link rel="import" href="../../../../bower_components/vaadin-dialog/src/vaadin-dialog.html">
-
+<link rel="import" href="../../../../bower_components/vaadin-item/src/vaadin-item.html">
 <link rel="import" href="../../../components/schedule-dates.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid-column.html">
+
+<link rel="import" href="../../../../styles/shared-styles.html">
+
 
 <dom-module id="settings-view">
     <template>
 <style include="shared-styles">
-            :host {
-                display: block;
+           :host {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
             }
         </style>
-<h4>Настройки</h4>
-<div style="width: 100%; height: 100%;">
+<vaadin-item>
  <label style="padding-right: 1em;">Сформировать график выходов газеты</label>
  <vaadin-button id="scheduleButton">
-  Сформировать
+   Сформировать 
  </vaadin-button>
- <vaadin-dialog id="dialog"></vaadin-dialog>
-</div>
-<vaadin-item></vaadin-item>
+</vaadin-item>
+<vaadin-dialog id="dialog"></vaadin-dialog>
+<vaadin-grid id="grid" theme="crud""></vaadin-grid>
 </template>
 
     <script>
@@ -34,6 +39,24 @@
                     // Declare your properties here.
                 };
             }
+
+            ready() {
+        super.ready();
+
+        // There is no way for theming the dialog-overlay but using private API
+        this.$.dialog.$.overlay.setAttribute('theme', 'middle');
+
+        // This code is needed to measure the page load performance and can be safely removed
+        // if there is no need for that.
+        const grid = this.$.grid;
+        const listener = () => {
+          if (!grid.loading && window.performance.mark) {
+            window.performance.mark('market-page-loaded');
+            grid.removeEventListener('loading-changed', listener);
+          }
+        };
+        grid.addEventListener('loading-changed', listener);
+      }
         }
         customElements.define(SettingsView.is, SettingsView);
     </script>

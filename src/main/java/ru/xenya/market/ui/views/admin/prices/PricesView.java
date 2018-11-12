@@ -106,7 +106,6 @@ public class PricesView extends PolymerTemplate<TemplateModel>
                 .setHeader("Дата")
                 .setWidth("100px")
                 .setFlexGrow(10);
-        //todo вставить поле с checkbox
         grid.addColumn(new ComponentRenderer<>(Div::new,
                 (div, price) -> div.setText(price.isDefaultPrice() ? "По умолчанию" : ""))).setHeader("Статус")
         .setWidth("100px").setFlexGrow(5);

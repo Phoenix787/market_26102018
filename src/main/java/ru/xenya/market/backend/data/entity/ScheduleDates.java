@@ -17,4 +17,20 @@ public class ScheduleDates extends AbstractEntity {
         this.date = date;
         this.weekDay = weekDay;
     }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String getWeekDay() {
+        return weekDay;
+    }
+
+    public void setWeekDay(String weekDay) {
+        this.weekDay = weekDay;
+    }
 }
