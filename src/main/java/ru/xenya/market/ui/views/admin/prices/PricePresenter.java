@@ -70,11 +70,10 @@ public class PricePresenter {
     public void save() {
         entityPresenter.save(e->{
             if (entityPresenter.isNew()) {
-                List<Price> prices = priceService.findPricesByDefault(true);
-                for (Price price : prices) {
-                    price.changeDefault(currentUser, false);
-                    priceService.save(currentUser, price);
-                }
+                Price price = priceService.findPriceByDefault(true);
+                price.changeDefault(currentUser, false);
+                priceService.save(currentUser, price);
+
                 view.showCreatedNotification("Прайс");
                 view.getGrid().setItems(updateList());
             } else {

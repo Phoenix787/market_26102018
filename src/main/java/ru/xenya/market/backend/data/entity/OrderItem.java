@@ -13,20 +13,20 @@ import java.util.List;
 @Entity
 public class OrderItem extends AbstractEntity{
 
-    @NotNull(message = "{market.price.required}")
+   // @NotNull(message = "{market.price.required}")
     private Price pricePlan;
 
-    @NotNull
-    private Service service;
-
-    private Unit unit;
+//    @NotNull
+//    private Service service;
+//
+//    private Unit unit;
 
     //цена за единицу
-    private Integer price;
+    private PriceItem price;
 
-    @Min(1)
-    @NotNull
-    private Integer quantity = 1;
+//    @Min(1d)
+    //@NotNull
+    private Double quantity = 1d;
 
    // private Boolean cash; //наличный = true, безналичный = false;
 
@@ -52,34 +52,34 @@ public class OrderItem extends AbstractEntity{
     }
 
     public Service getService() {
-        return service;
+        return price.getService();
     }
-
-    public void setService(Service service) {
-        this.service = service;
-    }
-
+//
+//    public void setService(Service service) {
+//        this.service = service;
+//    }
+//
     public Unit getUnit() {
-        return unit;
+        return price.getUnit();
     }
+//
+//    public void setUnit(Unit unit) {
+//        this.unit = unit;
+//    }
 
-    public void setUnit(Unit unit) {
-        this.unit = unit;
-    }
-
-    public Integer getPrice() {
+    public PriceItem getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(PriceItem price) {
         this.price = price;
     }
 
-    public Integer getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 
@@ -116,6 +116,6 @@ public class OrderItem extends AbstractEntity{
     }
 
     public int getAllPrice() {
-        return quantity == null || price == null || getDates().size() == 0 ? 0 : quantity * price * getDates().size();
+        return quantity == null || price == null || getDates().size() == 0 ? 0 : (int) (quantity * price.getPrice() * getDates().size());
     }
 }

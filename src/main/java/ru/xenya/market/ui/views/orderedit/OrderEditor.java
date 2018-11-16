@@ -104,8 +104,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
 
     @Autowired
-    public OrderEditor() {
-        this.orderItemsView = new OrderItemsView();
+    public OrderEditor(OrderItemsView orderItemsView) {
+        this.orderItemsView = orderItemsView;
 ////        itemsEditor = new OrderItemsEditor()
 //        itemsContainer.add(itemsEditor);
         itemsContainer.add(orderItemsView);
@@ -113,6 +113,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 //        customerPhone.setEnabled(false);
 
         invoiceEditor = new InvoiceEditor();
+
+
 
         cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
         save.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
@@ -155,6 +157,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         }
 
         ComponentUtil.addListener(invoiceEditor, ValueChangeEvent.class, e -> save.setEnabled(true));
+        ComponentUtil.addListener(orderItemsView, ValueChangeEvent.class, e -> save.setEnabled(true));
 //
 ////        itemsEditor.setRequiredIndicatorVisible(true);
         binder.bind(orderItemsView, "items");

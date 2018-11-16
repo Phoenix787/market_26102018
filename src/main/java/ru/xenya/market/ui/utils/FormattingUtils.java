@@ -24,6 +24,10 @@ public class FormattingUtils {
         return NumberFormat.getCurrencyInstance(MarketConst.APP_LOCALE).format(BigDecimal.valueOf(valueInCop, 2));
     }
 
+    public static String formatAsDouble(double value){
+        return NumberFormat.getCurrencyInstance(MarketConst.APP_LOCALE).format(Double.valueOf(value));
+    }
+
     public static DecimalFormat getUiPriceFormatter(){
         DecimalFormat formatter = new DecimalFormat("#" + DECIMAL_ZERO,
                 DecimalFormatSymbols.getInstance(MarketConst.APP_LOCALE));

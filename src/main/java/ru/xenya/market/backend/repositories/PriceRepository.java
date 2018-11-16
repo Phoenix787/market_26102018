@@ -11,7 +11,7 @@ import java.util.List;
 public interface PriceRepository extends JpaRepository<Price, Long> {
     List<Price> findByDate(LocalDate date);
 
-    List<Price> findByDefaultPrice(boolean isDefault);
+    Price findByDefaultPrice(boolean isDefault);
 
     Page<Price> findBy(Pageable pageable);
 

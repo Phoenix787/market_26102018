@@ -18,9 +18,12 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.OrderItem;
 import ru.xenya.market.backend.data.entity.PriceItem;
+import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.converters.UnitConverter;
 
 import java.util.*;
@@ -33,6 +36,8 @@ import java.util.*;
  */
 @Tag("order-items-view")
 @HtmlImport("src/views/orderedit/order-items/order-items-view.html")
+@SpringComponent
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsViewModel>
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<OrderItemsView, List<OrderItem>>, List<OrderItem>> {
 
@@ -52,7 +57,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 
     private final AbstractFieldSupport<OrderItemsView, List<OrderItem>> fieldSupport;
 
-    private OrderItem currentItem;
+    private List<OrderItem> orderItemList;
 
 
 
@@ -60,12 +65,13 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     /**
      * Creates a new OrderItemsView.
      */
-    public OrderItemsView() {
+    public OrderItemsView(OrderItemsEditor editor) {
 
-        this.fieldSupport = new AbstractFieldSupport<>(this, Collections.emptyList(),
+        this.fieldSupport = new AbstractFieldSupport<>(this, new ArrayList<>(),
                 Objects::equals, c->{});
 
-        editor = new OrderItemsEditor();
+        this.editor = editor;
+        editor.setOrderItemsView(this);
         setupGrid();
 
 
@@ -76,6 +82,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 //        }
 //
         add.addClickListener(event -> createNew());
+        editor.addSaveListener(e -> fireEvent(new SaveEvent(this, false)));
 
     }
 
@@ -90,7 +97,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         grid.addColumn(OrderItem::getId).setHeader("#").setWidth("70px").setFlexGrow(0);
         grid.addColumn(OrderItem::getService).setWidth("150px").setHeader("Услуга").setFlexGrow(5);
         grid.addColumn(new ComponentRenderer<>(Div::new, (div, orderitem)->div.setText(
-                Integer.toString(orderitem.getQuantity()) + " " + unitConverter.encode(orderitem.getUnit()))
+                Double.toString(orderitem.getQuantity()) + " " + unitConverter.encode(orderitem.getUnit()))
         )).setWidth("100px").setHeader("Кол-во");
         grid.addColumn(orderItem -> Integer.toString(orderItem.getDates().size())).setHeader("Выходы").setWidth("50px");
         grid.addColumn(OrderItem::getTotalPrice).setHeader("Сумма").setWidth("70px");
@@ -100,6 +107,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     @Override
     public void setValue(List<OrderItem> items) {
         fieldSupport.setValue(items);
+        orderItemList = items;
         hasChanges = false;
 
         if (items != null) {
@@ -115,7 +123,6 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     }
 
 
-
     @Override
     public List<OrderItem> getValue() {
         return fieldSupport.getValue();
@@ -124,6 +131,10 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     @Override
     public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<OrderItemsView, List<OrderItem>>> listener) {
         return fieldSupport.addValueChangeListener(listener);
+    }
+
+    public Grid<OrderItem> getGrid() {
+        return grid;
     }
 
 

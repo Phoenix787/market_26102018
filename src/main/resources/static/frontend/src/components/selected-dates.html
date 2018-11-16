@@ -1,0 +1,29 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/vaadin-grid/src/vaadin-grid.html">
+
+<dom-module id="selected-dates">
+    <template>
+<style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+<vaadin-grid items="[[items]]" id="grid"></vaadin-grid>
+<div id="div" style="width: 100%; height: 100%;"></div>
+</template>
+
+    <script>
+        class SelectedDates extends Polymer.Element {
+            static get is() {
+                return 'selected-dates';
+            }
+
+            static get properties() {
+                return {
+                    // Declare your properties here.
+                };
+            }
+        }
+        customElements.define(SelectedDates.is, SelectedDates);
+    </script>
+</dom-module>

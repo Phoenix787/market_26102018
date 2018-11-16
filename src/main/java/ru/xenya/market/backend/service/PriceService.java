@@ -102,9 +102,10 @@ public class PriceService implements FilterableCrudService<Price> {
         return filterableText.toLowerCase();
     }
 
-    public List<Price> findPricesByDefault(boolean isDefault) {
+    public Price findPriceByDefault(boolean isDefault) {
         return repository.findByDefaultPrice(isDefault);
     }
+
 
     @Transactional(rollbackOn = Exception.class)
     public Price addComment(User currentUser, Price price, String comment) {

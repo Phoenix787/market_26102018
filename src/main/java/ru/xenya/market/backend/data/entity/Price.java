@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -95,5 +96,10 @@ public class Price extends AbstractEntity implements PriceSummary {
     @Override
     public List<PriceItem> getItems() {
         return itemsPrice;
+    }
+
+    @Override
+    public String toString() {
+        return new LocalDateToStringEncoder().encode(date);
     }
 }

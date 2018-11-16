@@ -169,6 +169,17 @@
             <version>1.0.3</version>
         </dependency>
 
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>vaadin-combobox-multiselect</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.vaadin.pekka</groupId>
+			<artifactId>checkbox-group-java</artifactId>
+			<version>1.0.0.beta1</version>
+		</dependency>
 
     </dependencies>
 

@@ -8,6 +8,7 @@ import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.service.ScheduleDatesService;
 import ru.xenya.market.ui.components.ScheduleDatesComponent;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @SpringComponent
@@ -36,5 +37,9 @@ public class ScheduleDatePresenter {
 
     public List<ScheduleDates> updateList() {
         return service.findAll();
+    }
+
+    public List<ScheduleDates> getDatesFromCurrent() {
+          return service.findDatesAfterCurrent(LocalDate.now());
     }
 }
