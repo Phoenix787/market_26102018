@@ -9,6 +9,7 @@
 <link rel="import" href="../../../components/amount-field.html">
 <link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid.html">
 <link rel="import" href="../../../components/selected-dates.html">
+<link rel="import" href="../../../components/price-item-field.html">
 
 <dom-module id="order-items-editor">
     <template>
@@ -45,6 +46,7 @@
 <div id="main" class="scrollable flex1">
  <vaadin-form-layout id="form1">
   <vaadin-form-layout id="form2">
+   <price-item-field id="priceField"></price-item-field>
    <vaadin-combo-box id="service" label="Вид услуги"></vaadin-combo-box>
    <vaadin-combo-box id="unit" label="Ед. изм."></vaadin-combo-box>
    <vaadin-combo-box id="price" label="Цена"></vaadin-combo-box>

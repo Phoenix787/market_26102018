@@ -34,6 +34,7 @@ import ru.xenya.market.backend.data.entity.*;
 import ru.xenya.market.backend.service.PriceService;
 import ru.xenya.market.backend.service.ScheduleDatesService;
 import ru.xenya.market.ui.components.AmountField;
+import ru.xenya.market.ui.components.PriceItemField;
 import ru.xenya.market.ui.components.SelectedDates;
 import ru.xenya.market.ui.dataproviders.ScheduleDateProvider;
 import ru.xenya.market.ui.events.DeleteEvent;
@@ -70,6 +71,9 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     @Id("price")
     private ComboBox<PriceItem> price;
 
+    @Id("priceField")
+    private PriceItemField priceField;
+
     @Id("grid")
     private Grid<ScheduleDates> grid;
 
@@ -99,6 +103,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     @Id("dimensionsContainer")
     private Div dimensionsContainer;
 
+    private PriceItemField priceItemField;
+
     private User currentUser;
     private Order currentOrder;
     private Price defaultPrice;
@@ -113,10 +119,10 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private OrderItemsView orderItemsView;
 
 
+
     private int totalPrice;
     private TextField widthField = new TextField("Ширина");
     private TextField heightField = new TextField("Высота");
-    private TextArea invisible = new TextArea();
     private Label label = new Label("X");
 
 
@@ -134,16 +140,20 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
                 Objects::equals, c -> { });
 
         defaultPrice = presenter.getDefaultPrice();
+        priceItemField = new PriceItemField(priceService);
+        priceItemField.setPricePlan(defaultPrice);
+
         heightField.setEnabled(false);
         setupDiscountGroup();
         setupGrid(provider);
         //подключаем все поля к биндеру
 
         pricePlan.addValueChangeListener(e -> {
-                    price.setItems(e.getValue().getItems());
+            priceItemField.setPricePlan(e.getValue());
+            price.setItems(e.getValue().getItems());
 
-                    fireEvent(new PricePlanChangeEvent(this, e.getValue()));
-                });
+            fireEvent(new PricePlanChangeEvent(this, e.getValue()));
+        });
 
         pricePlan.setDataProvider(DataProvider.fromCallbacks(
                 query -> {
@@ -196,7 +206,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
             setPrice();
 
         });
-        binder.bind(price, "price");
+        binder.bind(priceField, "price");
 
 //        CheckboxGroup<ScheduleDates> group = new CheckboxGroup<>();
 //        group.setItems(presenter.getDatesAfterNow());
