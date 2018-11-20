@@ -8,12 +8,15 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class OrderItem extends AbstractEntity{
 
    // @NotNull(message = "{market.price.required}")
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn
     private Price pricePlan;
 
 //    @NotNull
@@ -22,13 +25,13 @@ public class OrderItem extends AbstractEntity{
 //    private Unit unit;
 
     //цена за единицу
+   @ManyToOne
+//    @JoinColumn
     private PriceItem price;
 
 //    @Min(1d)
     //@NotNull
     private Double quantity = 1d;
-
-   // private Boolean cash; //наличный = true, безналичный = false;
 
     //скидка
     private Discount discount;
@@ -42,6 +45,14 @@ public class OrderItem extends AbstractEntity{
 
     //сумма
     private Integer totalPrice;
+
+
+    public OrderItem() {
+    }
+
+    public OrderItem(User createdBy){
+        this.dates = new ArrayList<>();
+    }
 
     public Price getPricePlan() {
         return pricePlan;

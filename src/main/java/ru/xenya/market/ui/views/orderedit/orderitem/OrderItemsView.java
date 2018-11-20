@@ -27,6 +27,8 @@ import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.converters.UnitConverter;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A Designer generated component for the order-items-view.html template.
@@ -82,8 +84,18 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 //        }
 //
         add.addClickListener(event -> createNew());
-        editor.addSaveListener(e -> fireEvent(new SaveEvent(this, false)));
+        editor.addSaveListener(e -> {
 
+            OrderItem value = editor.getValue();
+            setValue(Stream.concat(getValue().stream(), Stream.of(editor.getValue())).collect(Collectors.toList()));
+          //  update();
+            dialog.setOpened(false);
+        });
+
+    }
+
+    private void update() {
+        grid.setItems(fieldSupport.getValue());
     }
 
     private void createNew() {

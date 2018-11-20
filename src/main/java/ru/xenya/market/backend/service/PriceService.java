@@ -3,10 +3,10 @@ package ru.xenya.market.backend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import ru.xenya.market.backend.data.entity.Order;
+import ru.xenya.market.backend.data.Unit;
 import ru.xenya.market.backend.data.entity.Price;
+import ru.xenya.market.backend.data.entity.PriceItem;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.PriceRepository;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
@@ -111,5 +111,12 @@ public class PriceService implements FilterableCrudService<Price> {
     public Price addComment(User currentUser, Price price, String comment) {
         price.addHistoryItem(currentUser, comment);
         return repository.save(price);
+    }
+
+    public List<PriceItem> getPriceItems(Price price, ru.xenya.market.backend.data.Service service, Unit unit){
+        List<PriceItem> tmp = price.getItemsPrice();
+        List<PriceItem> collect = tmp.stream()
+                .filter(item -> item.getService().equals(service)).filter(item -> item.getUnit().equals(unit)).collect(Collectors.toList());
+        return collect;
     }
 }

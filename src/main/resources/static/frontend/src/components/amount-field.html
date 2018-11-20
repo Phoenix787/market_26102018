@@ -91,12 +91,12 @@
         }
 
         _plus() {
-          !this._plusDisabled() && (this.value = this._number + 1);
+          !this._plusDisabled() && (this.value = this._number + 0.1);
           this.$.input.focus();
         }
 
         _minus() {
-          !this._minusDisabled() && (this.value = this._number - 1);
+          !this._minusDisabled() && (this.value = this._number - 0.1);
           this.$.input.focus();
         }
 

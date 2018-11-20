@@ -1,6 +1,9 @@
 package ru.xenya.market.ui.components;
 
 import com.vaadin.flow.component.AbstractSinglePropertyField;
+import com.vaadin.flow.component.ComponentEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -21,7 +24,7 @@ public class AmountField extends AbstractSinglePropertyField<AmountField, Double
      */
     public AmountField() {
         // You can initialise any data required for the connected UI components here.
-        super("value", null, true);
+        super("value", 1d, false);
     }
 
     public void setEnabled(boolean enabled){
@@ -44,4 +47,8 @@ public class AmountField extends AbstractSinglePropertyField<AmountField, Double
     }
 
 
+
+
 }
+
+

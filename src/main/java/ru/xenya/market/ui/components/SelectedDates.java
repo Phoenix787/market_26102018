@@ -56,16 +56,24 @@ public class SelectedDates extends PolymerTemplate<SelectedDates.SelectedDatesMo
     @Override
     public void setValue(List<ScheduleDates> value) {
         currentDates = value;
-        List<ScheduleDates> temp = datesService.findDatesAfterCurrent(currentDates.get(currentDates.size()-1).getDate());
-        currentDates.addAll(temp);
-        grid.setItems(currentDates);
-        for (ScheduleDates date : value) {
-            grid.select(date);
-        }
-        div.setText(value.stream()
+        List<ScheduleDates> temp;
+        if (currentDates != null && currentDates.size() > 0){
+              temp = datesService.findDatesAfterCurrent(currentDates.get(currentDates.size()-1).getDate());
+               currentDates.addAll(temp);
+            grid.setItems(currentDates);
+            for (ScheduleDates date : value) {
+                grid.select(date);
+            }
+            div.setText(value.stream()
                     .map(ScheduleDates::getDate)
                     .map(e->e.format(DateTimeFormatter.ISO_LOCAL_DATE))
                     .collect(Collectors.joining(", ")));
+        }else{
+            currentDates = datesService.findDatesAfterCurrent(LocalDate.now());
+            grid.setItems(currentDates);
+        }
+
+
     }
 
     @Override
