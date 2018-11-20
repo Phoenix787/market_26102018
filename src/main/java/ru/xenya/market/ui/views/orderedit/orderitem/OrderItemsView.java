@@ -20,9 +20,7 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import ru.xenya.market.backend.data.entity.Order;
-import ru.xenya.market.backend.data.entity.OrderItem;
-import ru.xenya.market.backend.data.entity.PriceItem;
+import ru.xenya.market.backend.data.entity.*;
 import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.converters.UnitConverter;
 
@@ -52,6 +50,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     private Button add;
 
     private Order order;
+    private final User currentUser;
 
     private OrderItemsEditor editor;
 
@@ -61,13 +60,16 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 
     private List<OrderItem> orderItemList;
 
+    private Price currentPrice;
+
 
 
 
     /**
      * Creates a new OrderItemsView.
      */
-    public OrderItemsView(OrderItemsEditor editor) {
+    public OrderItemsView(OrderItemsEditor editor, User user) {
+        currentUser = user;
 
         this.fieldSupport = new AbstractFieldSupport<>(this, new ArrayList<>(),
                 Objects::equals, c->{});
@@ -84,6 +86,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 //        }
 //
         add.addClickListener(event -> createNew());
+
         editor.addSaveListener(e -> {
 
             OrderItem value = editor.getValue();
@@ -92,6 +95,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
             dialog.setOpened(false);
         });
 
+
     }
 
     private void update() {
@@ -99,7 +103,8 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     }
 
     private void createNew() {
-        editor.setValue(null);
+        editor.setValue(new OrderItem(currentUser));
+        editor.setCurrentPrice(currentPrice);
         dialog.add(editor);
         dialog.open();
     }
@@ -128,6 +133,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
                     e->{
                         e.getFirstSelectedItem().ifPresent(entity->{
                             editor.setValue(entity);
+                            dialog.setOpened(true);
                             grid.deselectAll();
                         });
                     });
@@ -147,6 +153,11 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 
     public Grid<OrderItem> getGrid() {
         return grid;
+    }
+
+    public void setDefaultPrice(Price defaultPrice) {
+        this.currentPrice = defaultPrice;
+        editor.setCurrentPrice(defaultPrice);
     }
 
 

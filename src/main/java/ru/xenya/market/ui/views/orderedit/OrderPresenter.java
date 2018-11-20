@@ -1,7 +1,6 @@
 package ru.xenya.market.ui.views.orderedit;
 
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,17 +8,13 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
+import ru.xenya.market.backend.data.entity.Price;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.service.OrderService;
-import ru.xenya.market.ui.crud.CrudEntityPresenter;
+import ru.xenya.market.backend.service.PriceService;
 import ru.xenya.market.ui.crud.EntityPresenter;
 import ru.xenya.market.ui.utils.MarketConst;
-import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
-import ru.xenya.market.ui.utils.converters.OrderStateConverter;
-import ru.xenya.market.ui.views.orderedit.OrderEditor;
-import ru.xenya.market.ui.views.orderedit.OrdersViewOfCustomer;
 
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -33,12 +28,14 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 //    private final OrdersGridDataProvider dataProvider;
     private final User currentUser;
     private final OrderService orderService;
+    private final PriceService priceService;
     private Customer currentCustomer;
     private Order currentOrder;
+    private Price currentPrice;
 
     @Autowired
     public OrderPresenter(EntityPresenter<Order, OrdersViewOfCustomer> entityPresenter,
-                          OrderService orderService, User currentUser) {
+                          OrderService orderService, User currentUser, PriceService priceService) {
        // super(orderService, currentUser);
         this.orderService = orderService;
         this.entityPresenter = entityPresenter;
@@ -46,6 +43,7 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         //this.currentCustomer = currentCustomer;
         this.currentUser = currentUser;
 
+        this.priceService = priceService;
     }
 
     public void setView(OrdersViewOfCustomer view) {
@@ -60,9 +58,12 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         this.view = view;
         view.getGrid().setItems(updateList());
         view.getOpenedOrderEditor().setCurrentUser(currentUser);
+        view.getOpenedOrderEditor().setDefaultPrice(getDefaultPrice());
         view.getOpenedOrderEditor().addCancelListener(e -> cancel());
         view.getOpenedOrderEditor().addSaveListener(e -> save());
         view.getOpenedOrderEditor().addDeleteListener(e -> delete());
+
+        setCurrentPrice(getDefaultPrice());
        // this.view.getOpenedOrderEditor().addCommentListener(e -> addComment(e.getMessage()));
         //todo добавить OrderDetails
     }
@@ -117,6 +118,12 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         this.currentCustomer = currentCustomer;
         orderService.setCurrentCustomer(currentCustomer);
         view.getForm().setCurrentCustomer(currentCustomer);
+    }
+
+    public void setCurrentPrice(Price currentPrice) {
+        this.currentPrice = currentPrice;
+        orderService.setCurrentPrice(currentPrice);
+        view.getForm().setDefaultPrice(currentPrice);
     }
 
     public Order createNew() {
@@ -236,6 +243,9 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         }
     }
 
+    public Price getDefaultPrice(){
+        return priceService.findPriceByDefault(true);
+    }
 
 }
 

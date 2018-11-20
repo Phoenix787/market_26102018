@@ -78,14 +78,14 @@ public class PriceItemField extends PolymerTemplate<PriceItemField.PriceItemFiel
         // это событие обрабатывать в orderItemsEditor назначить метод-обработчик
         unit.setItemLabelGenerator(Unit::toString);
         unit.setDataProvider(DataProvider.ofItems(Unit.values()));
-        unit.addValueChangeListener(event -> {
-            Unit unit = event.getValue();
-            Service service = this.service.getValue();
-            price.setItems(priceService.getPriceItems(pricePlan, service, unit));
-            price.setEnabled(unit != null);
-            getModel().setUnit(DataProviderUtils.convertIfNotNull(event.getValue(), Unit::name));
-            fireEvent(new UnitChangedEvent(this, event.getValue()));
-        });
+//        unit.addValueChangeListener(event -> {
+//            Unit unit = event.getValue();
+//            Service service = this.service.getValue();
+//            price.setItems(priceService.getPriceItems(pricePlan, service, unit));
+//            price.setEnabled(unit != null);
+//            getModel().setUnit(DataProviderUtils.convertIfNotNull(event.getValue(), Unit::name));
+//            fireEvent(new UnitChangedEvent(this, event.getValue()));
+//        });
 //         binder.bind(unit, "price.unit");
 
         price.setRenderer(TemplateRenderer.<PriceItem> of(
@@ -96,7 +96,8 @@ public class PriceItemField extends PolymerTemplate<PriceItemField.PriceItemFiel
         price.addValueChangeListener(e->{
             // по идее должен быть уже сформированный priceItem который мы и передаем в едитор
             fieldSupport.setValue(e.getValue());
-            fireEvent(new PriceChangedEvent(this, e.getValue()));
+            currentPriceItem = e.getValue();
+            fireEvent(new PriceChangedEvent(this, currentPriceItem));
 
         });
         //binder.bind(price, "price.price");
@@ -156,6 +157,16 @@ public class PriceItemField extends PolymerTemplate<PriceItemField.PriceItemFiel
 
     public void setPricePlan(Price pricePlan) {
         this.pricePlan = pricePlan;
+
+        unit.addValueChangeListener(event -> {
+            Unit unit = event.getValue();
+            Service service = this.service.getValue();
+            price.setItems(priceService.getPriceItems(pricePlan, service, unit));
+            price.setEnabled(unit != null);
+            getModel().setUnit(DataProviderUtils.convertIfNotNull(event.getValue(), Unit::name));
+            fireEvent(new UnitChangedEvent(this, event.getValue()));
+        });
+
     }
 
     public void setBinder(BeanValidationBinder<OrderItem> binder) {

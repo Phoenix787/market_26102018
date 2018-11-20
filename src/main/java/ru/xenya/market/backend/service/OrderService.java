@@ -5,10 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.Payment;
-import ru.xenya.market.backend.data.entity.Customer;
-import ru.xenya.market.backend.data.entity.Invoice;
-import ru.xenya.market.backend.data.entity.Order;
-import ru.xenya.market.backend.data.entity.User;
+import ru.xenya.market.backend.data.entity.*;
 import ru.xenya.market.backend.repositories.InvoiceRepository;
 import ru.xenya.market.backend.repositories.OrderRepository;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
@@ -27,6 +24,7 @@ public class OrderService implements FilterableCrudService<Order> {
 
     private OrderRepository orderRepository;
     private Customer currentCustomer;
+    private Price currentPrice;
 
     public Customer getCurrentCustomer() {
         return currentCustomer;
@@ -53,7 +51,7 @@ public class OrderService implements FilterableCrudService<Order> {
     public Order saveOrder(User currentUser, Long id, BiConsumer<User, Order> orderFiller) {
         Order order;
         if (id == null) {
-            order = new Order(currentCustomer, currentUser);
+            order = new Order(currentCustomer, currentPrice, currentUser);
         } else {
             order = load(id);
         }
@@ -62,10 +60,10 @@ public class OrderService implements FilterableCrudService<Order> {
     }
 
     @Transactional(rollbackOn = Exception.class)
-    public Order saveOrder(User currentUser, Customer currentCustomer, Long id) {
+    public Order saveOrder(User currentUser, Customer currentCustomer, Price currentPrice, Long id) {
         Order order;
         if (id == null) {
-            order = new Order(currentCustomer, currentUser);
+            order = new Order(currentCustomer,currentPrice, currentUser);
         } else {
             order = load(id);
         }
@@ -105,7 +103,7 @@ public class OrderService implements FilterableCrudService<Order> {
     @Override
     @Transactional
     public Order createNew(User currentUser) {
-        Order order = new Order(currentCustomer, currentUser);
+        Order order = new Order(currentCustomer, currentPrice, currentUser);
         order.setDueDate(LocalDate.now());
  //       order.setInvoice(new Invoice("", LocalDate.now()));
 
@@ -143,6 +141,14 @@ public class OrderService implements FilterableCrudService<Order> {
 
     public List<Order> findByCustomer(Customer currentCustomer) {
         return orderRepository.findByCustomer(currentCustomer);
+    }
+
+    public Price getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public void setCurrentPrice(Price currentPrice) {
+        this.currentPrice = currentPrice;
     }
 
 

@@ -15,9 +15,9 @@ import java.util.List;
 public class OrderItem extends AbstractEntity{
 
    // @NotNull(message = "{market.price.required}")
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn
-    private Price pricePlan;
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinColumn
+//    private Price pricePlan;
 
 //    @NotNull
 //    private Service service;
@@ -54,13 +54,13 @@ public class OrderItem extends AbstractEntity{
         this.dates = new ArrayList<>();
     }
 
-    public Price getPricePlan() {
-        return pricePlan;
-    }
-
-    public void setPricePlan(Price pricePlan) {
-        this.pricePlan = pricePlan;
-    }
+//    public Price getPricePlan() {
+//        return pricePlan;
+//    }
+//
+//    public void setPricePlan(Price pricePlan) {
+//        this.pricePlan = pricePlan;
+//    }
 
     public Service getService() {
         return price.getService();

@@ -18,6 +18,7 @@ import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.validator.BeanValidator;
 import com.vaadin.flow.shared.Registration;
@@ -28,13 +29,11 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.Payment;
-import ru.xenya.market.backend.data.entity.Customer;
-import ru.xenya.market.backend.data.entity.Invoice;
-import ru.xenya.market.backend.data.entity.Order;
-import ru.xenya.market.backend.data.entity.User;
+import ru.xenya.market.backend.data.entity.*;
 import ru.xenya.market.ui.components.FormButtonsBar;
 import ru.xenya.market.ui.crud.CrudView.CrudForm;
 import ru.xenya.market.ui.dataproviders.DataProviderUtils;
+import ru.xenya.market.ui.dataproviders.PriceDataProvider;
 import ru.xenya.market.ui.events.CancelEvent;
 import ru.xenya.market.ui.events.DeleteEvent;
 import ru.xenya.market.ui.events.SaveEvent;
@@ -47,6 +46,7 @@ import ru.xenya.market.ui.views.orderedit.orderitem.OrderItemsView;
 
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import static ru.xenya.market.ui.dataproviders.DataProviderUtils.createItemLabelGenerator;
 
@@ -88,6 +88,11 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private Checkbox needInvoice;
     @Id("invoiceContainer")
     private Div invoiceContainer;
+    @Id("pricePlan")
+    private ComboBox<Price> pricePlan;
+
+
+
     private InvoiceEditor invoiceEditor;
 
     private OrderItemsView orderItemsView;
@@ -100,21 +105,16 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private User currentUser;
     private Order currentOrder;
     private Customer currentCustomer;
+    private Price defaultPrice;
     private BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
     private LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
 
     @Autowired
-    public OrderEditor(OrderItemsView orderItemsView) {
+    public OrderEditor(OrderItemsView orderItemsView, PriceDataProvider priceDataProvider) {
         this.orderItemsView = orderItemsView;
-////        itemsEditor = new OrderItemsEditor()
-//        itemsContainer.add(itemsEditor);
         itemsContainer.add(orderItemsView);
-//        customerName.setEnabled(false);
-//        customerPhone.setEnabled(false);
 
         invoiceEditor = new InvoiceEditor();
-
-
 
         cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
         save.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
@@ -162,10 +162,22 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 ////        itemsEditor.setRequiredIndicatorVisible(true);
         binder.bind(orderItemsView, "items");
 
+
+
+        pricePlan.addValueChangeListener(e -> {
+            getModel().setPricePlan(DataProviderUtils.convertIfNotNull(e.getValue(), Price::toString));
+        });
+
+        pricePlan.setDataProvider(priceDataProvider);
+        pricePlan.setItemLabelGenerator(Price::toString);
+
+        binder.bind(pricePlan, "pricePlan");
+
 //
 //
 
     }
+
 
     private void addInvoice(Boolean value) {
         invoiceEditor.setInvoiceEnabled(value);
@@ -175,6 +187,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
         setTotalPrice(0);
         invoiceEditor.clear();
+
 
     }
 
@@ -190,7 +203,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     public void read(Order order, boolean isNew) {
         if (isNew) {
             order.setCustomer(currentCustomer);
+            order.setPricePlan(defaultPrice);
         }
+
         if (order.getInvoice() != null) {
             needInvoice.setValue(true);
         }
@@ -208,11 +223,13 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         title.setVisible(isNew);
         metaContainer.setVisible(!isNew);
         customerName.setValue(order.getCustomer().getFullName());
-//        customerPhone.setValue(order.getCustomer().getPhoneNumbers());
-
+        pricePlan.setValue(order.getPricePlan());
 
         if (order.getOrderState() != null) {
             getModel().setStatus(order.getOrderState().name());
+        }
+        if (order.getPricePlan() != null) {
+            getModel().setPricePlan(new LocalDateToStringEncoder().encode(order.getPricePlan().getDate()));
         }
 
 //        save.setEnabled(false);
@@ -291,20 +308,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         payment.setRequired(true);
 
         binder.bind(customerName, "customer.fullName");
-//        binder.bind(customerPhone, "customer.phoneNumbers");
-
-//        binder.bind(invoiceDate, "invoice.dateInvoice");
-//        binder.bind(invoiceNumber, "invoice.numberInvoice");
-
         if (currentOrder != null) {
-
             customerName.setValue(binder.getBean().getCustomer().getFullName());
-//            customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
         }
-    }
-
-    public void setCurrentCustomer(Customer currentCustomer) {
-        this.currentCustomer = currentCustomer;
     }
 
     public void clear() {
@@ -332,10 +338,22 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         editor.setValue(editor.getCurrentInvoice());
     }
 
+    public void setDefaultPrice(Price defaultPrice) {
+        this.defaultPrice = defaultPrice;
+        this.orderItemsView.setDefaultPrice(defaultPrice);
+    }
+
+    public void setCurrentCustomer(Customer currentCustomer) {
+        this.currentCustomer = currentCustomer;
+    }
+
+
     public interface Model extends TemplateModel {
         void setTotalPrice(String totalPrice);
 
         void setStatus(String status);
+
+        void setPricePlan(String pricePlan);
     }
 
     //    private DatePicker dueDate;

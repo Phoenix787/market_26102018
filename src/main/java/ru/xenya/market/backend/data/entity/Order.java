@@ -34,7 +34,7 @@ public class Order extends AbstractEntity {
 
 //    //счет
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn/*(name = "fk_invoice_id", referencedColumnName = "invoice_id")*/
+    @JoinColumn
     private Invoice invoice;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -50,16 +50,21 @@ public class Order extends AbstractEntity {
     //@JoinColumn(name = "customer_fk")
     private Customer customer;
 
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+//    @JoinColumn
+    private Price pricePlan;
+
 
     public Order() {
     }
 
-    public Order(Customer customer, User createdBy) {
+    public Order(Customer customer, Price price, User createdBy) {
         this.orderState = OrderState.NEW;
         this.payment = Payment.CASH;
         this.dueDate = LocalDate.now();
       //  this.invoice = new Invoice();
         setCustomer(customer);
+        setPricePlan(price);
         this.items = new ArrayList<>();
         addHistoryItem(createdBy, "Заказ размещён");
     }
@@ -134,6 +139,14 @@ public class Order extends AbstractEntity {
     public Invoice getInvoice() { return invoice; }
 
     public void setInvoice(Invoice invoice) {this.invoice = invoice; }
+
+    public Price getPricePlan() {
+        return pricePlan;
+    }
+
+    public void setPricePlan(Price pricePlan) {
+        this.pricePlan = pricePlan;
+    }
 
     public void changeState(User user, OrderState orderState) {
         boolean createHistory = this.orderState != orderState && this.orderState != null && orderState != null;
