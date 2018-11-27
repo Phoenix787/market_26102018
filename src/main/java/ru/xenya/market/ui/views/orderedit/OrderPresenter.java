@@ -199,7 +199,7 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 //       orderService.saveOrder(order);
 //        if (writeEntity()){
 //           super.save(e->{
-//                if (isNew()) {
+//                if (read()) {
 //                    getView().showCreatedNotification();
 ////                    updateList();
 //                    view.getGrid().setItems(updateList());

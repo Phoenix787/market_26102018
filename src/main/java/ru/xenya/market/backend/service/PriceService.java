@@ -119,4 +119,5 @@ public class PriceService implements FilterableCrudService<Price> {
                 .filter(item -> item.getService().equals(service)).filter(item -> item.getUnit().equals(unit)).collect(Collectors.toList());
         return collect;
     }
+
 }

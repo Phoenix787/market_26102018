@@ -15,7 +15,7 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 public class PriceItem extends AbstractEntity {
 
-    @NotBlank(message = "{market.name.requered}")
+    @NotBlank(message = "{market.name.required}")
     @Size(max = 255)
     @Column(unique = true)
     private String name;

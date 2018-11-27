@@ -51,7 +51,16 @@ public class OrderItem extends AbstractEntity{
     }
 
     public OrderItem(User createdBy){
+
         this.dates = new ArrayList<>();
+    }
+
+    //конструктор копирования
+    // конструктор копии
+    public OrderItem(OrderItem other) {
+        this();
+        this.price = other.price;
+
     }
 
 //    public Price getPricePlan() {
@@ -65,6 +74,8 @@ public class OrderItem extends AbstractEntity{
     public Service getService() {
         return price.getService();
     }
+    public void setService(Service service) { price.setService(service);
+    }
 //
 //    public void setService(Service service) {
 //        this.service = service;
@@ -73,10 +84,8 @@ public class OrderItem extends AbstractEntity{
     public Unit getUnit() {
         return price.getUnit();
     }
-//
-//    public void setUnit(Unit unit) {
-//        this.unit = unit;
-//    }
+
+    public void setUnit(Unit unit) { price.setUnit(unit);  }
 
     public PriceItem getPrice() {
         return price;

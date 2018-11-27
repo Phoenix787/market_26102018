@@ -74,8 +74,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private ComboBox<Payment> payment;
     @Id("customerName")
     private TextField customerName;
-//    @Id("customerPhone")
-//    private TextField customerPhone;
+
     @Id("cancel")
     private Button cancel;
     @Id("save")
@@ -97,11 +96,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     private OrderItemsView orderItemsView;
 
-
-//    @Id("buttons")
-//    private FormButtonsBar buttons;
-
-//    private OrderItemsEditor itemsEditor;
     private User currentUser;
     private Order currentOrder;
     private Customer currentCustomer;
@@ -112,6 +106,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     @Autowired
     public OrderEditor(OrderItemsView orderItemsView, PriceDataProvider priceDataProvider) {
         this.orderItemsView = orderItemsView;
+        defaultPrice = priceDataProvider.getDefaultPrice();
+        orderItemsView.setDefaultPrice(defaultPrice);
         itemsContainer.add(orderItemsView);
 
         invoiceEditor = new InvoiceEditor();
@@ -145,11 +141,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         binder.bind(invoiceEditor, "invoice");
 
         binder.bind(customerName, "customer.fullName");
-//        binder.bind(customerPhone, "customer.phoneNumbers");
 
         if (currentOrder != null) {
             customerName.setValue(binder.getBean().getCustomer().getFullName());
-//            customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
 
             if (currentOrder.getInvoice() != null) {
                 invoiceEditor.setCurrentInvoice(currentOrder.getInvoice());
@@ -160,6 +154,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         ComponentUtil.addListener(orderItemsView, ValueChangeEvent.class, e -> save.setEnabled(true));
 //
 ////        itemsEditor.setRequiredIndicatorVisible(true);
+
         binder.bind(orderItemsView, "items");
 
 
@@ -340,7 +335,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     public void setDefaultPrice(Price defaultPrice) {
         this.defaultPrice = defaultPrice;
-        this.orderItemsView.setDefaultPrice(defaultPrice);
+        orderItemsView.setDefaultPrice(defaultPrice);
     }
 
     public void setCurrentCustomer(Customer currentCustomer) {

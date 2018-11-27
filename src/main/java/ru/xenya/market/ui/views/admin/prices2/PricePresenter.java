@@ -67,7 +67,7 @@
 //
 //    public void save() {
 //        entityPresenter.save(e->{
-//            if (entityPresenter.isNew()) {
+//            if (entityPresenter.read()) {
 //                List<Price> prices = priceService.findPricesByDefault(true);
 //                for (Price price : prices) {
 //                    price.changeDefault(currentUser, false);
@@ -105,7 +105,7 @@
 //        view.setDialogElementsVisibility(edit);
 //        view.setOpened(true);
 //        if (edit) {
-//            view.getOpenedEditor().read(price, entityPresenter.isNew());
+//            view.getOpenedEditor().read(price, entityPresenter.read());
 //        }
 //    }
 //

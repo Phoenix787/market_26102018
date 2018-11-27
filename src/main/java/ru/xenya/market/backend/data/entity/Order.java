@@ -24,7 +24,7 @@ public class Order extends AbstractEntity {
     private Payment payment;
 
 //    //множество позиций заказа
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderColumn
     @JoinColumn
 //    @NotEmpty

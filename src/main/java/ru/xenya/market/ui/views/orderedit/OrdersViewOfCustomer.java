@@ -117,7 +117,6 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
     public void setupEventListeners() {
         getGrid().addSelectionListener(e->{
             e.getFirstSelectedItem().ifPresent(entity->{
-                System.err.println(entity);
 
 //                presenter.onNavigation(entity.getId(), true);
                 presenter.load(entity.getId());

@@ -2,28 +2,33 @@ package ru.xenya.market.ui.views.orderedit.orderitem;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import ru.xenya.market.backend.data.Service;
-import ru.xenya.market.backend.data.entity.*;
-import ru.xenya.market.backend.service.PriceService;
-import ru.xenya.market.backend.service.ScheduleDatesService;
+import ru.xenya.market.backend.data.Unit;
+import ru.xenya.market.backend.data.entity.OrderItem;
+import ru.xenya.market.backend.data.entity.Price;
+import ru.xenya.market.backend.data.entity.PriceItem;
 import ru.xenya.market.ui.components.PriceItemField;
-import ru.xenya.market.ui.dataproviders.ScheduleDateProvider;
+import ru.xenya.market.ui.events.CancelEvent;
 import ru.xenya.market.ui.events.DeleteEvent;
 import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.FormattingUtils;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A Designer generated component for the order-items-editor.html template.
@@ -33,20 +38,11 @@ import java.util.Objects;
  */
 @Tag("order-items-editor")
 @HtmlImport("src/views/orderedit/order-items/order-items-editor.html")
-@SpringComponent
-@UIScope
+//@SpringComponent
+//@UIScope
 public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItemsEditorModel>
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<OrderItemsEditor, OrderItem>, OrderItem> {
 
-
-//    @Id("pricePlan")
-//    private ComboBox<Price> pricePlan;
-//    @Id("service")
-//    private ComboBox<Service> service;
-//    @Id("unit")
-//    private ComboBox<Unit> unit;
-//    @Id("price")
-//    private ComboBox<PriceItem> price;
 
 //    @Id("grid")
 //    private Grid<ScheduleDates> grid;
@@ -59,8 +55,9 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 //
 //    @Id("totalPrice")
 //    private Div totalPriceDiv;
-    private final OrderItemPresenter presenter;
-    private final ScheduleDatesService datesService;
+
+//    private final OrderItemPresenter presenter;
+//    private final ScheduleDatesService datesService;
 
 //    @Id("selectedDates")
 //    private Div selectedDates;
@@ -73,24 +70,35 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 //
 //    @Id("dimensionsContainer")
 //    private Div dimensionsContainer;
-    private final PriceService priceService;
-    @Id("priceField")
-    private PriceItemField priceField;
+    //private final PriceService priceService;
+
+    private final AbstractFieldSupport<OrderItemsEditor, OrderItem> fieldSupport;
+    @Id("metaContainer")
+    private Div metaContainer;
+    @Id("ItemId")
+    private Span itemId;
+    @Id("title")
+    private H2 title;
+    @Id("service")
+    private ComboBox<Service> serviceCb;
+    @Id("unit")
+    private ComboBox<Unit> unitCb;
+    @Id("price")
+    private ComboBox<PriceItem> priceCb;
     @Id("delete")
     private Button delete;
     @Id("add")
     private Button add;
-    private User currentUser;
-    private Order currentOrder;
-    private Price defaultPrice;
+    @Id("cancel")
+    private Button cancel;
 
-    private final AbstractFieldSupport<OrderItemsEditor, OrderItem> fieldSupport;
+    private boolean isItemNew;
+    private Price defaultPrice;
     private BeanValidationBinder<OrderItem> binder = new BeanValidationBinder<>(OrderItem.class);
     private OrderItem currentOrderItem;
     private PriceItem currentPriceItem;
 
     private OrderItemsView orderItemsView;
-
 
     private int totalPrice;
     private TextField widthField = new TextField("Ширина");
@@ -98,81 +106,34 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private Label label = new Label("X");
 
 
+
     /**
      * Creates a new OrderItemsEditor.
      */
-    public OrderItemsEditor(OrderItemPresenter presenter, ScheduleDateProvider provider, ScheduleDatesService datesService, PriceService priceService) {
+    public OrderItemsEditor(/*OrderItemPresenter presenter, ScheduleDateProvider provider, ScheduleDatesService datesService, PriceService priceService*/) {
         // You can initialise any data required for the connected UI components here.
 
-        this.presenter = presenter;
-        this.datesService = datesService;
-        this.priceService = priceService;
+//        this.presenter = presenter;
+//        this.datesService = datesService;
+//        this.priceService = priceService;
         this.fieldSupport = new AbstractFieldSupport<>(this, null,
                 Objects::equals, c -> {
         });
 
-        // defaultPrice = presenter.getDefaultPrice();
-      //  priceField = new PriceItemField(priceService);
-
-//        priceField.addServiceChangeListener(e -> serviceChanged(e.getSource(), e.getService()));
-//        priceField.addPriceChangeListener(e -> {currentPriceItem = e.getPriceItem(); priceChanged(priceField, currentPriceItem);
-//        });
-
         heightField.setEnabled(false);
         setupDiscountGroup();
-        setupGrid(provider);
+        //  setupGrid(provider);
+        setAddButtonText("Добавить");
 
+        serviceCb.setItems(Service.values());
+        unitCb.setItems(Unit.values());
+        unitCb.addValueChangeListener(e -> {
+            List<PriceItem> priceItemList = getPriceItems(e.getValue(), serviceCb.getValue());
+            priceCb.setItems(priceItemList);
+        });
 
-//        pricePlan.addValueChangeListener(e -> {
-//            priceItemField.setPricePlan(e.getValue());
-//            defaultPrice = e.getValue();
-//            if (currentOrderItem == null) {
-//                currentOrderItem = new OrderItem(currentUser);
-//                currentOrderItem.setPricePlan(defaultPrice);
-//                setValue(currentOrderItem);
-//                binder.setBean(currentOrderItem);
-//            }
-//            fireEvent(new PricePlanChangeEvent(this, e.getValue()));
-//        });
+        binder.bind(priceCb, "price");
 
-//        pricePlan.setDataProvider(DataProvider.fromCallbacks(
-//                query -> {
-//                    int offset = query.getOffset();
-//                    int limit = query.getLimit();
-//                    Stream<Price> stream = priceService.findAll().stream();
-//                    return stream.skip(offset).limit(limit);
-//                },
-//                query -> (int) priceService.count())
-//        );
-//        pricePlan.setItemLabelGenerator(Price::toString);
-//        pricePlan.setValue(defaultPrice);
-//
-//
-//        binder.forField(pricePlan)
-//                .withValidator(new BeanValidator(OrderItem.class, "pricePlan"))
-//                .bind(OrderItem::getPricePlan, OrderItem::setPricePlan);
-
-
-//        service.addValueChangeListener(e->{
-//
-//        });
-//        service.setRenderer(TemplateRenderer.<Service> of("<div>[[item.service]]</div>")
-//                .withProperty("service", Service::toString));
-//        service.setDataProvider(DataProvider.ofItems(Service.values()));
-//        binder.bind(service, "price.service");
-//
-//
-//        unit.setItemLabelGenerator(Unit::toString);
-//        unit.setDataProvider(DataProvider.ofItems(Unit.values()));
-//        unit.addValueChangeListener(e->{
-//            //если выбраны см2 нужно показать дополнительные дивы для ввода размеров
-//            if (e.getValue().equals(Unit.cm2)){
-//                dimensionsContainer.add(widthField, label, heightField);
-//                amount.setValue(0.0);
-//             //   amount.setEnabled(false);
-//            }
-//        });
-//        binder.bind(unit, "price.unit");
 //        widthField.addValueChangeListener(e-> heightField.setEnabled(true));
 //        heightField.addValueChangeListener(e->
 //                        amount.setValue(countAmount(Double.parseDouble(widthField.getValue()),
@@ -188,7 +149,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 //            setPrice();
 //
 //        });
-        binder.bind(priceField, "price");
+
 
 //
 //        binder.bind(discountGroup, "discount");
@@ -204,56 +165,75 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 //                        .map(ScheduleDates::getDate).map(e->e.format(DateTimeFormatter.ISO_LOCAL_DATE))
 //                        .collect(Collectors.joining(", "))));
 //        binder.forField(datesReadOnlyHasValue).bind(OrderItem::getDates, null);
-
-        setPrice();
+        // priceField.addPriceChangeListener(e -> priceChanged(priceField, e.getPriceItem()));
+        //  priceField.addServiceChangeListener(e -> serviceChanged(priceField, e.getService()));
+//        priceField.addUnitChangeListener(e -> unitChanged(priceField, e.getUnit()));
+//        binder.bind(priceField, "price");
 
         add.addClickListener(e -> {
-            if (currentPriceItem != null){
+            if (currentPriceItem != null) {
                 this.currentOrderItem.setPrice(currentPriceItem);
             }
-            OrderItem currentOrderItem = this.currentOrderItem;
             setValue(this.currentOrderItem);
-//          ArrayList<OrderItem> value = (ArrayList<OrderItem>) orderItemsView.getValue();
-//
-//          OrderItem item = fieldSupport.getValue();
-//            value.add(item);
-//
-//            orderItemsView.setValue(Stream.concat(orderItemsView.getValue().stream(),
-//                    Stream.of(currentOrderItem)).collect(Collectors.toList()));
-//
-////            //orderItemsView.setValue(value);
-////            orderItemsView.getGrid().setItems(value);
             fireEvent(new SaveEvent(this, false));
         });
         delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
 
+        cancel.addClickListener(e -> {
+            close();
+            fireEvent(new CancelEvent(this, false));
+        });
+
+        setPrice();
+
     }
 
-    private void priceChanged(PriceItemField source, PriceItem priceItem) {
-       // if (source.getCurrentPriceItem() == null) {
-            currentPriceItem = priceItem;
-            source.setCurrentPriceItem(priceItem);
-            source.setValue(priceItem);
-            currentOrderItem.setPrice(priceItem);
-            setValue(currentOrderItem);
-            fieldSupport.setValue(currentOrderItem);
-    //    }
+    private List<PriceItem> getPriceItems(Unit unit, Service service) {
+        return defaultPrice.getItemsPrice().stream()
+                .filter(item -> item.getUnit().equals(unit))
+                .filter(item -> item.getService().equals(service))
+                .collect(Collectors.toList());
+    }
 
-//        currentOrderItem.setPrice(priceItem);
-//        source.setValue(priceItem);
-//        setValue(currentOrderItem);
+
+    private void priceChanged(PriceItemField source, PriceItem priceItem) {
+//        if(currentPriceItem != priceItem && priceItem == null) {
+//            currentPriceItem = priceItem;
+//         //   source.setCurrentPriceItem(priceItem);
+//            // source.setValue(priceItem);
+//            currentOrderItem.setPrice(priceItem);
+//            setValue(currentOrderItem);
+//        }
+
     }
 
     private void serviceChanged(PriceItemField source, Service service) {
-      //  if (service != null) {
+        //  if (service != null) {
 //            if (currentOrderItem == null) {
 //                currentOrderItem = new OrderItem(currentUser);
 //                setValue(currentOrderItem);
 //                binder.setBean(currentOrderItem);
 //            }
-            priceField.hasChange(true);
+        if (currentPriceItem == null) {
+            currentPriceItem = new PriceItem();
+        }
 
-       // }
+        currentPriceItem.setService(service);
+//            source.setCurrentPriceItem(currentPriceItem);
+
+
+        // }
+    }
+
+    private void unitChanged(PriceItemField source, Unit unit) {
+//        currentPriceItem = source.getCurrentPriceItem();
+////        currentPriceItem.setUnit(unit);
+////        source.setCurrentPriceItem(currentPriceItem);
+////        priceField.hasChange(true);
+        //   currentOrderItem = binder.getBean();
+//        currentOrderItem.getPrice().setUnit(unit);
+//        source.setValue(currentOrderItem.getPrice());
+//        binder.setBean(currentOrderItem);
     }
 
     private Double countAmount(double width, double height) {
@@ -285,7 +265,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 //        }
     }
 
-    private void setupGrid(ScheduleDateProvider provider) {
+    // private void setupGrid(ScheduleDateProvider provider) {
 //        grid.addColumn(new LocalDateRenderer<>(ScheduleDates::getDate,
 //                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Дата").setWidth("100px").setFlexGrow(5);
 //        grid.addColumn(ScheduleDates::getWeekDay).setHeader("День недели").setWidth("100px").setFlexGrow(5);
@@ -318,7 +298,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 //        });
 
 
-    }
+    //   }
 
     private void setupDiscountGroup() {
 //        discountGroup.setItems(Discount.none, Discount.ten, Discount.twenty, Discount.thirty);
@@ -330,10 +310,6 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         getModel().setTotalPrice(FormattingUtils.formatAsCurrency(totalPrice));
     }
 
-    public void close() {
-        setTotalPrice(0);
-    }
-
     @Override
     public OrderItem getValue() {
         return fieldSupport.getValue();
@@ -341,17 +317,26 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
     @Override
     public void setValue(OrderItem value) {
-            currentOrderItem = value;
-            fieldSupport.setValue(value);
-            binder.setBean(value);
-            setPrice();
-            createEditor(currentOrderItem);
+//        if (value.getPrice() == null) {
+//            value.setPrice(defaultPrice.getItemsPrice().get(0));
+//        }
+        currentOrderItem = value;
+        fieldSupport.setValue(value);
+        binder.setBean(value);
+        setPrice();
+        //  createEditor(currentOrderItem);
     }
 
-    private void createEditor(OrderItem currentOrderItem) {
-        priceField.setValue(currentOrderItem.getPrice() != null ? currentOrderItem.getPrice() : currentPriceItem);
-        priceField.addPriceChangeListener(e -> priceChanged(priceField, e.getPriceItem()));
-        priceField.setBinder(binder);
+
+    public void clear() {
+        binder.setBean(null);
+    }
+
+    public void close() {
+        binder.setBean(null);
+        //  priceField.setValue(null);
+        setTotalPrice(0);
+        // priceField.setValue(null);
     }
 
     @Override
@@ -361,11 +346,16 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
     public void setCurrentPrice(Price defaultPrice) {
         this.defaultPrice = defaultPrice;
-        priceField.setPricePlan(defaultPrice);
+        priceCb.setItems(defaultPrice.getItemsPrice());
+//        priceField.setPricePlan(defaultPrice);
     }
 
     public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
         return addListener(SaveEvent.class, listener);
+    }
+
+    public Registration addCancelListener(ComponentEventListener<CancelEvent> listener) {
+        return addListener(CancelEvent.class, listener);
     }
 
     public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
@@ -376,12 +366,48 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         this.orderItemsView = orderItemsView;
     }
 
+    public String getAddButtonText() {
+        return getModel().getButtonText();
+    }
+
+    public void setAddButtonText(String addButtonText) {
+        getModel().setButtonText(addButtonText);
+    }
+
+//    public PriceItemField getPriceField() {
+//        return priceField;
+//    }
+
+    public void read(OrderItem entity, boolean isNew) {
+        this.isItemNew = isNew;
+        this.itemId.setText(isNew ? "" : entity.getId().toString());
+        this.metaContainer.setVisible(!isNew);
+        this.title.setVisible(isNew);
+        if (isNew){
+            serviceCb.setItems(Service.values());
+            unitCb.setItems(Unit.values());
+            priceCb.setItems(defaultPrice.getItemsPrice());
+        } else {
+            serviceCb.setValue(entity.getService());
+            unitCb.setValue(entity.getUnit());
+            priceCb.setItems(getPriceItems(entity.getUnit(), entity.getService()));
+        }
+
+
+        setValue(entity);
+
+    }
+
     /**
      * This model binds properties between OrderItemsEditor and order-items-editor.html
      */
     public interface OrderItemsEditorModel extends TemplateModel {
         // Add setters and getters for template properties here.
         void setTotalPrice(String totalPrice);
+
+        String getButtonText();
+
+        void setButtonText(String text);
     }
 
     private class PriceChangeEvent extends ComponentEvent<OrderItemsEditor> {

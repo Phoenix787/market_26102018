@@ -185,13 +185,13 @@
 //
 //    }
 //
-//    public void read(Price price, boolean isNew) {
+//    public void read(Price price, boolean read) {
 ////        binder.readBean(price);
 //        binder.setBean(price);
 //
-//        this.priceNumber.setText(isNew ? "" : price.getId().toString());
-//        title.setVisible(isNew);
-//        metaContainer.setVisible(!isNew);
+//        this.priceNumber.setText(read ? "" : price.getId().toString());
+//        title.setVisible(read);
+//        metaContainer.setVisible(!read);
 //
 //        confirmButton.setEnabled(false);
 //
