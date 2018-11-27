@@ -230,8 +230,7 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
 
     @Override
     public void setConfirmDialog(ConfirmDialog confirmDialog) {
-        System.err.println("=================== confirm in orders view set by confirmdialog from mainview");
-        this.confirmation = confirmDialog;
+          this.confirmation = confirmDialog;
     }
 
     @Override
@@ -240,7 +239,7 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
     }
 
     void updateTitle(boolean newEntity) {
-        getForm().getTitle().setText((newEntity ? "New" : "Edit") + " " + getEntityName());
+        getForm().getTitle().setText((newEntity ? "Новый" : "Редактировать") + " заказ");
     }
 
     void openDialog(){

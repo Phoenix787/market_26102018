@@ -150,6 +150,6 @@ public abstract class CrudView<E extends AbstractEntity, T extends TemplateModel
     }
 
     public void updateTitle(boolean newEntity) {
-        getForm().getTitle().setText((newEntity ? "New" : "Edit") + " " + entityName);
+        getForm().getTitle().setText((newEntity ? "Новый" : "Редактировать") /*+ " " + entityName*/);
     }
 }

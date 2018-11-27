@@ -74,7 +74,7 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     }
 
     void createNewOrder(){
-        open(entityPresenter.createNew(), true);
+        open(entityPresenter.createNew(), false);
     }
 
     public void cancel() {
@@ -92,7 +92,6 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     }
 
     public List<Order> updateList() {
-
         return orderService.findByCustomer(currentCustomer);
     }
 
@@ -127,18 +126,11 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     }
 
     public Order createNew() {
-       // orderService.setCurrentCustomer(currentCustomer);
-//        Order order = orderService.createNew(currentUser);
         Order order = entityPresenter.createNew();
-//        open(entityPresenter.createNew(), true);
         open(order, true);
-        return /*orderService.createNew(currentUser)*/  order;
+        return order;
     }
 
-//    public void load(Order order){
-//        System.err.println("from load of OrderPresenter: # order " + order.getId());
-//        System.err.println("from load of OrderPresenter: " + loadEntity(order.getId(), this::open));
-//    }
 
 
     public void load(Long id) {
@@ -147,26 +139,23 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     }
 
     public Order open(Order entity){
-       // view.getBinder().readBean(entity);
         view.getForm().read(entity, false);
         view.setOpened(true);
         view.updateTitle(false);
         view.openDialog();
-//        view.getDialog().add(view.getForm());
-//        view.getDialog().open();
 
         return entity;
     }
 
     public void open(Order order, boolean edit) {
-        view.setDialogElementsVisibility(edit);
+        view.setDialogElementsVisibility(true);
         view.setOpened(true);
         if (edit) {
             view.getOpenedOrderEditor().read(order, entityPresenter.isNew());
-          //  view.getDialog().add(view.getForm());
-         //   view.getDialog().open();
-
-       }
+       } else {
+            view.updateTitle(true);
+            view.getOpenedOrderEditor().read(order, entityPresenter.isNew());
+        }
     }
 
     public EntityPresenter<Order, OrdersViewOfCustomer> getEntityPresenter()
@@ -178,7 +167,6 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 
         currentOrder = entityPresenter.getEntity();
 
-        //Order order = view.getForm().getBinder().getBean();
         try {
             view.write(currentOrder);
         } catch (ValidationException e) {
@@ -195,21 +183,6 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 
                 close();
             });
-
-//       orderService.saveOrder(order);
-//        if (writeEntity()){
-//           super.save(e->{
-//                if (read()) {
-//                    getView().showCreatedNotification();
-////                    updateList();
-//                    view.getGrid().setItems(updateList());
-//                } else {
-//                    getView().showUpdateNotification();
-//                    view.getGrid().setItems(updateList());
-//                }
-//                closeSilently();
-//            });
-//        }
     }
 
 

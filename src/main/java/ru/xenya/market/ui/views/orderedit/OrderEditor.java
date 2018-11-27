@@ -152,8 +152,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
         ComponentUtil.addListener(invoiceEditor, ValueChangeEvent.class, e -> save.setEnabled(true));
         ComponentUtil.addListener(orderItemsView, ValueChangeEvent.class, e -> save.setEnabled(true));
-//
-////        itemsEditor.setRequiredIndicatorVisible(true);
 
         binder.bind(orderItemsView, "items");
 
@@ -168,8 +166,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
         binder.bind(pricePlan, "pricePlan");
 
-//
-//
 
     }
 
@@ -179,11 +175,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     }
 
     public void close() {
-
         setTotalPrice(0);
         invoiceEditor.clear();
-
-
     }
 
     public boolean hasChanges() {
@@ -191,7 +184,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     }
 
     public void write(Order order) throws ValidationException {
-
         binder.writeBean(order);
     }
 
@@ -343,6 +335,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     }
 
 
+    //Модель
     public interface Model extends TemplateModel {
         void setTotalPrice(String totalPrice);
 
@@ -351,63 +344,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         void setPricePlan(String pricePlan);
     }
 
-    //    private DatePicker dueDate;
-//    private ComboBox<Payment> payment;
-//    private ComboBox<OrderState> orderState;
-//    private Grid<OrderItem> itemGrid;
-//
-//    private OrderItemRepository repository;
-//
-//  //  private Order currentItem;
-//
-////    private final H3 titleField = new H3();
-////    private final Button saveButton = new Button("Сохранить");
-////    private final Button cancelButton = new Button("Отменить");
-////    private final Button deleteButton = new Button("Удалить");
-////
-////    private Binder<Order> binder = new Binder<>();
-////
-////    private final ConfirmationDialog<Order> confirmDialog = new ConfirmationDialog<>();
-//
-//
-//    public OrderEditor(BiConsumer<Order, Operation> itemSaver, Consumer<Order> itemDeleter) {
-//        super("Заказ", itemSaver, itemDeleter);
-//        this.repository = repository;
-//        setTitle();
-//        addNameField();
-////        setupGrid();
-//    }
-//
-//
-//
-//
-//    private void addNameField() {
-//        dueDate = new DatePicker();
-//        payment = new ComboBox<>();
-//        orderState = new ComboBox<>();
-//    }
-//
-//    private void setTitle() {
-//        H2 title = new H2(getBinder().getBean().getCustomer().getFullName());
-//        add(title);
-//    }
-//
-//    protected void confirmDelete() {
-//        openConfirmDialog("Удалить заказ", "Вы уверены, что хотите удалить заказ?",
-//                "Удаление заказа приведёт к удалению связанных с ним позиций заказа.");
-//    }
-//
-////    public final void open(Order item, AbstractEditorDialog.Operation operation) {
-////        currentItem = item;
-////        titleField.setText(operation.getNameInTitle() + " " + itemType);
-////        if (registrationForSave != null) {
-////            registrationForSave.remove();
-////        }
-////        registrationForSave = saveButton.addClickListener(e -> saveClicked(operation));
-////        binder.readBean(currentItem);
-////
-////        deleteButton.setEnabled(operation.isDeleteEnabled());
-////        open();
-////    }
+
 
 }
