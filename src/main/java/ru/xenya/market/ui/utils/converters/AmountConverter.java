@@ -1,4 +1,4 @@
-package ru.xenya.market.ui.views.admin.prices2.utils;
+package ru.xenya.market.ui.utils.converters;
 
 import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValueContext;
@@ -11,21 +11,22 @@ import java.text.ParseException;
 
 import static ru.xenya.market.ui.dataproviders.DataProviderUtils.convertIfNotNull;
 
-public class PriceConverter implements Converter<String, Integer> {
+public class AmountConverter implements Converter<String, Integer> {
 
-    private final DecimalFormat df = FormattingUtils.getUiPriceFormatter();
+    private final DecimalFormat df = FormattingUtils.getUiAmountFormatter();
+
 
     @Override
-    public Result<Integer> convertToModel(String presentationValue, ValueContext context) {
+    public com.vaadin.flow.data.binder.Result<Integer> convertToModel(String presentationValue, ValueContext context) {
         try {
-            return Result.ok((int) Math.round(df.parse(presentationValue).doubleValue()) * 100);
+            return Result.ok((int) ((df.parse(presentationValue).doubleValue())*100));
         } catch (ParseException e) {
             return Result.error("Неправильное число");
         }
     }
 
     @Override
-    public String convertToPresentation(Integer value, ValueContext context) {
+    public String convertToPresentation(Integer value, com.vaadin.flow.data.binder.ValueContext context) {
         return convertIfNotNull(value, i->df.format(BigDecimal.valueOf(i, 2)), ()->"");
     }
 }

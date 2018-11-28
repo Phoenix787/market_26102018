@@ -17,14 +17,14 @@ import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
  */
 @Tag("amount-field")
 @HtmlImport("src/components/amount-field.html")
-public class AmountField extends AbstractSinglePropertyField<AmountField, Double> {
+public class AmountField extends AbstractSinglePropertyField<AmountField, Integer> {
 
     /**
      * Creates a new AmountField.
      */
     public AmountField() {
         // You can initialise any data required for the connected UI components here.
-        super("value", 1d, false);
+        super("value", 1, false);
     }
 
     public void setEnabled(boolean enabled){
@@ -34,6 +34,7 @@ public class AmountField extends AbstractSinglePropertyField<AmountField, Double
     public void setMin(double value){
         getElement().setProperty("min", value);
     }
+
     public void setMax(double value) {
         getElement().setProperty("max", value);
     }

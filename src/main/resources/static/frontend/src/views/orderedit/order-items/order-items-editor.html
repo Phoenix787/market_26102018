@@ -1,6 +1,5 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-layout.html">
-<link rel="import" href="../../../../bower_components/vaadin-item/src/vaadin-item.html">
 <link rel="import" href="../../../components/buttons-bar.html">
 <link rel="import" href="../../../../bower_components/vaadin-button/src/vaadin-button.html">
 <link rel="import" href="../../../../bower_components/vaadin-radio-button/src/vaadin-radio-group.html">
@@ -10,6 +9,7 @@
 <link rel="import" href="../../../components/selected-dates.html">
 <link rel="import" href="../../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
 <link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-item.html">
+<link rel="import" href="../../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
 
 <dom-module id="order-items-editor">
     <template>
@@ -26,17 +26,13 @@
             }
 
         .block {
-
     
         }
 
         .h5 {
              margin-top: var(--lumo-space-m);
-                margin-bottom: var(--lumo-space-s);
+             margin-bottom: var(--lumo-space-s);
         }
-
-
-
       .dim {
         color: var(--lumo-secondary-text-color);
         text-align: left;
@@ -55,34 +51,30 @@
 
 
 </style>
-<!--<div class="meta-row">-->
-<!--<vaadin-item>-->
-<!--<vaadin-combo-box items="[[items]]" id="pricePlan" label="План цен"></vaadin-combo-box>-->
-<!--</vaadin-item>-->
-<!--</div>-->
 <div id="main" class="scrollable flex1">
  <h2 id="title">Новая позиция заказа</h2>
  <div id="metaContainer" class="dim">
   <span>Позиция #<span id="ItemId"></span></span>
  </div>
  <vaadin-form-layout id="form1">
+  <vaadin-form-layout id="form2">
+   <vaadin-combo-box items="[[items]]" id="service" class="service" style="margin-right:1em;" label="Услуга"></vaadin-combo-box>
+   <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения"></vaadin-combo-box>
+   <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена" colspan="2" property=""></vaadin-combo-box>
+  </vaadin-form-layout>
+  <vaadin-form-layout id="form3">
+   <vaadin-form-item>
+    <vaadin-text-field id="amount" label="Количество"></vaadin-text-field>
+   </vaadin-form-item>
+   <vaadin-form-item>
+    <vaadin-text-field id="summ" label="Сумма"></vaadin-text-field>
+   </vaadin-form-item>
+  </vaadin-form-layout>
   <!--<vaadin-form-layout id="form3">-->
   <!--<label style="font-size: var(&#45;&#45;lumo-font-size-xs);">Даты заказа</label>-->
   <!--<selected-dates id="dates"></selected-dates>-->
   <!--<vaadin-grid items="[[items]]" id="grid"></vaadin-grid>-->
   <!--</vaadin-form-layout>-->
-  <vaadin-form-layout id="form2">
-   <vaadin-item>
-    <vaadin-combo-box items="[[items]]" id="service" class="service" style="margin-right:1em;" label="Услуга"></vaadin-combo-box>
-    <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения"></vaadin-combo-box>
-   </vaadin-item>
-   <vaadin-item>
-    <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена"></vaadin-combo-box>
-   </vaadin-item>
-  </vaadin-form-layout>
-  <vaadin-form-layout id="form3">
-   <vaadin-form-item></vaadin-form-item>
-  </vaadin-form-layout>
  </vaadin-form-layout>
  <!--<div id="selectedDates" style="width: 40em; height: 35em;font-size:0.8em;">-->
  <!--<span id="selected"></span>-->
@@ -133,7 +125,7 @@
         ];
         this.$.form2.responsiveSteps = [
           {columns: 1, labelsPosition: 'top'},
-          {minWidth: '360px', columns: 2, labelsPosition: 'top'}
+          {minWidth: '360px', columns: 3, labelsPosition: 'top'}
         ];
         this.$.form3.responsiveSteps = [
           {columns: 1, labelsPosition: 'top'},

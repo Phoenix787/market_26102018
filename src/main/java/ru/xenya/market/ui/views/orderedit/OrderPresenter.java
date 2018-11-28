@@ -58,13 +58,10 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         this.view = view;
         view.getGrid().setItems(updateList());
         view.getOpenedOrderEditor().setCurrentUser(currentUser);
-        view.getOpenedOrderEditor().setDefaultPrice(getDefaultPrice());
         view.getOpenedOrderEditor().addCancelListener(e -> cancel());
         view.getOpenedOrderEditor().addSaveListener(e -> save());
         view.getOpenedOrderEditor().addDeleteListener(e -> delete());
-
         setCurrentPrice(getDefaultPrice());
-       // this.view.getOpenedOrderEditor().addCommentListener(e -> addComment(e.getMessage()));
         //todo добавить OrderDetails
     }
 
@@ -79,7 +76,7 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 
     public void cancel() {
         //todo проверку на несохраненные данные
-        entityPresenter.cancel(() -> close(), () -> view.setOpened(true));
+        entityPresenter.cancel(this::close, () -> view.setOpened(true));
         //view.getDialog().close();
     }
 

@@ -1,6 +1,7 @@
 package ru.xenya.market.ui.views.orderedit;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -39,6 +40,7 @@ import ru.xenya.market.ui.views.admin.prices.PriceEditor;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.stream.Stream;
 
 //todo попробовать сделать страницу похожую на reviewList в buddyApp
 //todo разобраться с удалением и сохранением заказов
@@ -205,6 +207,11 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
         getForm().write(entity);
 
     }
+
+    public Stream<HasValue<?,?>> validate(){
+       return getForm().validate();
+    }
+
     //        //dialog.add(editing ? orderEditor : orderDetails);
     //        getForm().setVisible(editing);
     //       // orderDetails.setVisible(!editing);

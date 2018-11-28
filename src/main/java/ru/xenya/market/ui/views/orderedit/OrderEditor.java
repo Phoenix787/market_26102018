@@ -1,9 +1,6 @@
 package ru.xenya.market.ui.views.orderedit;
 
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.ComponentUtil;
-import com.vaadin.flow.component.HasText;
-import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -12,13 +9,13 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.validator.BeanValidator;
 import com.vaadin.flow.shared.Registration;
@@ -49,8 +46,6 @@ import java.util.Locale;
 import java.util.stream.Stream;
 
 import static ru.xenya.market.ui.dataproviders.DataProviderUtils.createItemLabelGenerator;
-
-//todo orderitem
 
 @Tag("order-editor")
 @HtmlImport("src/views/orderedit/order-editor.html")
@@ -158,15 +153,18 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
 
         pricePlan.addValueChangeListener(e -> {
-            getModel().setPricePlan(DataProviderUtils.convertIfNotNull(e.getValue(), Price::toString));
+            Price price = e.getValue();
+            if (price != null) {
+                setDefaultPrice(price);
+                getModel().setPricePlan(DataProviderUtils.convertIfNotNull(price, Price::toString));
+            }
+
         });
 
         pricePlan.setDataProvider(priceDataProvider);
         pricePlan.setItemLabelGenerator(Price::toString);
 
         binder.bind(pricePlan, "pricePlan");
-
-
     }
 
 
@@ -179,9 +177,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         invoiceEditor.clear();
     }
 
-    public boolean hasChanges() {
-        return binder.hasChanges();
-    }
 
     public void write(Order order) throws ValidationException {
         binder.writeBean(order);
@@ -204,7 +199,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         }
 
         binder.setBean(order);
-        System.err.println("from orderEditor->read: " + order);
         this.orderNumber.setText(isNew ? "" : order.getId().toString());
 
         title.setVisible(isNew);
@@ -229,22 +223,20 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         invoiceEditor.setValue(invoice);
     }
 
-    private void save() {
-        Notification.show("Save click");
-    }
 
     public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
         return addListener(SaveEvent.class, listener);
     }
 
 
-    //public Binder<Order> getBinder() { return binder;}
+    public Binder<Order> getBinder() { return binder;}
 
-//    Stream<HasValue<?, ?>> errorFields = binder.validate().getBeanValidationErrors().stream()
-//                    .map(BindingValidationStatus::getField);
-//    public Stream<HasValue<?, ?>> validate() {
-//        return Stream.concat(errorFields, itemsEditor.validate());
-    //   }
+    public Stream<HasValue<?, ?>> validate() {
+        Stream<HasValue<?, ?>> errorFields = binder.validate().getFieldValidationErrors().stream()
+                .map(BindingValidationStatus::getField);
+
+        return errorFields /*Stream.concat(errorFields, itemsEditor.validate())*/;
+    }
 
     public Registration addCancelListener(ComponentEventListener<CancelEvent> listener) {
         return addListener(CancelEvent.class, listener);
@@ -271,9 +263,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         return null;
     }
 
-//    private boolean hasChanges(){
-//        return getBinder().hasChanges();     // itemEditor.hasChanges();
-//    }
+    public boolean hasChanges(){
+        return getBinder().hasChanges();     // itemEditor.hasChanges();
+    }
 
     @Override
     public HasText getTitle() {
@@ -304,9 +296,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         binder.readBean(null);
         invoiceEditor.setValue(null);
         needInvoice.setValue(false);
-
-
-//        itemsEditor.setValue(null);
     }
 
     private void invoiceDateChange(InvoiceEditor editor, LocalDate value) {

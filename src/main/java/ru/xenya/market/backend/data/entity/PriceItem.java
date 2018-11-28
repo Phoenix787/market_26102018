@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import ru.xenya.market.backend.data.Service;
 import ru.xenya.market.backend.data.Unit;
+import ru.xenya.market.ui.utils.converters.CurrencyFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -90,6 +91,6 @@ public class PriceItem extends AbstractEntity {
 
     @Override
     public String toString() {
-        return name + ' ' + price.toString();
+        return name + "  " + new CurrencyFormatter().encode(price);
     }
 }

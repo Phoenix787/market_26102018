@@ -57,7 +57,10 @@ public class PricePresenter {
     }
 
     public void cancel(){
-        entityPresenter.cancel(()->close(), ()->view.setOpened(true));
+        entityPresenter.cancel(()->close(),
+                ()->{
+            view.setOpened(true);
+        });
     }
 
 
@@ -88,6 +91,7 @@ public class PricePresenter {
     public void close(){
         view.setOpened(false);
         view.getOpenedEditor().close();
+        view.getConfirmDialog().setOpened(false);
         view.navigateToMainView();
         entityPresenter.close();
     }

@@ -97,6 +97,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
                 presenter.cancel();
             }
         });
+       // confirmation.addCancelListener(e->{setOpened(true); confirmation.setOpened(false);});
     }
 
     private void setupGrid() {

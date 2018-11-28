@@ -14,24 +14,15 @@ import java.util.List;
 @Entity
 public class OrderItem extends AbstractEntity{
 
-   // @NotNull(message = "{market.price.required}")
-//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinColumn
-//    private Price pricePlan;
-
-//    @NotNull
-//    private Service service;
-//
-//    private Unit unit;
-
     //цена за единицу
+    // @NotNull(message = "{market.price.required}")
    @ManyToOne
 //    @JoinColumn
     private PriceItem price;
 
-//    @Min(1d)
-    //@NotNull
-    private Double quantity = 1d;
+    @Min(0)
+    @NotNull
+    private Integer quantity = 100;
 
     //скидка
     private Discount discount;
@@ -63,24 +54,13 @@ public class OrderItem extends AbstractEntity{
 
     }
 
-//    public Price getPricePlan() {
-//        return pricePlan;
-//    }
-//
-//    public void setPricePlan(Price pricePlan) {
-//        this.pricePlan = pricePlan;
-//    }
 
     public Service getService() {
         return price.getService();
     }
-    public void setService(Service service) { price.setService(service);
-    }
-//
-//    public void setService(Service service) {
-//        this.service = service;
-//    }
-//
+
+    public void setService(Service service) { price.setService(service);  }
+
     public Unit getUnit() {
         return price.getUnit();
     }
@@ -95,21 +75,13 @@ public class OrderItem extends AbstractEntity{
         this.price = price;
     }
 
-    public Double getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Double quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
-
-//    public Boolean getCash() {
-//        return cash;
-//    }
-//
-//    public void setCash(Boolean cash) {
-//        this.cash = cash;
-//    }
 
     public Discount getDiscount() {
         return discount;

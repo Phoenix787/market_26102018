@@ -68,6 +68,7 @@ public class PriceItemsEditor extends Div
         getElement().appendChild(editor.getElement());
         editor.addServiceListener(e -> serviceChanged(e.getSource(), e.getService()));
         editor.addNameListener(e -> setHasChanges(true));
+        editor.addPriceListener(e -> setHasChanges(true));
         editor.addUnitListener(e -> unitChanged(e.getSource(), e.getUnit()));
         editor.addDeleteListener(e->{
             PriceItemEditor priceItemEditor = e.getSource();

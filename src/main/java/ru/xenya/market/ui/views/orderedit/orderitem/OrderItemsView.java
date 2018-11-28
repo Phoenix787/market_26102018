@@ -21,6 +21,7 @@ import ru.xenya.market.backend.data.entity.OrderItem;
 import ru.xenya.market.backend.data.entity.Price;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.ui.dataproviders.PriceDataProvider;
+import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.UnitConverter;
 
 import java.util.ArrayList;
@@ -113,8 +114,9 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         grid.addColumn(OrderItem::getId).setHeader("#").setWidth("70px").setFlexGrow(0);
         grid.addColumn(OrderItem::getService).setWidth("150px").setHeader("Услуга").setFlexGrow(5);
         grid.addColumn(new ComponentRenderer<>(Div::new, (div, orderitem) -> div.setText(
-                Double.toString(orderitem.getQuantity()) + " " + unitConverter.encode(orderitem.getUnit()))
+                FormattingUtils.formatAsDouble(orderitem.getQuantity()) + " " + unitConverter.encode(orderitem.getUnit()))
         )).setWidth("100px").setHeader("Кол-во");
+
         grid.addColumn(orderItem -> Integer.toString(orderItem.getDates().size())).setHeader("Выходы").setWidth("50px");
         grid.addColumn(OrderItem::getTotalPrice).setHeader("Сумма").setWidth("70px");
         grid.addSelectionListener(

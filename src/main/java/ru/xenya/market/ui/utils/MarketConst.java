@@ -6,7 +6,7 @@ import java.util.Locale;
 
 public class MarketConst {
 
-    public static final Locale APP_LOCALE = new Locale.Builder().setLanguage("ru").setScript("Cyrl").build();
+    public static final Locale APP_LOCALE = new Locale("ru", "RU");
 
     public static final String PAGE_ROOT = "";
     public static final String PAGE_STOREFRONT = "storefront";
