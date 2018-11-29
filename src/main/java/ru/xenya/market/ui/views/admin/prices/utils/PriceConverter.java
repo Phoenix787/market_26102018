@@ -18,6 +18,9 @@ public class PriceConverter implements Converter<String, Integer> {
     @Override
     public Result<Integer> convertToModel(String presentationValue, ValueContext context) {
         try {
+            df.setGroupingUsed(true);
+            double doubleValue = df.parse(presentationValue).doubleValue();
+            int value = (int) (doubleValue * 100);
             return Result.ok((int) ((df.parse(presentationValue).doubleValue()) * 100));
         } catch (ParseException e) {
             return Result.error("Неправильное число");

@@ -38,8 +38,8 @@ import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.TemplateUtils;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 import ru.xenya.market.ui.views.orderedit.invoice.InvoiceEditor;
-import ru.xenya.market.ui.views.orderedit.invoice.ValueChangeEvent;
 import ru.xenya.market.ui.views.orderedit.orderitem.OrderItemsView;
+import ru.xenya.market.ui.views.orderedit.orderitem.ValueChangeEvent;
 
 import java.time.LocalDate;
 import java.util.Locale;
@@ -108,6 +108,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         invoiceEditor = new InvoiceEditor();
 
         cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
+        save.setEnabled(false);
         save.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
         delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
 
@@ -149,16 +150,24 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         ComponentUtil.addListener(orderItemsView, ValueChangeEvent.class, e -> save.setEnabled(true));
 
         binder.bind(orderItemsView, "items");
+        binder.addValueChangeListener(e->{
+            if (e.getOldValue() != null) {
+                save.setEnabled(true);
+            }
+        });
 
 
 
         pricePlan.addValueChangeListener(e -> {
             Price price = e.getValue();
-            if (price != null) {
-                setDefaultPrice(price);
-                getModel().setPricePlan(DataProviderUtils.convertIfNotNull(price, Price::toString));
-            }
+            if (price != null && currentOrder != null) {
+                if (currentOrder.getItems().size()==0) {
+                    setDefaultPrice(price);
+                    getModel().setPricePlan(DataProviderUtils.convertIfNotNull(price, Price::toString));
+                    save.setEnabled(true);
+                }
 
+            }
         });
 
         pricePlan.setDataProvider(priceDataProvider);
@@ -175,6 +184,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     public void close() {
         setTotalPrice(0);
         invoiceEditor.clear();
+        save.setEnabled(false);
     }
 
 
@@ -186,6 +196,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         if (isNew) {
             order.setCustomer(currentCustomer);
             order.setPricePlan(defaultPrice);
+        }
+        else{
+            orderItemsView.setDefaultPrice(order.getPricePlan());
         }
 
         if (order.getInvoice() != null) {

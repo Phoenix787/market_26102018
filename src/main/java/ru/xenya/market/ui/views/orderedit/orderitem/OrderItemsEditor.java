@@ -13,6 +13,8 @@ import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.BindingValidationStatus;
+import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.TemplateModel;
@@ -29,9 +31,11 @@ import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.AmountConverter;
 import ru.xenya.market.ui.views.admin.prices.utils.PriceConverter;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A Designer generated component for the order-items-editor.html template.
@@ -113,6 +117,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private TextField heightField = new TextField("Высота");
     private Label label = new Label("X");
 
+    private boolean hasChanges = false;
 
 
     /**
@@ -151,6 +156,11 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         amount.setRequired(true);
         amount.setPattern("\\d+(\\,\\d?\\d?)?");
         amount.setPreventInvalidInput(true);
+        amount.addValueChangeListener(e -> {
+            if (!e.getValue().equals("")){
+                setPrice();
+            }
+        });
         binder.forField(amount)
                 .withConverter(new AmountConverter())
                 .bind("quantity");
@@ -205,7 +215,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
 
         cancel.addClickListener(e -> {
-            close();
+            setValue(this.currentOrderItem);
+            closeSilently();
             fireEvent(new CancelEvent(this, false));
         });
 
@@ -264,17 +275,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private Double countAmount(double width, double height) {
         return width * height;
     }
-//
-//    private List<PriceItem> getPriceItems(Unit unit) {
-//        List<PriceItem> prices;
-//        if (pricePlan.getValue() != null){
-//            prices = pricePlan.getValue().getItems()
-//                    .stream().filter(e-> e.getUnit().equals(unit)).collect(Collectors.toList());
-//        } else {
-//            prices = defaultPrice.getItems();
-//        }
-//        return prices;
-//    }
+
 
     private void setPrice() {
 //        int oldPrice = totalPrice;
@@ -288,7 +289,28 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 //        if (oldPrice != totalPrice){
 //            fireEvent(new PriceChangeEvent(this, oldPrice, totalPrice));
 //        }
+
+          int oldPrice = totalPrice;
+
+        String value = amount.getValue();
+        if (value.equals("")){
+            value = "0";
+        }
+        String replace = value.replace(',', '.');
+        Double selectedAmount = Double.parseDouble(replace);
+          PriceItem priceItem = priceCb.getValue();
+          totalPrice = 0;
+          if (priceItem != null) {
+              totalPrice = (int) (selectedAmount * priceItem.getPrice());
+        }
+        sum.setValue(FormattingUtils.formatAsCurrency(totalPrice));
+//        totalPriceDiv.setText(FormattingUtils.formatAsCurrency(totalPrice));
+        if (oldPrice != totalPrice){
+            fireEvent(new PriceChangeEvent(this, oldPrice, totalPrice));
+        }
     }
+
+    //
 
     // private void setupGrid(ScheduleDateProvider provider) {
 //        grid.addColumn(new LocalDateRenderer<>(ScheduleDates::getDate,
@@ -346,6 +368,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         fieldSupport.setValue(value);
         binder.setBean(value);
         setPrice();
+        hasChanges=false;
     }
 
 
@@ -354,6 +377,11 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     }
 
     public void close() {
+        binder.setBean(null);
+        setTotalPrice(0);
+    }
+
+    public void closeSilently() {
         binder.setBean(null);
         setTotalPrice(0);
     }
@@ -408,10 +436,26 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         } else {
             serviceCb.setValue(entity.getService());
             unitCb.setValue(entity.getUnit());
+
             priceCb.setItems(getPriceItems(entity.getUnit(), entity.getService()));
         }
         setValue(entity);
 
+    }
+
+    public Stream<HasValue<?,?>> validate() {
+        return binder.validate().getFieldValidationErrors().stream().map(BindingValidationStatus::getField);
+    }
+
+    private void setHasChanges(boolean hasChanges) {
+        this.hasChanges = hasChanges;
+        if (hasChanges) {
+            fireEvent(new ValueChangeEventF(this));
+        }
+    }
+
+    public boolean getHasChanges() {
+        return hasChanges;
     }
 
     /**

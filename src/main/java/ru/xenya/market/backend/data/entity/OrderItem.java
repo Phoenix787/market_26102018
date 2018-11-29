@@ -35,7 +35,7 @@ public class OrderItem extends AbstractEntity{
     private List<ScheduleDates> dates;
 
     //сумма
-    private Integer totalPrice;
+    private Integer totalPrice = 0;
 
 
     public OrderItem() {

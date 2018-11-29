@@ -1,8 +1,6 @@
 package ru.xenya.market.ui.views.orderedit.orderitem;
 
-import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.HasValueAndElement;
-import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -80,6 +78,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         add.addClickListener(event -> createNew());
 
         editor.addSaveListener(e -> {
+
             if (oldOrderItem == null) {
                 save(editor.getValue(), true);
             } else {
@@ -95,9 +94,11 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         });
 
         editor.addCancelListener(e -> {
-            clear();
+            setHasChanges(false);
+          //  clear();
             dialog.setOpened(false);
         });
+
     }
 
     private void createNew() {
@@ -112,13 +113,13 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         UnitConverter unitConverter = new UnitConverter();
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.addColumn(OrderItem::getId).setHeader("#").setWidth("70px").setFlexGrow(0);
-        grid.addColumn(OrderItem::getService).setWidth("150px").setHeader("Услуга").setFlexGrow(5);
+        grid.addColumn(OrderItem::getService).setWidth("70px").setHeader("Услуга").setFlexGrow(5);
         grid.addColumn(new ComponentRenderer<>(Div::new, (div, orderitem) -> div.setText(
                 FormattingUtils.formatAsDouble(orderitem.getQuantity()) + " " + unitConverter.encode(orderitem.getUnit()))
-        )).setWidth("100px").setHeader("Кол-во");
+        )).setWidth("50px").setHeader("Кол-во");
 
         grid.addColumn(orderItem -> Integer.toString(orderItem.getDates().size())).setHeader("Выходы").setWidth("50px");
-        grid.addColumn(OrderItem::getTotalPrice).setHeader("Сумма").setWidth("70px");
+        grid.addColumn(orderItem->FormattingUtils.formatAsCurrency(orderItem.getTotalPrice())).setHeader("Сумма").setWidth("100px");
         grid.addSelectionListener(
                 e -> {
                     e.getFirstSelectedItem().ifPresent(entity -> {
@@ -131,7 +132,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
                     });
                 });
     }
-
+//
     @Override
     public List<OrderItem> getValue() {
         return fieldSupport.getValue();
@@ -175,6 +176,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 
     private void save(OrderItem entity, boolean isNew) {
       //  List<OrderItem> items = getValue().stream().filter(element -> element != oldOrderItem).collect(Collectors.toList());
+        setHasChanges(true);
         if (isNew) {
             setValue(Stream.concat(getValue().stream(), Stream.of(entity)).collect(Collectors.toList()));
         } else {
@@ -184,6 +186,19 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         dialog.setOpened(false);
     }
 
+    private void setHasChanges(boolean hasChanges) {
+        this.hasChanges = hasChanges;
+        if (hasChanges) {
+            fireEvent(new ru.xenya.market.ui.views.orderedit.orderitem.ValueChangeEvent(this));
+        }
+    }
+
+    public Stream<HasValue<?,?>> validate(){
+        return getChildren()
+                .filter(component -> fieldSupport.getValue().size() == 0)
+                .map(editor -> ((OrderItemsEditor) editor).validate())
+                .flatMap(hasValueStream -> hasValueStream);
+    }
 
     /**
      * This model binds properties between OrderItemsView and order-items-view.html
