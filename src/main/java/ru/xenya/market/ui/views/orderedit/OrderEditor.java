@@ -164,9 +164,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
                 if (currentOrder.getItems().size()==0) {
                     setDefaultPrice(price);
                     getModel().setPricePlan(DataProviderUtils.convertIfNotNull(price, Price::toString));
-                    save.setEnabled(true);
+                } else {
+                    pricePlan.setValue(e.getOldValue());
                 }
-
             }
         });
 
@@ -196,9 +196,15 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         if (isNew) {
             order.setCustomer(currentCustomer);
             order.setPricePlan(defaultPrice);
+            //pricePlan.setEnabled(true);
+            pricePlan.setReadOnly(false);
         }
         else{
             orderItemsView.setDefaultPrice(order.getPricePlan());
+            if (order.getItems().size() != 0) {
+//                pricePlan.setEnabled(false);
+                pricePlan.setReadOnly(true);
+            }
         }
 
         if (order.getInvoice() != null) {
@@ -217,7 +223,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         title.setVisible(isNew);
         metaContainer.setVisible(!isNew);
         customerName.setValue(order.getCustomer().getFullName());
-        pricePlan.setValue(order.getPricePlan());
+      //  pricePlan.setValue(order.getPricePlan());
 
         if (order.getOrderState() != null) {
             getModel().setStatus(order.getOrderState().name());

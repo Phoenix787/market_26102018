@@ -8,8 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class OrderItem extends AbstractEntity{
@@ -27,9 +26,9 @@ public class OrderItem extends AbstractEntity{
     //скидка
     private Discount discount;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @ManyToMany(/*cascade = CascadeType.MERGE,*/cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REMOVE}, fetch = FetchType.EAGER)
 //    @OrderColumn
-    @JoinColumn
+ //   @JoinColumn
 //    @NotEmpty
 //    @Valid
     private List<ScheduleDates> dates;
@@ -51,6 +50,7 @@ public class OrderItem extends AbstractEntity{
     public OrderItem(OrderItem other) {
         this();
         this.price = other.price;
+        //нужно копировать Set дат
 
     }
 

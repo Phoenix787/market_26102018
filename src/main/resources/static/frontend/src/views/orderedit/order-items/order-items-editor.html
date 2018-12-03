@@ -5,11 +5,11 @@
 <link rel="import" href="../../../../bower_components/vaadin-radio-button/src/vaadin-radio-group.html">
 <link rel="import" href="../../../../bower_components/vaadin-ordered-layout/src/vaadin-horizontal-layout.html">
 <link rel="import" href="../../../components/amount-field.html">
+<link rel="import" href="../../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
+<link rel="import" href="../../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
+<link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-item.html">
 <link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid.html">
 <link rel="import" href="../../../components/selected-dates.html">
-<link rel="import" href="../../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
-<link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-item.html">
-<link rel="import" href="../../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
 
 <dom-module id="order-items-editor">
     <template>
@@ -57,18 +57,23 @@
   <span>Позиция #<span id="ItemId"></span></span>
  </div>
  <vaadin-form-layout id="form1">
-  <vaadin-form-layout id="form2">
+  <vaadin-form-layout id="form2" colspan="2">
+   <div colspan="3"></div>
    <vaadin-combo-box items="[[items]]" id="service" class="service" style="margin-right:1em;" label="Услуга"></vaadin-combo-box>
    <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения"></vaadin-combo-box>
    <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена" colspan="2" property=""></vaadin-combo-box>
+   <vaadin-form-item colspan="2">
+    <vaadin-text-field id="amount" label="Количество"></vaadin-text-field>
+    <vaadin-text-field id="summ" label="Сумма"></vaadin-text-field>
+    <vaadin-button>
+      [[autosum]] 
+    </vaadin-button>
+    <selected-dates id="dates"></selected-dates>
+   </vaadin-form-item>
   </vaadin-form-layout>
   <vaadin-form-layout id="form3">
-   <vaadin-form-item>
-    <vaadin-text-field id="amount" label="Количество"></vaadin-text-field>
-   </vaadin-form-item>
-   <vaadin-form-item>
-    <vaadin-text-field id="summ" label="Сумма"></vaadin-text-field>
-   </vaadin-form-item>
+   <div></div>
+   <vaadin-grid items="[[items]]" id="grid"></vaadin-grid>
   </vaadin-form-layout>
   <!--<vaadin-form-layout id="form3">-->
   <!--<label style="font-size: var(&#45;&#45;lumo-font-size-xs);">Даты заказа</label>-->
@@ -111,7 +116,11 @@
                     // Declare your properties here.
                     buttonText: {
                     type: String
+                    },
+                    autosum: {
+                    type: String
                     }
+
                 };
             }
 
@@ -121,15 +130,15 @@
         // Not using attributes since Designer does not support single-quote attributes
         this.$.form1.responsiveSteps = [
           {columns: 1, labelsPosition: 'top'},
-          {minWidth: '600px', columns: 1, labelsPosition: 'top'}
+          {minWidth: '600px', columns: 3, labelsPosition: 'top'}
         ];
         this.$.form2.responsiveSteps = [
           {columns: 1, labelsPosition: 'top'},
           {minWidth: '360px', columns: 3, labelsPosition: 'top'}
         ];
         this.$.form3.responsiveSteps = [
-          {columns: 1, labelsPosition: 'top'},
-          {minWidth: '500px', columns: 3, labelsPosition: 'top'}
+          {columns: 1},
+          {minWidth: '500px', columns: 1}
         ];
       }
         }

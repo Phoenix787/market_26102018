@@ -1,6 +1,5 @@
 package ru.xenya.market.ui.views.admin.prices.utils;
 
-import com.vaadin.data.Result;
 import org.junit.Test;
 import ru.xenya.market.ui.utils.MarketConst;
 

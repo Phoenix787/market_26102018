@@ -4,6 +4,7 @@ import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.TemplateModel;
@@ -12,12 +13,12 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import ru.xenya.market.backend.data.entity.ScheduleDates;
 import ru.xenya.market.backend.service.ScheduleDatesService;
+import ru.xenya.market.ui.dataproviders.DataProviderUtils;
+import ru.xenya.market.ui.utils.FormattingUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,55 +39,64 @@ public class SelectedDates extends PolymerTemplate<SelectedDates.SelectedDatesMo
 
     @Id("div")
     private Div div;
-    @Id("grid")
-    private Grid<ScheduleDates> grid;
 
+    private final AbstractFieldSupport<SelectedDates, List<ScheduleDates>> fieldSupport;
+    /*@Id("grid")
+    private Grid<ScheduleDates> grid;
+*/
     /**
      * Creates a new SelectedDates.
      * @param datesService
      */
     public SelectedDates(ScheduleDatesService datesService) {
+        this.fieldSupport = new AbstractFieldSupport<>(this, Collections.emptyList(), Objects::equals, c ->  {});
         this.datesService = datesService;
-        // You can initialise any data required for the connected UI components here.
-        grid.setSelectionMode(Grid.SelectionMode.MULTI);
-        grid.addColumn(ScheduleDates::getDate);
-        grid.setItems(datesService.findDatesAfterCurrent(LocalDate.now()));
+//        // You can initialise any data required for the connected UI components here.
+//        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+//        grid.addColumn(ScheduleDates::getDate);
+//        grid.setItems(datesService.findDatesAfterCurrent(LocalDate.now()));
     }
 
     @Override
     public void setValue(List<ScheduleDates> value) {
+        fieldSupport.setValue(value);
         currentDates = value;
-        List<ScheduleDates> temp;
-        if (currentDates != null && currentDates.size() > 0){
-              temp = datesService.findDatesAfterCurrent(currentDates.get(currentDates.size()-1).getDate());
-               currentDates.addAll(temp);
-            grid.setItems(currentDates);
-            for (ScheduleDates date : value) {
-                grid.select(date);
-            }
-            div.setText(value.stream()
+        if (value != null) {
+            div.setText(currentDates.stream()
                     .map(ScheduleDates::getDate)
-                    .map(e->e.format(DateTimeFormatter.ISO_LOCAL_DATE))
+                    .sorted((Comparator.naturalOrder()))
+                    .map(e->e.format(FormattingUtils.FULL_DAY_FORMATTER))
                     .collect(Collectors.joining(", ")));
-        }else{
-            currentDates = datesService.findDatesAfterCurrent(LocalDate.now());
-            grid.setItems(currentDates);
         }
+
+//        if (currentDates != null && currentDates.size() > 0){
+//              temp = datesService.findDatesAfterCurrent(currentDates.get(currentDates.size()-1).getDate());
+//               currentDates.addAll(temp);
+//            grid.setItems(currentDates);
+//            for (ScheduleDates date : value) {
+//                grid.select(date);
+//            }
+//            div.setText(value.stream()
+//                    .map(ScheduleDates::getDate)
+//                    .map(e->e.format(DateTimeFormatter.ISO_LOCAL_DATE))
+//                    .collect(Collectors.joining(", ")));
+//        }else{
+//            currentDates = datesService.findDatesAfterCurrent(LocalDate.now());
+//            grid.setItems(currentDates);
+//        }
 
 
     }
 
     @Override
     public List<ScheduleDates> getValue() {
-//        List<String> temp = Stream.of(div.getText().split(",")).collect(Collectors.toList());
-//        List<LocalDate> result = temp.stream().map(LocalDate::parse).collect(Collectors.toList());
-////найти объекты в dateservice и поместить из в результирующий list<scheduledates>
-        return new ArrayList<>(grid.asMultiSelect().getValue());
+        return fieldSupport.getValue();
     }
 
     @Override
     public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<SelectedDates, List<ScheduleDates>>> listener) {
-        return grid.asMultiSelect().addValueChangeListener((ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<Grid<ScheduleDates>, Set<ScheduleDates>>>) listener);
+        return fieldSupport.addValueChangeListener(listener);
+               // grid.asMultiSelect().addValueChangeListener((ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<Grid<ScheduleDates>, Set<ScheduleDates>>>) listener);
     }
 
 

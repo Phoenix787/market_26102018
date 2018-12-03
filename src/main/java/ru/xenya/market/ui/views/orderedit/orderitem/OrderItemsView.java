@@ -18,7 +18,9 @@ import org.springframework.context.annotation.Scope;
 import ru.xenya.market.backend.data.entity.OrderItem;
 import ru.xenya.market.backend.data.entity.Price;
 import ru.xenya.market.backend.data.entity.User;
+import ru.xenya.market.backend.service.ScheduleDatesService;
 import ru.xenya.market.ui.dataproviders.PriceDataProvider;
+import ru.xenya.market.ui.dataproviders.ScheduleDateProvider;
 import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.UnitConverter;
 
@@ -60,9 +62,9 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     /**
      * Creates a new OrderItemsView.
      */
-    public OrderItemsView(/*OrderItemsEditor editor,*/PriceDataProvider priceDataProvider, User user) {
+    public OrderItemsView(/*OrderItemsEditor editor,*/PriceDataProvider priceDataProvider, ScheduleDateProvider provider, ScheduleDatesService datesService, User user) {
         currentUser = user;
-        this.editor = new OrderItemsEditor();
+        this.editor = new OrderItemsEditor(provider, datesService);
         setDefaultPrice(priceDataProvider.getDefaultPrice());
 
         this.fieldSupport = new AbstractFieldSupport<>(this, new ArrayList<>(),
