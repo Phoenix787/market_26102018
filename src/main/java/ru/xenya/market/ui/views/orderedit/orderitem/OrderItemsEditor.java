@@ -5,22 +5,24 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
-import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.TemplateModel;
+import ru.xenya.market.backend.data.Discount;
 import ru.xenya.market.backend.data.Service;
 import ru.xenya.market.backend.data.Unit;
 import ru.xenya.market.backend.data.entity.OrderItem;
@@ -28,7 +30,6 @@ import ru.xenya.market.backend.data.entity.Price;
 import ru.xenya.market.backend.data.entity.PriceItem;
 import ru.xenya.market.backend.data.entity.ScheduleDates;
 import ru.xenya.market.backend.service.ScheduleDatesService;
-import ru.xenya.market.ui.components.PriceItemField;
 import ru.xenya.market.ui.components.SelectedDates;
 import ru.xenya.market.ui.dataproviders.ScheduleDateProvider;
 import ru.xenya.market.ui.events.CancelEvent;
@@ -36,9 +37,9 @@ import ru.xenya.market.ui.events.DeleteEvent;
 import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.AmountConverter;
+import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 import ru.xenya.market.ui.views.admin.prices.utils.PriceConverter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -73,6 +74,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
 //    private final OrderItemPresenter presenter;
     private final ScheduleDatesService datesService;
+    private final ScheduleDateProvider dateProvider;
 
 //    @Id("selectedDates")
 //    private Div selectedDates;
@@ -80,8 +82,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 //    @Id("selected")
 //    private Span selected;
 //
-//    @Id("discount")
-//    private RadioButtonGroup<Discount> discountGroup;
+    @Id("discount")
+    private RadioButtonGroup<Discount> discountGroup;
 //
 //    @Id("dimensionsContainer")
 //    private Div dimensionsContainer;
@@ -94,6 +96,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private Span itemId;
     @Id("title")
     private H2 title;
+    @Id("selected")
+    private Span selected;
     @Id("service")
     private ComboBox<Service> serviceCb;
     @Id("unit")
@@ -104,6 +108,9 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private TextField amount;
     @Id("summ")
     private TextField sum;
+
+    @Id("autosum")
+    private Button autosum;
 
     @Id("delete")
     private Button delete;
@@ -129,6 +136,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private List<ScheduleDates> orderItemDates;
 
 
+
     /**
      * Creates a new OrderItemsEditor.
      */
@@ -137,6 +145,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
 //        this.presenter = presenter;
         this.datesService = datesService;
+        this.dateProvider = provider;
 //        this.priceService = priceService;
         this.fieldSupport = new AbstractFieldSupport<>(this, null,
                 Objects::equals, c -> {
@@ -163,6 +172,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         //priceCb.setItemLabelGenerator(PriceItem::getName);
 
         amount.setRequired(true);
+        amount.setRequiredIndicatorVisible(true);
         amount.setPattern("\\d+(\\,\\d?\\d?)?");
         amount.setPreventInvalidInput(true);
         amount.addValueChangeListener(e -> {
@@ -174,8 +184,15 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
                 .withConverter(new AmountConverter())
                 .bind("quantity");
 
+        sum.setRequired(true);
+        sum.setRequiredIndicatorVisible(true);
         binder.forField(sum).withConverter(new PriceConverter())
                 .bind("totalPrice");
+
+        autosum.addClickListener(e->{
+            sum.setValue(autosum.getText());
+        });
+        autosum.setIcon(VaadinIcon.ARROW_LEFT.create());
 
 
 //        widthField.addValueChangeListener(e-> heightField.setEnabled(true));
@@ -185,19 +202,10 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 //
 
 //
-//        binder.bind(discountGroup, "discount");
-//
-//       // amount.addValueChangeListener(e -> setPrice());
-//        binder.bind(amount, "quantity");
-//
+        binder.bind(discountGroup, "discount");
+
         binder.bind(dates, "dates");
 
-//
-//        ReadOnlyHasValue<List<ScheduleDates>> datesReadOnlyHasValue = new ReadOnlyHasValue<>(
-//                scheduleDates -> selectedDates.setText(scheduleDates.stream()
-//                        .map(ScheduleDates::getDate).map(e->e.format(DateTimeFormatter.ISO_LOCAL_DATE))
-//                        .collect(Collectors.joining(", "))));
-//        binder.forField(datesReadOnlyHasValue).bind(OrderItem::getDates, null);
 
         add.addClickListener(e -> {
             if (currentPriceItem != null) {
@@ -233,59 +241,56 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
 
     private void setPrice() {
-//        int oldPrice = totalPrice;
-//        Double selectedAmount = amount.getValue();
-//        PriceItem priceItem = price.getValue();
-//        totalPrice = 0;
-//        if (selectedAmount != null && priceItem != null) {
-//            totalPrice = (int) (selectedAmount * priceItem.getPrice());
-//        }
-//        totalPriceDiv.setText(FormattingUtils.formatAsCurrency(totalPrice));
-//        if (oldPrice != totalPrice){
-//            fireEvent(new PriceChangeEvent(this, oldPrice, totalPrice));
-//        }
-
-          int oldPrice = totalPrice;
+        int oldPrice = totalPrice;
+        Discount discount = discountGroup.getValue()!= null ? discountGroup.getValue() : Discount.none;
 
         String value = amount.getValue();
-        if (value.equals("")){
+        if (value.equals("")) {
             value = "0";
         }
         String replace = value.replace(',', '.');
-        Double selectedAmount = Double.parseDouble(replace);
-          PriceItem priceItem = priceCb.getValue();
-          totalPrice = 0;
-          if (priceItem != null) {
-              totalPrice = (int) (selectedAmount * priceItem.getPrice());
+        double selectedAmount = Double.parseDouble(replace);
+        PriceItem priceItem = priceCb.getValue();
+        totalPrice = 0;
+        int size = grid.getSelectionModel().getSelectedItems().size();
+
+        if (priceItem != null && size != 0) {
+            totalPrice = (int) (selectedAmount * priceItem.getPrice() * size);
         }
-        sum.setValue(FormattingUtils.formatAsCurrency(totalPrice));
+        switch (discount) {
+            case none:
+                break;
+            case ten: totalPrice = totalPrice - (totalPrice*10/100); break;
+            case twenty: totalPrice = totalPrice - (totalPrice*20/100); break;
+            case thirty: totalPrice = totalPrice - (totalPrice*30/100); break;
+        }
+        autosum.setText(FormattingUtils.formatAsCurrency(totalPrice));
 //        totalPriceDiv.setText(FormattingUtils.formatAsCurrency(totalPrice));
-        if (oldPrice != totalPrice){
+        if (oldPrice != totalPrice) {
             fireEvent(new PriceChangeEvent(this, oldPrice, totalPrice));
         }
     }
 
-    //
 
      private void setupGrid(ScheduleDateProvider provider) {
         grid.addColumn(new LocalDateRenderer<>(ScheduleDates::getDate,
-                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Дата").setWidth("100px").setFlexGrow(5);
-        grid.addColumn(ScheduleDates::getWeekDay).setHeader("День недели").setWidth("100px").setFlexGrow(5);
+                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Дата").setWidth("70px").setFlexGrow(5);
+        grid.addColumn(ScheduleDates::getWeekDay).setHeader("День недели").setWidth("70px").setFlexGrow(5);
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
         grid.asMultiSelect()
                 .addSelectionListener(event -> {
                     Set<ScheduleDates> selected = event.getAllSelectedItems();
                     dates.setValue(new ArrayList<>(selected));
-//                    selectedDates.setText(String.format(
-//                            "%s, Выбрано дат: %d",
-//                            event.getValue(),
-//                            selected.size()));
+                    setPrice();
+                    this.selected.setText((String.format(
+                            "Выбрано дат: %d",
+                            selected.size())));
                 });
 
 
-//        grid.setDataProvider(provider); //presenter.getDatesAfterNow()
-        grid.setItems(getDatesAfterCurrent(LocalDate.now()));
-
+//        grid.setItems(getDatesAfterCurrent(LocalDate.now()));
+        provider.setFilter(new LocalDateToStringEncoder().encode(LocalDate.now()));
+        grid.setDataProvider(provider);
        }
 
     private List<ScheduleDates> getDatesAfterCurrent(LocalDate date) {
@@ -293,9 +298,10 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     }
 
     private void setupDiscountGroup() {
-//        discountGroup.setItems(Discount.none, Discount.ten, Discount.twenty, Discount.thirty);
-//        //group.setRenderer(new TextRenderer<>(Person::getName));
-//        discountGroup.setRenderer(new TextRenderer<>(Discount::toString));
+        discountGroup.setItems(Discount.none, Discount.ten, Discount.twenty, Discount.thirty);
+        discountGroup.setValue(Discount.none);
+        discountGroup.addValueChangeListener(e -> setPrice());
+        discountGroup.setRenderer(new TextRenderer<>(Discount::toString));
     }
 
     private void setTotalPrice(int totalPrice) {

@@ -15,6 +15,7 @@ public interface ScheduleDatesRepository extends JpaRepository<ScheduleDates, Lo
     Page<ScheduleDates> findByDateAfter(LocalDate filterDate, Pageable page);
 
     int countByDate(String repositoryFilter);
+    int countByDate(LocalDate repositoryFilter);
 
     Page<ScheduleDates> findByDate(String filter, Pageable page);
 

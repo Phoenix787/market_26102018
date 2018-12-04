@@ -76,6 +76,11 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         dialog.setCloseOnOutsideClick(false);
         dialog.setCloseOnEsc(false);
 
+        dialog.setHeight("100%");
+        dialog.getElement().addAttachListener(event -> UI.getCurrent().getPage().executeJavaScript(
+                "$0.$.overlay.setAttribute('theme', 'right');", dialog.getElement()
+        ));
+
 
         add.addClickListener(event -> createNew());
 

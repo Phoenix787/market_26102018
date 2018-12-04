@@ -78,6 +78,14 @@ public class ScheduleDatesService /*implements FilterableCrudService<ScheduleDat
         }
     }
 
+    public long countAnyMatchingAfterDate(Optional<LocalDate> optionalFilterDate){
+        if (optionalFilterDate.isPresent()) {
+            return repository.countByDate(optionalFilterDate.get());
+        } else {
+            return repository.count();
+        }
+    }
+
 //    @Override
     public Page<ScheduleDates> findAnyMatching(Optional<String> filter, Pageable pageable) {
         if (filter.isPresent()) {
@@ -87,6 +95,8 @@ public class ScheduleDatesService /*implements FilterableCrudService<ScheduleDat
             return find(pageable);
         }
     }
+
+
 
     public Page<ScheduleDates> find(Pageable pageable) {
         return repository.findBy(pageable);

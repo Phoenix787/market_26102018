@@ -8,40 +8,43 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-public class OrderItem extends AbstractEntity{
+public class OrderItem extends AbstractEntity {
 
     //цена за единицу
-    // @NotNull(message = "{market.price.required}")
-   @ManyToOne
+    @NotNull(message = "{market.price.required}")
+    @ManyToOne
 //    @JoinColumn
     private PriceItem price;
 
-    @Min(0)
-    @NotNull
+    @Min(100)
+    @NotNull(message = "{market.price.required}")
     private Integer quantity = 100;
 
     //скидка
     private Discount discount;
 
-    @ManyToMany(/*cascade = CascadeType.MERGE,*/cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REMOVE}, fetch = FetchType.EAGER)
 //    @OrderColumn
- //   @JoinColumn
-//    @NotEmpty
+    //   @JoinColumn
+    @NotEmpty
 //    @Valid
     private List<ScheduleDates> dates;
 
     //сумма
+    @Min(1)
+    @NotNull(message = "{market.price.required}")
     private Integer totalPrice = 0;
 
 
     public OrderItem() {
     }
 
-    public OrderItem(User createdBy){
-
+    public OrderItem(User createdBy) {
+        this.discount = Discount.none;
         this.dates = new ArrayList<>();
     }
 
@@ -59,13 +62,17 @@ public class OrderItem extends AbstractEntity{
         return price.getService();
     }
 
-    public void setService(Service service) { price.setService(service);  }
+    public void setService(Service service) {
+        price.setService(service);
+    }
 
     public Unit getUnit() {
         return price.getUnit();
     }
 
-    public void setUnit(Unit unit) { price.setUnit(unit);  }
+    public void setUnit(Unit unit) {
+        price.setUnit(unit);
+    }
 
     public PriceItem getPrice() {
         return price;

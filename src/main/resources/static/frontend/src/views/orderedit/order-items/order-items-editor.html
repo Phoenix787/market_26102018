@@ -10,6 +10,7 @@
 <link rel="import" href="../../../../bower_components/vaadin-form-layout/src/vaadin-form-item.html">
 <link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid.html">
 <link rel="import" href="../../../components/selected-dates.html">
+<link rel="import" href="../../../../bower_components/vaadin-radio-button/src/vaadin-radio-button.html">
 
 <dom-module id="order-items-editor">
     <template>
@@ -40,50 +41,83 @@
         line-height: 2.5em;
       }
       .status {
-             width: 30em;
+             width: 100%;
          }
 
          .service {
              width: 18em;
          }
 
+         .dates {
+            border-top:1px solid var(--lumo-contrast-30pct);
+            padding:0.5em;
+         }
+
+         .small-font{
+            font-size: var(--lumo-font-size-s);
+         }
+
+         .label {
+            color: var(--lumo-secondary-text-color);
+            font-weight: bold;
+         }
 
 
 
-</style>
+
+
+        </style>
 <div id="main" class="scrollable flex1">
  <h2 id="title">Новая позиция заказа</h2>
  <div id="metaContainer" class="dim">
   <span>Позиция #<span id="ItemId"></span></span>
  </div>
  <vaadin-form-layout id="form1">
-  <vaadin-form-layout id="form2" colspan="2">
-   <div colspan="3"></div>
-   <vaadin-combo-box items="[[items]]" id="service" class="service" style="margin-right:1em;" label="Услуга"></vaadin-combo-box>
-   <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения"></vaadin-combo-box>
-   <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена" colspan="2" property=""></vaadin-combo-box>
-   <vaadin-form-item colspan="2">
-    <vaadin-text-field id="amount" label="Количество"></vaadin-text-field>
-    <vaadin-text-field id="summ" label="Сумма"></vaadin-text-field>
-    <vaadin-button>
+  <vaadin-form-layout id="form2" colspan="7">
+   <vaadin-form-item colspan="16">
+    <vaadin-combo-box items="[[items]]" id="service" style="margin-right:1em;" label="Услуга" colspan=""></vaadin-combo-box>
+    <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения" colspan=""></vaadin-combo-box>
+   </vaadin-form-item>
+   <vaadin-form-item colspan="16" style="margin-top:0;">
+    <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена" property="" property1="" property2=""></vaadin-combo-box>
+   </vaadin-form-item>
+   <vaadin-form-item colspan="16">
+    <vaadin-text-field id="amount" label="Количество" colspan="" style="width:7em;"></vaadin-text-field>
+    <vaadin-text-field id="summ" label="Сумма" colspan="" class="self-start" style="width:9em;"></vaadin-text-field>
+    <vaadin-button id="autosum" colspan="" theme="success" class="self-start">
       [[autosum]] 
     </vaadin-button>
-    <selected-dates id="dates"></selected-dates>
+   </vaadin-form-item>
+   <vaadin-form-item colspan="4">
+    <span colspan="4" class="small-font label">Скидка</span>
+    <vaadin-radio-group value="value" id="discount" property="" class="small-font" colspan="4">
+     <vaadin-radio-button value="value" checked>
+       Нет 
+     </vaadin-radio-button>
+     <vaadin-radio-button value="value">
+       10% 
+     </vaadin-radio-button>
+     <vaadin-radio-button value="value">
+       20% 
+     </vaadin-radio-button>
+     <vaadin-radio-button value="value">
+       30% 
+     </vaadin-radio-button>
+    </vaadin-radio-group>
+   </vaadin-form-item>
+   <vaadin-form-item class="meta-row" colspan="12">
+    <div>
+     <span id="selected" class="label small-font"></span>
+     <selected-dates id="dates" class="dates" colspan="12"></selected-dates>
+    </div>
    </vaadin-form-item>
   </vaadin-form-layout>
-  <vaadin-form-layout id="form3">
+  <vaadin-form-layout id="form3" colspan="5">
    <div></div>
-   <vaadin-grid items="[[items]]" id="grid"></vaadin-grid>
+   <label style="font-size: var(--lumo-font-size-xs);">Даты заказа</label>
+   <vaadin-grid items="[[items]]" id="grid" style="font-size: var(--lumo-font-size-s);" property=""></vaadin-grid>
   </vaadin-form-layout>
-  <!--<vaadin-form-layout id="form3">-->
-  <!--<label style="font-size: var(&#45;&#45;lumo-font-size-xs);">Даты заказа</label>-->
-  <!--<selected-dates id="dates"></selected-dates>-->
-  <!--<vaadin-grid items="[[items]]" id="grid"></vaadin-grid>-->
-  <!--</vaadin-form-layout>-->
  </vaadin-form-layout>
- <!--<div id="selectedDates" style="width: 40em; height: 35em;font-size:0.8em;">-->
- <!--<span id="selected"></span>-->
- <!--</div>-->
  <!--<vaadin-horizontal-layout>-->
  <!--<div id="dimensionsContainer"></div>-->
  <!--<amount-field id="amount" max="9007199254740991" label="Количество"></amount-field>-->
@@ -130,11 +164,11 @@
         // Not using attributes since Designer does not support single-quote attributes
         this.$.form1.responsiveSteps = [
           {columns: 1, labelsPosition: 'top'},
-          {minWidth: '600px', columns: 3, labelsPosition: 'top'}
+          {minWidth: '600px', columns: 12}
         ];
         this.$.form2.responsiveSteps = [
           {columns: 1, labelsPosition: 'top'},
-          {minWidth: '360px', columns: 3, labelsPosition: 'top'}
+          {minWidth: '360px', columns: 16, labelsPosition: 'top'}
         ];
         this.$.form3.responsiveSteps = [
           {columns: 1},
@@ -143,5 +177,6 @@
       }
         }
         customElements.define(OrderItemsEditor.is, OrderItemsEditor);
+
     </script>
 </dom-module>
