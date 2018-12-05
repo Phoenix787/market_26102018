@@ -19,7 +19,6 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@org.springframework.transaction.annotation.Transactional
 @Service
 public class OrderService implements FilterableCrudService<Order> {
 

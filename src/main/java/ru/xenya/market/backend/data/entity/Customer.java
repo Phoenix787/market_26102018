@@ -24,7 +24,7 @@ public class Customer extends AbstractEntity {
     @Pattern(regexp = "^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$", message = "{market.phone.number.invalid")
     private String phoneNumberForSMS;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderColumn
     @JoinColumn
     //  @NotEmpty

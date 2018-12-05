@@ -96,6 +96,11 @@ public class Price extends AbstractEntity implements PriceSummary {
     }
 
     @Override
+    public String toString() {
+        return new LocalDateToStringEncoder().encode(date);
+    }
+
+    @Override
     public LocalDate getDate() {
         return date;
     }
@@ -127,11 +132,4 @@ public class Price extends AbstractEntity implements PriceSummary {
     public void setDefaultPrice(boolean defaultPrice) {
         this.defaultPrice = defaultPrice;
     }
-
-    @Override
-    public String toString() {
-        return new LocalDateToStringEncoder().encode(date);
-    }
-
-
 }

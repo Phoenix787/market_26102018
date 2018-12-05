@@ -27,7 +27,7 @@ public class OrderItem extends AbstractEntity {
     //скидка
     private Discount discount;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE}, fetch = FetchType.EAGER)
 //    @OrderColumn
     //   @JoinColumn
     @NotEmpty

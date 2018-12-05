@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@org.springframework.transaction.annotation.Transactional
 public class PriceService implements FilterableCrudService<Price> {
 
     private PriceRepository repository;

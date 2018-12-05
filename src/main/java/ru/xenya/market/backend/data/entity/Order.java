@@ -166,8 +166,4 @@ public class Order extends AbstractEntity {
                 ", pricePlan=" + pricePlan +
                 '}';
     }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof Order;
-    }
 }

@@ -25,6 +25,13 @@ public class OrderHistoryItem extends AbstractEntity {
     @NotNull
     private User createdBy;
 
+//    @java.beans.ConstructorProperties({"newState", "message", "timestamp", "createdBy"})
+//    public OrderHistoryItem(OrderState newState, @NotBlank @Size(max = 255) String message, @NotNull LocalDateTime timestamp, @NotNull User createdBy) {
+//        this.newState = newState;
+//        this.message = message;
+//        this.timestamp = timestamp;
+//        this.createdBy = createdBy;
+//    }
 
     public OrderHistoryItem() {
     }
@@ -68,4 +75,14 @@ public class OrderHistoryItem extends AbstractEntity {
     }
 
 
+
+
+
+    protected boolean canEqual(Object other) {
+        return other instanceof OrderHistoryItem;
+    }
+
+    public String toString() {
+        return "HistoryItem(newState=" + this.getNewState() + ", message=" + this.getMessage() + ", timestamp=" + this.getTimestamp() + ", createdBy=" + this.getCreatedBy() + ")";
+    }
 }
