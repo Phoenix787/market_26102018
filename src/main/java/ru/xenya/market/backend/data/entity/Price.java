@@ -16,10 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-@EqualsAndHashCode(callSuper = true)
 @Entity(name = "prices")
-@Data
-@AllArgsConstructor
 public class Price extends AbstractEntity implements PriceSummary {
 
     @NotNull(message = "{market.due.dueDate.required}")
@@ -31,7 +28,7 @@ public class Price extends AbstractEntity implements PriceSummary {
     @JoinColumn(name = "item_id")
     private List<PriceItem> itemsPrice;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     /*todo разобраться с lazy failed to lazily initialize a collection of role:
     ru.xenya.market.backend.data.entity.Price.history, could not initialize proxy -
      no Session
@@ -99,7 +96,42 @@ public class Price extends AbstractEntity implements PriceSummary {
     }
 
     @Override
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public List<PriceItem> getItemsPrice() {
+        return itemsPrice;
+    }
+
+    public void setItemsPrice(List<PriceItem> itemsPrice) {
+        this.itemsPrice = itemsPrice;
+    }
+
+    public List<HistoryItem> getHistory() {
+        return history;
+    }
+
+    public void setHistory(List<HistoryItem> history) {
+        this.history = history;
+    }
+
+    public boolean isDefaultPrice() {
+        return defaultPrice;
+    }
+
+    public void setDefaultPrice(boolean defaultPrice) {
+        this.defaultPrice = defaultPrice;
+    }
+
+    @Override
     public String toString() {
         return new LocalDateToStringEncoder().encode(date);
     }
+
+
 }

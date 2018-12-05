@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 @Service
+@org.springframework.transaction.annotation.Transactional
 public class CustomerService implements FilterableCrudService<Customer>{
 
     private CustomerRepository repository;

@@ -140,13 +140,12 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     /**
      * Creates a new OrderItemsEditor.
      */
-    public OrderItemsEditor(ScheduleDateProvider provider, ScheduleDatesService datesService/*OrderItemPresenter presenter, ScheduleDateProvider provider, ScheduleDatesService datesService, PriceService priceService*/) {
+    public OrderItemsEditor(ScheduleDateProvider provider, ScheduleDatesService datesService/*OrderItemPresenter presenter*/) {
         // You can initialise any data required for the connected UI components here.
 
 //        this.presenter = presenter;
         this.datesService = datesService;
         this.dateProvider = provider;
-//        this.priceService = priceService;
         this.fieldSupport = new AbstractFieldSupport<>(this, null,
                 Objects::equals, c -> {
         });
@@ -336,14 +335,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
                  grid.setItems(getDatesAfterCurrent(LocalDate.now()));
              }
 
-             //!getDatesAfterCurrent(LocalDate.now()).containsAll(orderItemDates)
-
-//             if (orderItemDates.get(orderItemDates.size()-1).getDate().isAfter(LocalDate.now())){
-//                 temp.addAll(getDatesAfterCurrent(orderItemDates.get(orderItemDates.size()-1).getDate()));
-//                 grid.setItems(temp);
-//
-//             }
-             setGridData(orderItemDates);
+            setGridData(orderItemDates);
          } else {
              grid.setItems(getDatesAfterCurrent(LocalDate.now()));
          }
