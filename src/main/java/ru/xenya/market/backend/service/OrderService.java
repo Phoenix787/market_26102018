@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@org.springframework.transaction.annotation.Transactional
 public class OrderService implements FilterableCrudService<Order> {
 
     private OrderRepository orderRepository;
@@ -35,8 +36,8 @@ public class OrderService implements FilterableCrudService<Order> {
     }
 
     LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
-    OrderStateConverter orderStateConverter = new OrderStateConverter();
-    PaymentConverter paymentConverter = new PaymentConverter();
+    private OrderStateConverter orderStateConverter = new OrderStateConverter();
+    private PaymentConverter paymentConverter = new PaymentConverter();
 
     public OrderService(OrderRepository orderRepository) {
         super();

@@ -146,7 +146,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             }
         }
 
-        ComponentUtil.addListener(invoiceEditor, ValueChangeEvent.class, e -> save.setEnabled(true));
+        ComponentUtil.addListener(invoiceEditor, ru.xenya.market.ui.views.orderedit.invoice.ValueChangeEvent.class, e -> save.setEnabled(true));
         ComponentUtil.addListener(orderItemsView, ValueChangeEvent.class, e -> save.setEnabled(true));
 
         binder.bind(orderItemsView, "items");
@@ -179,6 +179,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     private void addInvoice(Boolean value) {
         invoiceEditor.setInvoiceEnabled(value);
+        invoiceEditor.setHasChanges(true);
     }
 
     public void close() {
@@ -196,6 +197,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         if (isNew) {
             order.setCustomer(currentCustomer);
             order.setPricePlan(defaultPrice);
+            invoiceEditor.setEnabled(false);
             //pricePlan.setEnabled(true);
             pricePlan.setReadOnly(false);
         }
@@ -331,6 +333,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         editor.setHasChanges(true);
         editor.getCurrentInvoice().setNumberInvoice(value);
         editor.setValue(editor.getCurrentInvoice());
+        editor.setHasChanges(true);
     }
 
     public void setDefaultPrice(Price defaultPrice) {
