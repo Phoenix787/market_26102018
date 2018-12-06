@@ -17,9 +17,11 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
+import com.vaadin.flow.data.validator.BeanValidator;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import ru.xenya.market.backend.data.Discount;
@@ -169,6 +171,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
                 .withProperty("price", i->FormattingUtils.formatAsCurrency(i.getPrice()) /*PriceItem::getPrice*/)
                 .withProperty("name", PriceItem::getName));
         priceCb.setAllowCustomValue(false);
+        priceCb.setRequired(true);
         //priceCb.setItemLabelGenerator(PriceItem::getName);
 
         amount.setRequired(true);
@@ -182,6 +185,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         });
         binder.forField(amount)
                 .withConverter(new AmountConverter())
+                .withValidator(i -> i > 0, "Количество должно быть больше 0")
                 .bind("quantity");
 
         sum.setRequired(true);
@@ -356,14 +360,18 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         binder.setBean(null);
     }
 
+    public void write(OrderItem orderItem) throws ValidationException {
+        binder.writeBean(orderItem);
+    }
+
     public void close() {
-        binder.setBean(null);
+        binder.readBean(null);
         grid.asMultiSelect().deselectAll();
         setTotalPrice(0);
     }
 
     public void closeSilently() {
-        binder.setBean(null);
+        binder.readBean(null);
         grid.asMultiSelect().deselectAll();
         setTotalPrice(0);
     }

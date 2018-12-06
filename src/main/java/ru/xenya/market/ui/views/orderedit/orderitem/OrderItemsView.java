@@ -7,8 +7,10 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -23,6 +25,7 @@ import ru.xenya.market.ui.dataproviders.PriceDataProvider;
 import ru.xenya.market.ui.dataproviders.ScheduleDateProvider;
 import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.UnitConverter;
+import ru.xenya.market.ui.utils.messages.CrudErrorMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,13 +187,22 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     private void save(OrderItem entity, boolean isNew) {
       //  List<OrderItem> items = getValue().stream().filter(element -> element != oldOrderItem).collect(Collectors.toList());
         setHasChanges(true);
-        if (isNew) {
-            setValue(Stream.concat(getValue().stream(), Stream.of(entity)).collect(Collectors.toList()));
-        } else {
-            setValue(getValue());
-            oldOrderItem = null;
+        List<HasValue<?, ?>> fields = editor.validate().collect(Collectors.toList());
+        if (fields.isEmpty()){
+            if (writeEntity(entity)){
+                if (isNew) {
+                    setValue(Stream.concat(getValue().stream(), Stream.of(entity)).collect(Collectors.toList()));
+                } else {
+                    setValue(getValue());
+                    oldOrderItem = null;
+                }
+                dialog.setOpened(false);
+            }
+        } else if (fields.get(0) instanceof Focusable) {
+            ((Focusable<?>) fields.get(0)).focus();
         }
-        dialog.setOpened(false);
+
+
     }
 
     private void setHasChanges(boolean hasChanges) {
@@ -213,4 +225,18 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     public interface OrderItemsViewModel extends TemplateModel {
         // Add setters and getters for template properties here.
     }
+
+    public boolean writeEntity(OrderItem entity) {
+        try {
+            editor.write(entity);
+            return true;
+        } catch (ValidationException e) {
+            Notification.show(CrudErrorMessage.REQUIRED_FIELDS_MISSING);
+            return false;
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+
+
 }

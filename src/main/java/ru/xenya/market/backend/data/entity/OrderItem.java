@@ -5,6 +5,7 @@ import ru.xenya.market.backend.data.Service;
 import ru.xenya.market.backend.data.Unit;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -17,11 +18,13 @@ public class OrderItem extends AbstractEntity {
     //цена за единицу
     @NotNull(message = "{market.price.required}")
     @ManyToOne
+    @Valid
 //    @JoinColumn
     private PriceItem price;
 
-    @Min(100)
-    @NotNull(message = "{market.price.required}")
+    @Min(value = 100, message = "{market.quantity.required}" )
+    @NotNull(message = "{market.quantity.required}")
+    @Valid
     private Integer quantity = 100;
 
     //скидка
@@ -31,12 +34,13 @@ public class OrderItem extends AbstractEntity {
 //    @OrderColumn
     //   @JoinColumn
     @NotEmpty
-//    @Valid
+    @Valid
     private List<ScheduleDates> dates;
 
     //сумма
     @Min(1)
-    @NotNull(message = "{market.price.required}")
+    @NotNull(message = "{market.price.limits}")
+    @Valid
     private Integer totalPrice = 0;
 
 

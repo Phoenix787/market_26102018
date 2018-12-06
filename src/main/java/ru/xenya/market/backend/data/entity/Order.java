@@ -6,6 +6,7 @@ import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.Payment;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class Order extends AbstractEntity {
     @OrderColumn
     @JoinColumn
 //    @NotEmpty
-//    @Valid
+    @Valid
     private List<OrderItem> items;
 //    //множество позиций платежей
 
@@ -165,5 +166,9 @@ public class Order extends AbstractEntity {
                 ", customer=" + customer +
                 ", pricePlan=" + pricePlan +
                 '}';
+    }
+
+    public Integer getTotalPrice(){
+        return items.stream().map(i -> i.getTotalPrice()).reduce(0, Integer::sum);
     }
 }

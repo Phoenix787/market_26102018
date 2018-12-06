@@ -42,8 +42,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.stream.Stream;
 
-//todo попробовать сделать страницу похожую на reviewList в buddyApp
-//todo разобраться с удалением и сохранением заказов
 
 @Tag("orders-view-of-customer")
 @HtmlImport("src/views/orderedit/orders-view-of-customer.html")

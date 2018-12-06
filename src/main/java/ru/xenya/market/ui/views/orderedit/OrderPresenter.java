@@ -1,5 +1,6 @@
 package ru.xenya.market.ui.views.orderedit;
 
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -14,8 +15,10 @@ import ru.xenya.market.backend.service.OrderService;
 import ru.xenya.market.backend.service.PriceService;
 import ru.xenya.market.ui.crud.EntityPresenter;
 import ru.xenya.market.ui.utils.MarketConst;
+import ru.xenya.market.ui.utils.messages.CrudErrorMessage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @SpringComponent
@@ -163,26 +166,38 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     public void save() {
 
         currentOrder = entityPresenter.getEntity();
+        List<HasValue<?, ?>> fields = view.validate().collect(Collectors.toList());
+        if (fields.isEmpty()){
+            if(writeEntity(currentOrder)){
+                entityPresenter.save(e->{
+                    if (entityPresenter.isNew()){
+                        view.showCreatedNotification("Заказ");
+                        view.getGrid().setItems(updateList());
+                    } else {
+                        view.showUpdateNotification("Заказ # " + e.getId());
+                        view.getGrid().setItems(updateList());
+                    }
 
-        try {
-            view.write(currentOrder);
-        } catch (ValidationException e) {
-            e.printStackTrace();
+                    close();
+                });
+            }
+
         }
-        entityPresenter.save(e->{
-                if (entityPresenter.isNew()){
-                    view.showCreatedNotification("Заказ");
-                    view.getGrid().setItems(updateList());
-                } else {
-                    view.showUpdateNotification("Заказ # " + e.getId());
-                    view.getGrid().setItems(updateList());
-                }
 
-                close();
-            });
     }
 
 
+    private boolean writeEntity(Order order) {
+        try {
+            view.write(order);
+            return true;
+        } catch (ValidationException e) {
+            view.showError(CrudErrorMessage.REQUIRED_FIELDS_MISSING, false);
+            return false;
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
 
     public void delete(){
         entityPresenter.delete(e->{

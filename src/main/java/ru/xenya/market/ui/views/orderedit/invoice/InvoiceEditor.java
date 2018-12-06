@@ -62,7 +62,7 @@ public class InvoiceEditor extends PolymerTemplate<TemplateModel>
         fieldSupport.setValue(value);
         binder.setBean(value);
         boolean noDateSelected = value == null || value.getDateInvoice() == null;
-      //  invoiceNumber.setEnabled(!noDateSelected);
+        invoiceNumber.setEnabled(!noDateSelected);
     }
 
 

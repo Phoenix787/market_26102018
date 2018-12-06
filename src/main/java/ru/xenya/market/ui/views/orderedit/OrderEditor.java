@@ -179,7 +179,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     private void addInvoice(Boolean value) {
         invoiceEditor.setInvoiceEnabled(value);
-        invoiceEditor.setHasChanges(true);
+     //   invoiceEditor.setHasChanges(true);
     }
 
     public void close() {
@@ -197,14 +197,11 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         if (isNew) {
             order.setCustomer(currentCustomer);
             order.setPricePlan(defaultPrice);
-            invoiceEditor.setEnabled(false);
-            //pricePlan.setEnabled(true);
             pricePlan.setReadOnly(false);
         }
         else{
             orderItemsView.setDefaultPrice(order.getPricePlan());
             if (order.getItems().size() != 0) {
-//                pricePlan.setEnabled(false);
                 pricePlan.setReadOnly(true);
             }
         }
@@ -219,7 +216,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             createInvoice(null);
         }
 
-        binder.setBean(order);
+        binder.readBean(order);
         this.orderNumber.setText(isNew ? "" : order.getId().toString());
 
         title.setVisible(isNew);
@@ -234,7 +231,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             getModel().setPricePlan(new LocalDateToStringEncoder().encode(order.getPricePlan().getDate()));
         }
 
-//        save.setEnabled(false);
     }
 
     private void createInvoice(Invoice invoice) {
@@ -326,6 +322,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             invoice.setDateInvoice(value);
             invoice.setNumberInvoice("");
             editor.setValue(invoice);
+            editor.setHasChanges(true);
         }
     }
 
