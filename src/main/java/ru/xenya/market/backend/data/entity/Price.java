@@ -29,10 +29,6 @@ public class Price extends AbstractEntity implements PriceSummary {
     private List<PriceItem> itemsPrice;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    /*todo разобраться с lazy failed to lazily initialize a collection of role:
-    ru.xenya.market.backend.data.entity.Price.history, could not initialize proxy -
-     no Session
-    */
     @OrderColumn
     @JoinColumn
     private List<HistoryItem> history;

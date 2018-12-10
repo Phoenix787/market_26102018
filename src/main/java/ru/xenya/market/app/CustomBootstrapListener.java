@@ -4,6 +4,18 @@ import com.vaadin.flow.server.BootstrapListener;
 import com.vaadin.flow.server.BootstrapPageResponse;
 import org.jsoup.nodes.Element;
 
+/**
+ * **
+ *  * Modifies the Vaadin bootstrap page (the HTTP response) in order to
+ *  * <ul>
+ *  * <li>add service worker</li>
+ *  * <li>add a link to the web app manifest</li>
+ *  * <li>add links to favicons</li>
+ *  * </ul>
+ *
+ *  */
+
+
 public class CustomBootstrapListener implements BootstrapListener {
     @Override
     public void modifyBootstrapPage(BootstrapPageResponse response) {

@@ -21,9 +21,9 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
-import com.vaadin.flow.data.validator.BeanValidator;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.TemplateModel;
+import org.vaadin.olli.NumberInput;
 import ru.xenya.market.backend.data.Discount;
 import ru.xenya.market.backend.data.Service;
 import ru.xenya.market.backend.data.Unit;
@@ -106,6 +106,10 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private ComboBox<Unit> unitCb;
     @Id("price")
     private ComboBox<PriceItem> priceCb;
+
+    @Id("measureContainer")
+    private Div measureContainer;
+
     @Id("amount")
     private TextField amount;
     @Id("summ")
@@ -133,6 +137,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private TextField widthField = new TextField("Ширина");
     private TextField heightField = new TextField("Высота");
     private Label label = new Label("X");
+    private Button countAmountBtn = new Button(VaadinIcon.ARROW_DOWN.create());
 
     private boolean hasChanges = false;
     private List<ScheduleDates> orderItemDates;
@@ -153,7 +158,18 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
                 Objects::equals, c -> {
         });
 
-        heightField.setEnabled(false);
+        widthField.getElement().setAttribute("style", "margin-right:0.5em;");
+        label.getElement().setAttribute("style", "margin-right:0.5em;");
+        widthField.setWidth("6em");
+
+        heightField.getElement().setAttribute("style", "margin-light:0.5em; margin-right:0.5em;");
+        heightField.setWidth("6em");
+        widthField.addKeyPressListener(Key.ENTER, event->
+                heightField.focus()
+        );
+
+        measureContainer.add(widthField, label, heightField, countAmountBtn);
+        measureContainer.setVisible(false);
         setupDiscountGroup();
         setupGrid(provider);
         setAddButtonText("Добавить");
@@ -163,6 +179,17 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         unitCb.addValueChangeListener(e -> {
             List<PriceItem> priceItemList = getPriceItems(e.getValue(), serviceCb.getValue());
             priceCb.setItems(priceItemList);
+            if(e.getValue() != null){
+                if (e.getValue().equals(Unit.cm2)){
+                    measureContainer.setVisible(true);
+                    countAmountBtn.addClickListener(event->countAmount());
+                } else {
+                    measureContainer.setVisible(false);
+                    heightField.setValue("0");
+                    widthField.setValue("0");
+                }
+            }
+
         });
 
         binder.bind(priceCb, "price");
@@ -176,7 +203,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
         amount.setRequired(true);
         amount.setRequiredIndicatorVisible(true);
-        amount.setPattern("\\d+(\\,\\d?\\d?)?");
+     //   amount.setPattern("\\d+(\\,\\d?\\d?)?");
+        amount.setPattern("[0-9,]");
         amount.setPreventInvalidInput(true);
         amount.addValueChangeListener(e -> {
             if (!e.getValue().equals("")){
@@ -185,12 +213,17 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         });
         binder.forField(amount)
                 .withConverter(new AmountConverter())
-                .withValidator(i -> i > 0, "Количество должно быть больше 0")
+                .withValidator(i -> i > 0, "должно быть больше 0")
                 .bind("quantity");
+
+        binder.forField(widthField).withConverter(new AmountConverter()).bind("width");
+        binder.forField(heightField).withConverter(new AmountConverter()).bind("height");
 
         sum.setRequired(true);
         sum.setRequiredIndicatorVisible(true);
-        binder.forField(sum).withConverter(new PriceConverter())
+
+        binder.forField(sum)
+                .withConverter(new PriceConverter())
                 .bind("totalPrice");
 
         autosum.addClickListener(e->{
@@ -199,13 +232,6 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         autosum.setIcon(VaadinIcon.ARROW_LEFT.create());
 
 
-//        widthField.addValueChangeListener(e-> heightField.setEnabled(true));
-//        heightField.addValueChangeListener(e->
-//                        amount.setValue(countAmount(Double.parseDouble(widthField.getValue()),
-//                                Double.parseDouble(heightField.getValue()))));
-//
-
-//
         binder.bind(discountGroup, "discount");
 
         binder.bind(dates, "dates");
@@ -221,7 +247,6 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
 
         cancel.addClickListener(e -> {
-          //  setValue(this.currentOrderItem);
             closeSilently();
             fireEvent(new CancelEvent(this, false));
         });
@@ -239,8 +264,11 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
 
 
-    private Double countAmount(double width, double height) {
-        return width * height;
+    private void countAmount() {
+        Double width = getDoubleFromString(widthField.getValue());
+        Double height = getDoubleFromString(heightField.getValue());
+        int result = (int) (width * height * 100);
+        amount.setValue(FormattingUtils.formatAsDouble(result));
     }
 
 
@@ -252,8 +280,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         if (value.equals("")) {
             value = "0";
         }
-        String replace = value.replace(',', '.');
-        double selectedAmount = Double.parseDouble(replace);
+        double selectedAmount = getDoubleFromString(value);
         PriceItem priceItem = priceCb.getValue();
         totalPrice = 0;
         int size = grid.getSelectionModel().getSelectedItems().size();
@@ -275,8 +302,14 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         }
     }
 
+    private double getDoubleFromString(String value) {
+        String replace = value.replace(',', '.');
+        return Double.parseDouble(replace);
+    }
 
-     private void setupGrid(ScheduleDateProvider provider) {
+
+    private void setupGrid(ScheduleDateProvider provider) {
+        grid.setHeight("60vh");
         grid.addColumn(new LocalDateRenderer<>(ScheduleDates::getDate,
                 DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Дата").setWidth("70px").setFlexGrow(5);
         grid.addColumn(ScheduleDates::getWeekDay).setHeader("День недели").setWidth("70px").setFlexGrow(5);
@@ -339,17 +372,14 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
              } else{
                  grid.setItems(getDatesAfterCurrent(LocalDate.now()));
              }
-
-             //!getDatesAfterCurrent(LocalDate.now()).containsAll(orderItemDates)
-
-//             if (orderItemDates.get(orderItemDates.size()-1).getDate().isAfter(LocalDate.now())){
-//                 temp.addAll(getDatesAfterCurrent(orderItemDates.get(orderItemDates.size()-1).getDate()));
-//                 grid.setItems(temp);
-//
-//             }
              setGridData(orderItemDates);
          } else {
              grid.setItems(getDatesAfterCurrent(LocalDate.now()));
+         }
+
+         if (value.getHeight() == 0 || value.getHeight() == null){
+             heightField.setValue("0");
+             widthField.setValue("0");
          }
     }
 

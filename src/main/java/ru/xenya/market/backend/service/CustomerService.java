@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.CustomerRepository;
@@ -43,6 +44,7 @@ public class CustomerService implements FilterableCrudService<Customer>{
 
 
     @Override
+    @Transactional
     public Page<Customer> findAnyMatching(Optional<String> filter,
                                           Pageable pageable) {
 

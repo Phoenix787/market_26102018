@@ -3,6 +3,7 @@ package ru.xenya.market.backend.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.Payment;
 import ru.xenya.market.backend.data.entity.*;
@@ -20,8 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@org.springframework.transaction.annotation.Transactional
-public class OrderService implements FilterableCrudService<Order> {
+public class OrderService implements CrudService<Order> {
 
     private OrderRepository orderRepository;
     private Customer currentCustomer;
@@ -76,6 +76,7 @@ public class OrderService implements FilterableCrudService<Order> {
         return orderRepository.save(order);
     }
 
+//@Transactional
     public Page<Order> findAnyMatchingAfterDueDate(Optional<String> optionalFilter,
                                                    Optional<LocalDate> optionalFilterDate,
                                                    Pageable pageable) {
@@ -106,10 +107,6 @@ public class OrderService implements FilterableCrudService<Order> {
     public Order createNew(User currentUser) {
         Order order = new Order(currentCustomer, currentPrice, currentUser);
         order.setDueDate(LocalDate.now());
- //       order.setInvoice(new Invoice("", LocalDate.now()));
-
-//        order.setOrderState(OrderState.NEW);
-//        order.setPayment(Payment.CASH);
         return order;
     }
 
@@ -119,27 +116,29 @@ public class OrderService implements FilterableCrudService<Order> {
         return orderRepository.save(order);
     }
 
-    @Override
-    public Page<Order> findAnyMatching(Optional<String> filter, Pageable pageable) {
-        if (filter.isPresent()){
-            String repositoryFilter = "%" + filter.get() + "%";
-            return getRepository().findByCustomerFullNameContainingIgnoreCase(
-                            repositoryFilter, pageable
-                    );
-        } else {
-            return find(pageable);
-        }
-    }
-
+//    @Override
+//    @Transactional
+//    public Page<Order> findAnyMatching(Optional<String> filter, Pageable pageable) {
+//        if (filter.isPresent()){
+//            String repositoryFilter = "%" + filter.get() + "%";
+//            return getRepository().findByCustomerFullNameContainingIgnoreCase(
+//                            repositoryFilter, pageable
+//                    );
+//        } else {
+//            return find(pageable);
+//        }
+//    }
+    @Transactional
     private Page<Order> find(Pageable pageable) {
                    return orderRepository.findAll(pageable);
     }
 
-    @Override
-    public long countAnyMatching(Optional<String> filter) {
-        return 0;
-    }
+//    @Override
+//    public long countAnyMatching(Optional<String> filter) {
+//        return 0;
+//    }
 
+    @Transactional
     public List<Order> findByCustomer(Customer currentCustomer) {
         return orderRepository.findByCustomer(currentCustomer);
     }

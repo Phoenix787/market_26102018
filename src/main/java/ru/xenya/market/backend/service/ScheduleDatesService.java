@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import ru.xenya.market.backend.data.entity.ScheduleDates;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.ScheduleDatesRepository;
@@ -27,6 +28,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static ru.xenya.market.ui.utils.MarketConst.APP_LOCALE;
 
 @Service
+@org.springframework.transaction.annotation.Transactional(isolation = Isolation.SERIALIZABLE)
 public class ScheduleDatesService /*implements FilterableCrudService<ScheduleDates>*/{
 
     private ScheduleDatesRepository repository;

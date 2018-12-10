@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity(name = "orders")
-public class Order extends AbstractEntity {
+public class Order extends AbstractEntity implements OrderSummary {
 
     @NotNull(message = "{market.due.dueDate.required}")
     private LocalDate dueDate;
@@ -23,7 +23,7 @@ public class Order extends AbstractEntity {
     private Payment payment;
 
 //    //множество позиций заказа
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true )
     @OrderColumn
     @JoinColumn
 //    @NotEmpty
@@ -127,6 +127,11 @@ public class Order extends AbstractEntity {
         this.orderState = orderState;
     }
 
+    @Override
+    public OrderState getState() {
+        return getOrderState();
+    }
+
     public Customer getCustomer() {
         return customer;
     }
@@ -151,21 +156,15 @@ public class Order extends AbstractEntity {
         boolean createHistory = this.orderState != orderState && this.orderState != null && orderState != null;
         this.orderState = orderState;
         if (createHistory) {
-            addHistoryItem(user, "Заказ " + orderState.name());
+            addHistoryItem(user, "Заказ " + orderState.toString());
         }
     }
 
     @Override
     public String toString() {
-        return "Order{" +
-                "dueDate=" + dueDate +
-                ", payment=" + payment +
-                ", items=" + items +
-                ", invoice=" + invoice +
-                ", orderState=" + orderState +
-                ", customer=" + customer +
-                ", pricePlan=" + pricePlan +
-                '}';
+        return "Order{" +  "dueDate=" + dueDate + ", payment=" + payment +
+                ", items=" + items + ", invoice=" + invoice +  ", orderState=" + orderState +
+                ", customer=" + customer + ", pricePlan=" + pricePlan + '}';
     }
 
     public Integer getTotalPrice(){

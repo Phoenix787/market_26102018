@@ -4,9 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.xenya.market.backend.data.OrderState;
-import ru.xenya.market.backend.data.Payment;
 import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
+import ru.xenya.market.backend.data.entity.OrderSummary;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -46,4 +46,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 
     long countByCustomerFullNameContainingIgnoreCaseAndDueDateAfter(String s, LocalDate date);
+
+    List<OrderSummary> findByDueDate(LocalDate localDate);
+
+    Page<Order> findAll(Pageable pageable);
 }

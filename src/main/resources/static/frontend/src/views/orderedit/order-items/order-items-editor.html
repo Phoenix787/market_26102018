@@ -3,7 +3,6 @@
 <link rel="import" href="../../../components/buttons-bar.html">
 <link rel="import" href="../../../../bower_components/vaadin-button/src/vaadin-button.html">
 <link rel="import" href="../../../../bower_components/vaadin-radio-button/src/vaadin-radio-group.html">
-<link rel="import" href="../../../../bower_components/vaadin-ordered-layout/src/vaadin-horizontal-layout.html">
 <link rel="import" href="../../../components/amount-field.html">
 <link rel="import" href="../../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
 <link rel="import" href="../../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
@@ -74,22 +73,28 @@
  <vaadin-form-layout id="form1">
   <vaadin-form-layout id="form2" colspan="7">
    <vaadin-form-item colspan="16">
-    <vaadin-combo-box items="[[items]]" id="service" style="margin-right:1em;" label="Услуга" colspan=""></vaadin-combo-box>
+    <vaadin-combo-box items="[[items]]" id="service" label="Услуга" colspan="14"></vaadin-combo-box>
     <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения" colspan=""></vaadin-combo-box>
-   </vaadin-form-item>
-   <vaadin-form-item colspan="16" style="margin-top:0;">
     <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена" property="" property1="" property2=""></vaadin-combo-box>
    </vaadin-form-item>
    <vaadin-form-item colspan="16">
-    <vaadin-text-field id="amount" label="Количество" colspan="" style="width:7em;"></vaadin-text-field>
-    <vaadin-text-field id="summ" label="Сумма" colspan="" class="self-start" style="width:9em;"></vaadin-text-field>
-    <vaadin-button id="autosum" colspan="" theme="success" class="self-start">
+    <div id="measureContainer"></div>
+   </vaadin-form-item>
+   <vaadin-form-item colspan="16">
+    <vaadin-text-field id="amount" label="Количество" colspan="" style="width:6em;" class="self-start"></vaadin-text-field>
+    <vaadin-text-field id="summ" label="Сумма" colspan="" class="self-start" style="width:8em;"></vaadin-text-field>
+    <vaadin-button id="autosum" colspan="" theme="success">
       [[autosum]] 
     </vaadin-button>
    </vaadin-form-item>
    <vaadin-form-item colspan="4">
-    <span colspan="4" class="small-font label">Скидка</span>
-    <vaadin-radio-group value="value" id="discount" property="" class="small-font" colspan="4"></vaadin-radio-group>
+    <div>
+     <span colspan="4" class="small-font label">Скидка</span>
+     <vaadin-radio-group value="value" id="discount" property="" class="small-font" colspan="4"></vaadin-radio-group>
+    </div>
+    <div style="border-top: 1px solid var(--lumo-shade-30pct)">
+     <vaadin-text-field style="width:5em;" label="Полоса"></vaadin-text-field>
+    </div>
    </vaadin-form-item>
    <vaadin-form-item class="meta-row" colspan="12">
     <div>
@@ -99,8 +104,8 @@
    </vaadin-form-item>
   </vaadin-form-layout>
   <vaadin-form-layout id="form3" colspan="5">
-   <div></div>
-   <label style="font-size: var(--lumo-font-size-xs);">Даты заказа</label>
+   <div style="margin-bottom: 0.8em;"></div>
+   <label style="margin-bottom: 0.3em;" class="small-font  label">Даты заказа</label>
    <vaadin-grid items="[[items]]" id="grid" style="font-size: var(--lumo-font-size-s);" property=""></vaadin-grid>
   </vaadin-form-layout>
  </vaadin-form-layout>

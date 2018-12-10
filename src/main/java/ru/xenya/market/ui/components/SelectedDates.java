@@ -51,7 +51,8 @@ public class SelectedDates extends PolymerTemplate<SelectedDates.SelectedDatesMo
     public SelectedDates(ScheduleDatesService datesService) {
         this.fieldSupport = new AbstractFieldSupport<>(this, Collections.emptyList(), Objects::equals, c ->  {});
         this.datesService = datesService;
-//        // You can initialise any data required for the connected UI components here.
+        div.setHeight("30vh");
+        // You can initialise any data required for the connected UI components here.
 //        grid.setSelectionMode(Grid.SelectionMode.MULTI);
 //        grid.addColumn(ScheduleDates::getDate);
 //        grid.setItems(datesService.findDatesAfterCurrent(LocalDate.now()));

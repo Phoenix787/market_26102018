@@ -27,6 +27,7 @@ import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.UnitConverter;
 import ru.xenya.market.ui.utils.messages.CrudErrorMessage;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -81,7 +82,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 
         dialog.setHeight("100%");
         dialog.getElement().addAttachListener(event -> UI.getCurrent().getPage().executeJavaScript(
-                "$0.$.overlay.setAttribute('theme', 'right');", dialog.getElement()
+                "$0.$.overlay.setAttribute('theme', 'center');", dialog.getElement()
         ));
 
 
@@ -105,7 +106,6 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 
         editor.addCancelListener(e -> {
             setHasChanges(false);
-          //  clear();
             dialog.setOpened(false);
         });
 
@@ -123,12 +123,12 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         UnitConverter unitConverter = new UnitConverter();
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.addColumn(OrderItem::getId).setHeader("#").setWidth("70px").setFlexGrow(0);
-        grid.addColumn(OrderItem::getService).setWidth("70px").setHeader("Услуга").setFlexGrow(5);
+        grid.addColumn(OrderItem::getService).setWidth("70px").setHeader("Услуга").setFlexGrow(1);
         grid.addColumn(new ComponentRenderer<>(Div::new, (div, orderitem) -> div.setText(
                 FormattingUtils.formatAsDouble(orderitem.getQuantity()) + " " + unitConverter.encode(orderitem.getUnit()))
-        )).setWidth("50px").setHeader("Кол-во");
+        )).setWidth("70px").setHeader("Кол-во").setFlexGrow(2);
 
-        grid.addColumn(orderItem -> Integer.toString(orderItem.getDates().size())).setHeader("Выходы").setWidth("50px");
+        grid.addColumn(orderItem -> Integer.toString(orderItem.getDates().size())).setHeader("Выходы").setWidth("30px");
         grid.addColumn(orderItem->FormattingUtils.formatAsCurrency(orderItem.getTotalPrice())).setHeader("Сумма").setWidth("100px");
         grid.addSelectionListener(
                 e -> {
@@ -142,7 +142,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
                     });
                 });
     }
-//
+
     @Override
     public List<OrderItem> getValue() {
         return fieldSupport.getValue();
@@ -185,10 +185,9 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     }
 
     private void save(OrderItem entity, boolean isNew) {
-      //  List<OrderItem> items = getValue().stream().filter(element -> element != oldOrderItem).collect(Collectors.toList());
         setHasChanges(true);
         List<HasValue<?, ?>> fields = editor.validate().collect(Collectors.toList());
-        if (fields.isEmpty()){
+    //    if (fields.isEmpty()){
             if (writeEntity(entity)){
                 if (isNew) {
                     setValue(Stream.concat(getValue().stream(), Stream.of(entity)).collect(Collectors.toList()));
@@ -198,9 +197,9 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
                 }
                 dialog.setOpened(false);
             }
-        } else if (fields.get(0) instanceof Focusable) {
-            ((Focusable<?>) fields.get(0)).focus();
-        }
+//        } else if (fields.get(0) instanceof Focusable) {
+//            ((Focusable<?>) fields.get(0)).focus();
+//        }
 
 
     }

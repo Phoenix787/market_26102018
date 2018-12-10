@@ -32,6 +32,11 @@
         align-items: flex-end;
       }
 
+      :host([theme$="center"]) {
+        align-items: center;
+        max-width: 50em;
+      }
+
       :host([theme]) [part="overlay"] {
         max-width: 65em;
         width: 100%;

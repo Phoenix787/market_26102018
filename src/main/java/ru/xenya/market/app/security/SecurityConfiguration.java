@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.xenya.market.backend.data.Role;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.UserRepository;

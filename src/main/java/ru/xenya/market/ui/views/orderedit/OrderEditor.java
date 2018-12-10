@@ -6,6 +6,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
@@ -20,6 +21,8 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.validator.BeanValidator;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.templatemodel.Encode;
+import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -36,7 +39,10 @@ import ru.xenya.market.ui.events.DeleteEvent;
 import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.TemplateUtils;
+import ru.xenya.market.ui.utils.converters.CurrencyFormatter;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
+import ru.xenya.market.ui.utils.converters.LongToStringEncoder;
+import ru.xenya.market.ui.utils.converters.OrderStateConverter;
 import ru.xenya.market.ui.views.orderedit.invoice.InvoiceEditor;
 import ru.xenya.market.ui.views.orderedit.orderitem.OrderItemsView;
 import ru.xenya.market.ui.views.orderedit.orderitem.ValueChangeEvent;
@@ -97,6 +103,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private Price defaultPrice;
     private BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
     private LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
+    @Id("history")
+    private FormItem history;
 
     @Autowired
     public OrderEditor(OrderItemsView orderItemsView, PriceDataProvider priceDataProvider) {
@@ -204,6 +212,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             if (order.getItems().size() != 0) {
                 pricePlan.setReadOnly(true);
             }
+            getModel().setItem(order);
         }
 
         if (order.getInvoice() != null) {
@@ -350,6 +359,14 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         void setStatus(String status);
 
         void setPricePlan(String pricePlan);
+
+        @Include({"id", "dueDate", "orderState", "items.price.name", "items.quantity",
+                 "items.totalPrice", "history.message", "history.createdBy.firstName"})
+        @Encode(value = LongToStringEncoder.class, path = "id")
+        @Encode(value = LocalDateToStringEncoder.class, path = "dueDate")
+        @Encode(value = OrderStateConverter.class, path = "orderState")
+        @Encode(value = CurrencyFormatter.class, path = "items.totalPrice")
+        void setItem(Order order);
     }
 
 

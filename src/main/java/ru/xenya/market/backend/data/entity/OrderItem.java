@@ -1,5 +1,6 @@
 package ru.xenya.market.backend.data.entity;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.xenya.market.backend.data.Discount;
 import ru.xenya.market.backend.data.Service;
 import ru.xenya.market.backend.data.Unit;
@@ -15,8 +16,8 @@ import java.util.List;
 @Entity
 public class OrderItem extends AbstractEntity {
 
-    //цена за единицу
-    @NotNull(message = "{market.price.required}")
+    //цена за единицу   {market.price.required}
+    @NotNull(message = "выберите цену за единицу")
     @ManyToOne
     @Valid
 //    @JoinColumn
@@ -27,12 +28,14 @@ public class OrderItem extends AbstractEntity {
     @Valid
     private Integer quantity = 100;
 
+    private Integer width = 0;
+    private Integer height = 0;
+
+
     //скидка
     private Discount discount;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE}, fetch = FetchType.EAGER)
-//    @OrderColumn
-    //   @JoinColumn
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE}/*, fetch = FetchType.EAGER*/)
     @NotEmpty
     @Valid
     private List<ScheduleDates> dates;
@@ -53,7 +56,6 @@ public class OrderItem extends AbstractEntity {
     }
 
     //конструктор копирования
-    // конструктор копии
     public OrderItem(OrderItem other) {
         this();
         this.price = other.price;
@@ -116,6 +118,22 @@ public class OrderItem extends AbstractEntity {
 
     public void setTotalPrice(Integer totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
     public int getAllPrice() {

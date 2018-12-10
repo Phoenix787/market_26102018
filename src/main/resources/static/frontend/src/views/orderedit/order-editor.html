@@ -45,6 +45,14 @@
             .status {
                 width: 10em;
             }
+
+            .history-line {
+        margin: var(--lumo-space-xs) 0;
+      }
+
+      .comment {
+        font-size: var(--lumo-font-size-s);
+      }
         </style>
 <div class="scrollable flex1" id="main">
  <h2 id="title">Новый заказ</h2>
@@ -80,8 +88,20 @@
    <!--</vaadin-text-field>-->
    <vaadin-form-item colspan="3">
     <label slot="label">Позиции</label>
+    <div id="itemsContainer" colspan="3"></div>
    </vaadin-form-item>
-   <div id="itemsContainer" colspan="3"></div>
+   <vaadin-form-item id="history">
+    <label slot="label">История</label>
+    <template is="dom-repeat" items="[[item.history]]" as="event">
+     <div class="history-line" label-position="top">
+      <span class="bold" style="font-weight:bold">[[event.createdBy.firstName]]</span>
+      <span class="secondary"></span>
+     </div>
+     <div class="comment">
+       [[event.message]] 
+     </div>
+    </template>
+   </vaadin-form-item>
   </vaadin-form-layout>
  </vaadin-form-layout>
 </div>
@@ -94,7 +114,7 @@
    Удалить 
  </vaadin-button>
  <div slot="info" class="total">
-   Total [[totalPrice]] 
+   Сумма: [[totalPrice]] 
  </div>
  <vaadin-button slot="right" id="save" theme="primary">
    Сохранить 
@@ -114,7 +134,11 @@
                     status: {
                         type: String,
                         observer: '_onStatusChange'
+                    },
+                    item: {
+                        type: Object
                     }
+        
                 };
             }
 
