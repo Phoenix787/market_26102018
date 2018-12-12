@@ -107,6 +107,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         editor.addCancelListener(e -> {
             setHasChanges(false);
             dialog.setOpened(false);
+            editor.closeSilently();
         });
 
     }
@@ -133,9 +134,14 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         grid.addSelectionListener(
                 e -> {
                     e.getFirstSelectedItem().ifPresent(entity -> {
-                        oldOrderItem = new OrderItem(entity);
+                        if (oldOrderItem == null ) {
+                            oldOrderItem = new OrderItem(entity);
+                        } else
+                        if (!oldOrderItem.getId().equals(entity.getId())){
+                            oldOrderItem = new OrderItem(entity);
+                        }
                         editor.setAddButtonText("Сохранить");
-                        editor.read(entity, false);
+                        editor.read(oldOrderItem, false);
                         dialog.add(editor);
                         dialog.setOpened(true);
                         grid.deselectAll();

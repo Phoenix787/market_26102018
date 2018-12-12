@@ -362,9 +362,6 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         binder.setBean(value);
         setPrice();
         hasChanges=false;
-        List<ScheduleDates> temp1 = new ArrayList<>(orderItemDates);
-        temp1.sort(Comparator.comparing(ScheduleDates::getDate));
-
 
         if (orderItemDates.size() > 0) {
              List<ScheduleDates> temp = new ArrayList<>(orderItemDates);
@@ -379,7 +376,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
              } else{
                  grid.setItems(getDatesAfterCurrent(LocalDate.now()));
              }
-             setGridData(temp1);
+             setGridData(orderItemDates);
          } else {
              grid.setItems(getDatesAfterCurrent(LocalDate.now()));
          }
@@ -444,9 +441,9 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         this.defaultPrice = defaultPrice;
         priceCb.setItems(defaultPrice.getItemsPrice());
     }
-    private void setGridData(List<ScheduleDates> datesSet) {
-        grid.asMultiSelect().setValue(new HashSet<>(datesSet));
-       // grid.asMultiSelect().setValue(datesSet);
+    private void setGridData(Set<ScheduleDates> datesSet) {
+//        grid.asMultiSelect().setValue(new HashSet<>(datesSet));
+        grid.asMultiSelect().setValue(datesSet);
     }
 
     public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {

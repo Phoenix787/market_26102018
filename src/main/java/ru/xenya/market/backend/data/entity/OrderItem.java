@@ -60,21 +60,27 @@ public class OrderItem extends AbstractEntity {
     public OrderItem(User createdBy) {
         this.discount = Discount.none;
 //        this.dates = new ArrayList<>();
-        this.dates = new TreeSet<>();
+        this.dates = new HashSet<>();
     }
 
     //конструктор копирования
     public OrderItem(OrderItem other) {
         this();
         this.price = other.price;
-//        ArrayList<ScheduleDates> items = new ArrayList<>();
-//        Iterator<ScheduleDates> iterator = other.dates.iterator();
-//        ScheduleDates item;
-//        while (iterator.hasNext()){
-//            item = iterator.next();
-//            items.add(item);
-//        }
-//        this.dates = items;
+        Set<ScheduleDates> items = new HashSet<>();
+        Iterator<ScheduleDates> iterator = other.dates.iterator();
+        ScheduleDates item;
+        while (iterator.hasNext()){
+            item = iterator.next();
+            items.add(item);
+        }
+        this.setId(other.getId());
+        this.dates = items;
+        this.discount = other.discount;
+        this.totalPrice = other.totalPrice;
+        this.quantity = other.quantity;
+        this.width = other.width;
+        this.height= other.height;
         //нужно копировать Set дат
 
     }
