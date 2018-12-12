@@ -127,8 +127,8 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         grid.addColumn(new ComponentRenderer<>(Div::new, (div, orderitem) -> div.setText(
                 FormattingUtils.formatAsDouble(orderitem.getQuantity()) + " " + unitConverter.encode(orderitem.getUnit()))
         )).setWidth("70px").setHeader("Кол-во").setFlexGrow(2);
-
         grid.addColumn(orderItem -> Integer.toString(orderItem.getDates().size())).setHeader("Выходы").setWidth("30px");
+//        grid.addColumn(orderItem -> FormattingUtils.formatListSize(orderItem.getDates())).setHeader("Выходы").setWidth("30px");
         grid.addColumn(orderItem->FormattingUtils.formatAsCurrency(orderItem.getTotalPrice())).setHeader("Сумма").setWidth("100px");
         grid.addSelectionListener(
                 e -> {

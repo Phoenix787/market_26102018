@@ -7,10 +7,11 @@ import ru.xenya.market.backend.data.entity.ScheduleDates;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface ScheduleDatesRepository extends JpaRepository<ScheduleDates, Long> {
 
-    List<ScheduleDates> findByDateAfter(LocalDate filterDate);
+    Set<ScheduleDates> findByDateAfter(LocalDate filterDate);
 
     Page<ScheduleDates> findByDateAfter(LocalDate filterDate, Pageable page);
 

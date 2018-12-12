@@ -1,5 +1,7 @@
 package ru.xenya.market.backend.data.entity;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.transaction.annotation.Transactional;
 import ru.xenya.market.backend.data.Discount;
 import ru.xenya.market.backend.data.Service;
@@ -10,15 +12,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class OrderItem extends AbstractEntity {
 
     //цена за единицу   {market.price.required}
     @NotNull(message = "выберите цену за единицу")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @Valid
 //    @JoinColumn
     private PriceItem price;
@@ -35,10 +36,16 @@ public class OrderItem extends AbstractEntity {
     //скидка
     private Discount discount;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE}/*, fetch = FetchType.EAGER*/)
+    @ManyToMany/*(
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE*//*CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE*//*},
+            fetch = FetchType.LAZY)*/
+    @JoinTable(name = "ORDER_ITEM_DATES",
+            joinColumns = {@JoinColumn(name = "order_item_id")},
+            inverseJoinColumns =  @JoinColumn(name = "dates_id"))
     @NotEmpty
     @Valid
-    private List<ScheduleDates> dates;
+//    private List<ScheduleDates> dates;
+    private Set<ScheduleDates> dates;
 
     //сумма
     @Min(1)
@@ -52,13 +59,22 @@ public class OrderItem extends AbstractEntity {
 
     public OrderItem(User createdBy) {
         this.discount = Discount.none;
-        this.dates = new ArrayList<>();
+//        this.dates = new ArrayList<>();
+        this.dates = new TreeSet<>();
     }
 
     //конструктор копирования
     public OrderItem(OrderItem other) {
         this();
         this.price = other.price;
+//        ArrayList<ScheduleDates> items = new ArrayList<>();
+//        Iterator<ScheduleDates> iterator = other.dates.iterator();
+//        ScheduleDates item;
+//        while (iterator.hasNext()){
+//            item = iterator.next();
+//            items.add(item);
+//        }
+//        this.dates = items;
         //нужно копировать Set дат
 
     }
@@ -104,11 +120,11 @@ public class OrderItem extends AbstractEntity {
         this.discount = discount;
     }
 
-    public List<ScheduleDates> getDates() {
+    public Set<ScheduleDates> getDates() {
         return dates;
     }
 
-    public void setDates(List<ScheduleDates> dates) {
+    public void setDates(Set<ScheduleDates> dates) {
         this.dates = dates;
     }
 
@@ -138,5 +154,17 @@ public class OrderItem extends AbstractEntity {
 
     public int getAllPrice() {
         return quantity == null || price == null || getDates().size() == 0 ? 0 : (int) (quantity * price.getPrice() * getDates().size());
+    }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "price=" + price +
+                ", quantity=" + quantity +
+                ", width=" + width +
+                ", height=" + height +
+                ", discount=" + discount +
+                ", totalPrice=" + totalPrice +
+                '}';
     }
 }

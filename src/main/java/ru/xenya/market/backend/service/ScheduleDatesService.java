@@ -28,7 +28,6 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static ru.xenya.market.ui.utils.MarketConst.APP_LOCALE;
 
 @Service
-@org.springframework.transaction.annotation.Transactional(isolation = Isolation.SERIALIZABLE)
 public class ScheduleDatesService /*implements FilterableCrudService<ScheduleDates>*/{
 
     private ScheduleDatesRepository repository;
@@ -59,7 +58,7 @@ public class ScheduleDatesService /*implements FilterableCrudService<ScheduleDat
         return repository.findAll();
     }
 
-    public List<ScheduleDates> findDatesAfterCurrent(LocalDate now) {
+    public Set<ScheduleDates> findDatesAfterCurrent(LocalDate now) {
         return repository.findByDateAfter(now);
     }
 

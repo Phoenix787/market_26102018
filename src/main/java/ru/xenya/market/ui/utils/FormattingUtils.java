@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Currency;
+import java.util.List;
 import java.util.Locale;
 
 public class FormattingUtils {
@@ -50,5 +51,10 @@ public class FormattingUtils {
         DecimalFormat formatter = new DecimalFormat("#" + DECIMAL_ZERO);
         formatter.setGroupingUsed(false);
         return formatter;
+    }
+
+    public static String formatListSize(List list) {
+        int size = list.size();
+        return String.valueOf(size);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConf
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.xenya.market.app.security.SecurityConfiguration;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.CustomerRepository;

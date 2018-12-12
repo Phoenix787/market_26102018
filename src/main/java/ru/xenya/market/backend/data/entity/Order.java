@@ -12,9 +12,37 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+@NamedEntityGraphs({@NamedEntityGraph(name = Order.ENTITY_GRAPTH_BRIEF, attributeNodes = {
+        @NamedAttributeNode("customer")/*,
+        @NamedAttributeNode(value = "items", subgraph = "itemsGraph")*/
+}/*,
+        subgraphs = {
+                @NamedSubgraph(name = "itemsGraph", attributeNodes = {
+                        @NamedAttributeNode(value = "id"),
+                        @NamedAttributeNode(value = "dates")
+                })
+        }*/
+),@NamedEntityGraph(name = Order.ENTITY_GRAPTH_FULL, attributeNodes = {
+        @NamedAttributeNode("customer"),
+        @NamedAttributeNode("invoice"),
+        @NamedAttributeNode("pricePlan"),
+        @NamedAttributeNode("history"),
+        @NamedAttributeNode(value = "items", subgraph = "itemsGraph")
 
+},
+            subgraphs = {
+                    @NamedSubgraph(name = "itemsGraph",attributeNodes = {
+                          //  @NamedAttributeNode(value = "id"),
+                            @NamedAttributeNode(value = "dates")
+                    })
+})})
 @Entity(name = "orders")
 public class Order extends AbstractEntity implements OrderSummary {
+
+
+    public static final String ENTITY_GRAPTH_BRIEF = "Order.brief";
+    public static final String ENTITY_GRAPTH_FULL = "Order.full";
+
 
     @NotNull(message = "{market.due.dueDate.required}")
     private LocalDate dueDate;
@@ -23,7 +51,7 @@ public class Order extends AbstractEntity implements OrderSummary {
     private Payment payment;
 
 //    //множество позиций заказа
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true )
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true )
     @OrderColumn
     @JoinColumn
 //    @NotEmpty
@@ -32,7 +60,7 @@ public class Order extends AbstractEntity implements OrderSummary {
 //    //множество позиций платежей
 
 //    //счет
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn
     private Invoice invoice;
 
@@ -49,7 +77,7 @@ public class Order extends AbstractEntity implements OrderSummary {
     //@JoinColumn(name = "customer_fk")
     private Customer customer;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 //    @JoinColumn
     private Price pricePlan;
 
@@ -163,7 +191,7 @@ public class Order extends AbstractEntity implements OrderSummary {
     @Override
     public String toString() {
         return "Order{" +  "dueDate=" + dueDate + ", payment=" + payment +
-                ", items=" + items + ", invoice=" + invoice +  ", orderState=" + orderState +
+                /*", items=" + items +*/ ", invoice=" + invoice +  ", orderState=" + orderState +
                 ", customer=" + customer + ", pricePlan=" + pricePlan + '}';
     }
 

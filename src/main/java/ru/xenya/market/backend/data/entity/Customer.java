@@ -7,11 +7,14 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+@NamedEntityGraphs({@NamedEntityGraph(name = Customer.ENTITY_GRAPH_BRIEF, attributeNodes = {
+        @NamedAttributeNode("orders")})
+        })
 @Entity
 @Table(name = "customers")
 public class Customer extends AbstractEntity {
 
+    public static final String ENTITY_GRAPH_BRIEF = "Customer.brief";
     @NotBlank
     @Size(min=2, max = 255)
     private String fullName;
@@ -33,7 +36,7 @@ public class Customer extends AbstractEntity {
     public Customer() {
     }
 
-    public Customer(@NotBlank @Size(max = 255) String fullName) {
+    public Customer(String fullName) {
         this.fullName = fullName;
     }
 

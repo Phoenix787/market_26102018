@@ -14,6 +14,7 @@ import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.service.OrderService;
 import ru.xenya.market.backend.service.PriceService;
 import ru.xenya.market.ui.crud.EntityPresenter;
+import ru.xenya.market.ui.dataproviders.OrdersGridDataProvider;
 import ru.xenya.market.ui.utils.MarketConst;
 import ru.xenya.market.ui.utils.messages.CrudErrorMessage;
 
@@ -28,7 +29,7 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     private OrdersViewOfCustomer view;
 
     private final EntityPresenter<Order, OrdersViewOfCustomer> entityPresenter;
-//    private final OrdersGridDataProvider dataProvider;
+    private final OrdersGridDataProvider dataProvider;
     private final User currentUser;
     private final OrderService orderService;
     private final PriceService priceService;
@@ -38,8 +39,9 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 
     @Autowired
     public OrderPresenter(EntityPresenter<Order, OrdersViewOfCustomer> entityPresenter,
-                          OrderService orderService, User currentUser, PriceService priceService) {
-       // super(orderService, currentUser);
+                          OrdersGridDataProvider dataProvider, OrderService orderService, User currentUser, PriceService priceService) {
+        this.dataProvider = dataProvider;
+        // super(orderService, currentUser);
         this.orderService = orderService;
         this.entityPresenter = entityPresenter;
 //        this.dataProvider = dataProvider;
@@ -53,13 +55,15 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         this.view = view;
         //view.getSearchBar().addActionClickListener(e-> createNew());
         view.getGrid().setItems(updateList());
+//        view.getGrid().setDataProvider(dataProvider);
     }
 
 
     void init(OrdersViewOfCustomer view) {
         this.entityPresenter.setView(view);
         this.view = view;
-        view.getGrid().setItems(updateList());
+//        view.getGrid().setItems(updateList());
+        view.getGrid().setDataProvider(dataProvider);
         view.getOpenedOrderEditor().setCurrentUser(currentUser);
         view.getOpenedOrderEditor().addCancelListener(e -> cancel());
         view.getOpenedOrderEditor().addSaveListener(e -> save());
@@ -95,13 +99,17 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         return orderService.findByCustomer(currentCustomer);
     }
 
+    public OrdersGridDataProvider getDataProvider() {
+        return dataProvider;
+    }
 
     public void filter(String filter) {
-            if (filter != null && !filter.isEmpty()){
-              view.getGrid().setItems(updateList(filter));
-            } else {
-                view.getGrid().setItems(updateList());
-            }
+//            if (filter != null && !filter.isEmpty()){
+//              view.getGrid().setItems(updateList(filter));
+//            } else {
+//                view.getGrid().setItems(updateList());
+//            }
+        dataProvider.setFilter(new OrdersGridDataProvider.OrderFilter(filter, false));
     }
 
     public List<Order> updateList(String filter) {
@@ -117,6 +125,9 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         this.currentCustomer = currentCustomer;
         orderService.setCurrentCustomer(currentCustomer);
         view.getForm().setCurrentCustomer(currentCustomer);
+        dataProvider.setFilter(new OrdersGridDataProvider.OrderFilter(currentCustomer.getFullName(), false));
+        view.getGrid().setDataProvider(dataProvider);
+
     }
 
     public void setCurrentPrice(Price currentPrice) {
@@ -172,10 +183,13 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
                 entityPresenter.save(e->{
                     if (entityPresenter.isNew()){
                         view.showCreatedNotification("Заказ");
-                        view.getGrid().setItems(updateList());
+                      //  view.getGrid().setItems(updateList());
+                        dataProvider.refreshAll();
                     } else {
                         view.showUpdateNotification("Заказ # " + e.getId());
-                        view.getGrid().setItems(updateList());
+                      //  view.getGrid().setItems(updateList());
+                        dataProvider.refreshAll();
+
                     }
 
                     close();

@@ -11,9 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 //счета
-@EqualsAndHashCode(callSuper = true)
 @Entity
-@Data
 public class Invoice extends AbstractEntity {
 
 //    @NotBlank
@@ -24,13 +22,6 @@ public class Invoice extends AbstractEntity {
 
 //    @OneToOne (cascade = CascadeType.ALL, mappedBy = "invoice")
 //    private Order order;
-
-
-    @java.beans.ConstructorProperties({"numberInvoice", "dateInvoice"})
-    public Invoice(@NotBlank String numberInvoice, LocalDate dateInvoice) {
-        this.numberInvoice = numberInvoice;
-        this.dateInvoice = dateInvoice;
-    }
 
     public Invoice() {
     }
@@ -56,11 +47,4 @@ public class Invoice extends AbstractEntity {
         this.dateInvoice = dateInvoice;
     }
 
-//    public Order getOrder() {
-//        return order;
-//    }
-//
-//    public void setOrder(Order order) {
-//        this.order = order;
-//    }
 }

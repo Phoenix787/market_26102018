@@ -140,7 +140,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private Button countAmountBtn = new Button(VaadinIcon.ARROW_DOWN.create());
 
     private boolean hasChanges = false;
-    private List<ScheduleDates> orderItemDates;
+    private Set<ScheduleDates> orderItemDates;
+//    private List<ScheduleDates> orderItemDates;
 
 
 
@@ -317,7 +318,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         grid.asMultiSelect()
                 .addSelectionListener(event -> {
                     Set<ScheduleDates> selected = event.getAllSelectedItems();
-                    dates.setValue(new ArrayList<>(selected));
+//                    dates.setValue(new ArrayList<>(selected));
+                    dates.setValue(selected);
                     setPrice();
                     this.selected.setText((String.format(
                             "Выбрано дат: %d",
@@ -330,7 +332,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         grid.setDataProvider(provider);
        }
 
-    private List<ScheduleDates> getDatesAfterCurrent(LocalDate date) {
+    private Set<ScheduleDates> getDatesAfterCurrent(LocalDate date) {
         return datesService.findDatesAfterCurrent(date);
     }
 
@@ -353,18 +355,23 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     @Override
     public void setValue(OrderItem value) {
         currentOrderItem = value;
+//        orderItemDates = value.getDates();
         orderItemDates = value.getDates();
-        orderItemDates.sort(Comparator.comparing(ScheduleDates::getDate));
+//        orderItemDates.sort(Comparator.comparing(ScheduleDates::getDate));
         fieldSupport.setValue(value);
         binder.setBean(value);
         setPrice();
         hasChanges=false;
+        List<ScheduleDates> temp1 = new ArrayList<>(orderItemDates);
+        temp1.sort(Comparator.comparing(ScheduleDates::getDate));
 
-         if (orderItemDates.size() > 0) {
+
+        if (orderItemDates.size() > 0) {
              List<ScheduleDates> temp = new ArrayList<>(orderItemDates);
+             temp.sort(Comparator.comparing(ScheduleDates::getDate));
              dates.setValue(orderItemDates);
-             if (Collections.disjoint(getDatesAfterCurrent(LocalDate.now()), orderItemDates)){
-                 temp.addAll(getDatesAfterCurrent(orderItemDates.get(orderItemDates.size()-1).getDate()));
+             if (Collections.disjoint(getDatesAfterCurrent(LocalDate.now()), temp)){
+                 temp.addAll(getDatesAfterCurrent(temp.get(temp.size()-1).getDate()));
                  grid.setItems(temp);
              } else if (temp.removeAll(getDatesAfterCurrent(LocalDate.now()))){
                  temp.addAll(getDatesAfterCurrent(LocalDate.now()));
@@ -372,7 +379,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
              } else{
                  grid.setItems(getDatesAfterCurrent(LocalDate.now()));
              }
-             setGridData(orderItemDates);
+             setGridData(temp1);
          } else {
              grid.setItems(getDatesAfterCurrent(LocalDate.now()));
          }
@@ -381,6 +388,28 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
              heightField.setValue("0");
              widthField.setValue("0");
          }
+
+         //if (orderItemDates.size() > 0) {
+        //             List<ScheduleDates> temp = new ArrayList<>(orderItemDates);
+        //             dates.setValue(orderItemDates);
+        //             if (Collections.disjoint(getDatesAfterCurrent(LocalDate.now()), orderItemDates)){
+        //                 temp.addAll(getDatesAfterCurrent(orderItemDates..get(orderItemDates.size()-1).getDate()));
+        //                 grid.setItems(temp);
+        //             } else if (temp.removeAll(getDatesAfterCurrent(LocalDate.now()))){
+        //                 temp.addAll(getDatesAfterCurrent(LocalDate.now()));
+        //                 grid.setItems(temp);
+        //             } else{
+        //                 grid.setItems(getDatesAfterCurrent(LocalDate.now()));
+        //             }
+        //             setGridData(orderItemDates);
+        //         } else {
+        //             grid.setItems(getDatesAfterCurrent(LocalDate.now()));
+        //         }
+        //
+        //         if (value.getHeight() == 0 || value.getHeight() == null){
+        //             heightField.setValue("0");
+        //             widthField.setValue("0");
+        //         }
     }
 
 
@@ -417,6 +446,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     }
     private void setGridData(List<ScheduleDates> datesSet) {
         grid.asMultiSelect().setValue(new HashSet<>(datesSet));
+       // grid.asMultiSelect().setValue(datesSet);
     }
 
     public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {

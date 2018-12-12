@@ -99,8 +99,8 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
         customerName.setText(customer.getFullName());
         // presenter.init(this);
         presenter.setCurrentCustomer(customer);
-        grid.setItems(presenter.updateList());
-    }
+//        grid.setItems(presenter.updateList());
+}
 
     private void setupGrid() {
         LocalDateToStringEncoder dateConverter = new LocalDateToStringEncoder();
@@ -143,7 +143,7 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
         });
 
 //        getForm().getButtons().addDeleteListener(e -> getPresenter().delete());
-        // getBinder().addValueChangeListener(e -> getPresenter().onValueChange(isDirty()));
+//         getBinder().addValueChangeListener(e -> getPresenter().onValueChange(isDirty()));
     }
 
 

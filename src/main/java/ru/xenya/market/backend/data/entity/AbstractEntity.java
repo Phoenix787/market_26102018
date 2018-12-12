@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @MappedSuperclass
-public class AbstractEntity implements Serializable {
+public abstract class AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue
@@ -22,17 +22,27 @@ public class AbstractEntity implements Serializable {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) return true;
-        if (other == null || getClass() != other.getClass()) return false;
+    public int hashCode() {
+        if (id == null) {
+            return super.hashCode();
+        }
 
-        AbstractEntity that = (AbstractEntity) other;
-
-        return id != null ? id.equals(that.id) : super.equals(that);
+        return 31 + id.hashCode();
     }
 
     @Override
-    public int hashCode() {
-        return id != null ? 31 + id.hashCode() : super.hashCode();
+    public boolean equals(Object other) {
+        if (id == null) {
+            // New entities are only equal if the instance if the same
+            return super.equals(other);
+        }
+
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof AbstractEntity)) {
+            return false;
+        }
+        return id.equals(((AbstractEntity) other).id);
     }
 }

@@ -12,8 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.*;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 public class PriceItem extends AbstractEntity {
 
     @NotBlank(message = "{market.name.required}")
@@ -40,6 +38,10 @@ public class PriceItem extends AbstractEntity {
 //    public PriceItem(Price currentPrice) {
 //        setOwner(currentPrice);
 //    }
+
+
+    public PriceItem() {
+    }
 
     public String getName() {
         return name;

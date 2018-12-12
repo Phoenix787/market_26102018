@@ -3,6 +3,9 @@ package ru.xenya.market.ui.dataproviders;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.QuerySortOrderBuilder;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,7 +19,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-
+@SpringComponent
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class OrdersGridDataProvider
         extends FilterablePageableDataProvider<Order,OrdersGridDataProvider.OrderFilter> {
 
@@ -71,8 +75,9 @@ public class OrdersGridDataProvider
     @Override
     protected Page<Order> fetchFromBackEnd(Query<Order, OrderFilter> query, Pageable pageable) {
         OrderFilter filter = query.getFilter().orElse(OrderFilter.getEmptyFilter());
-        Page<Order> page = orderService.findAnyMatchingAfterDueDate(Optional.ofNullable(filter.getFilter()),
-                getFilterDate(filter.isShowPrevious()), pageable);
+//        Page<Order> page = orderService.findAnyMatchingAfterDueDate(Optional.ofNullable(filter.getFilter()),
+//                getFilterDate(filter.isShowPrevious()), pageable);
+        Page<Order> page = orderService.findAnyMatching(Optional.ofNullable(filter.getFilter()), pageable);
         if (pageObserver != null) {
             pageObserver.accept(page);
         }
@@ -89,8 +94,9 @@ public class OrdersGridDataProvider
     protected int sizeInBackEnd(Query<Order, OrderFilter> query) {
 
         OrderFilter filter = query.getFilter().orElse(OrderFilter.getEmptyFilter());
-        return (int)orderService.countAnyMatchingAfterDueDate(Optional.ofNullable(filter.getFilter()),
-                getFilterDate(filter.isShowPrevious()));
+//        return (int)orderService.countAnyMatchingAfterDueDate(Optional.ofNullable(filter.getFilter()),
+//                getFilterDate(filter.isShowPrevious()));
+        return (int)orderService.countAnyMatching(Optional.ofNullable(filter.getFilter()));
     }
 
     private Optional<LocalDate> getFilterDate(boolean showPrevious) {
@@ -103,7 +109,6 @@ public class OrdersGridDataProvider
     public void setPageObserver(Consumer<Page<Order>> pageObserver){
         this.pageObserver = pageObserver;
     }
-
 
 
 }

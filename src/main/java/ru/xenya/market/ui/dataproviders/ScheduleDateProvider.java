@@ -33,11 +33,11 @@ public class ScheduleDateProvider extends AbstractBackEndDataProvider<ScheduleDa
         }
 
         public void setFilter(String filter) {
-            this.filter = filter;
+            ScheduleDatesFilter.filter = filter;
         }
 
         public ScheduleDatesFilter(String filter) {
-            this.filter = filter;
+            ScheduleDatesFilter.filter = filter;
         }
 
         public static ScheduleDatesFilter getEmptyFilter() {

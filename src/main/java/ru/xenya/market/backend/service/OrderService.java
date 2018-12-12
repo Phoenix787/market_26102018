@@ -3,11 +3,11 @@ package ru.xenya.market.backend.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import ru.xenya.market.backend.data.OrderState;
-import ru.xenya.market.backend.data.Payment;
-import ru.xenya.market.backend.data.entity.*;
-import ru.xenya.market.backend.repositories.InvoiceRepository;
+import ru.xenya.market.backend.data.entity.Customer;
+import ru.xenya.market.backend.data.entity.Order;
+import ru.xenya.market.backend.data.entity.Price;
+import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.OrderRepository;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 import ru.xenya.market.ui.utils.converters.OrderStateConverter;
@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 @Service
 public class OrderService implements CrudService<Order> {
+
 
     private OrderRepository orderRepository;
     private Customer currentCustomer;
@@ -76,7 +77,6 @@ public class OrderService implements CrudService<Order> {
         return orderRepository.save(order);
     }
 
-//@Transactional
     public Page<Order> findAnyMatchingAfterDueDate(Optional<String> optionalFilter,
                                                    Optional<LocalDate> optionalFilterDate,
                                                    Pageable pageable) {
@@ -94,6 +94,18 @@ public class OrderService implements CrudService<Order> {
             } else {
                 return orderRepository.findAll(pageable);
             }
+        }
+    }
+    public Page<Order> findAnyMatching(Optional<String> optionalFilter,
+
+                                                   Pageable pageable) {
+        if (optionalFilter.isPresent() && !optionalFilter.get().isEmpty()) {
+
+                return orderRepository.findByCustomerFullNameContainingIgnoreCase(optionalFilter.get(), pageable);
+        } else {
+
+                return orderRepository.findAll(pageable);
+
         }
     }
 
@@ -128,7 +140,6 @@ public class OrderService implements CrudService<Order> {
 //            return find(pageable);
 //        }
 //    }
-    @Transactional
     private Page<Order> find(Pageable pageable) {
                    return orderRepository.findAll(pageable);
     }
@@ -138,7 +149,6 @@ public class OrderService implements CrudService<Order> {
 //        return 0;
 //    }
 
-    @Transactional
     public List<Order> findByCustomer(Customer currentCustomer) {
         return orderRepository.findByCustomer(currentCustomer);
     }
@@ -230,6 +240,12 @@ public class OrderService implements CrudService<Order> {
         } else {
             return orderRepository.count();
         }
+
+
+    }
+
+    public long countAnyMatching(Optional<String> filter) {
+        return filter.map(s -> orderRepository.countByCustomerFullNameContainingIgnoreCase(s)).orElseGet(() -> orderRepository.count());
 
 
     }

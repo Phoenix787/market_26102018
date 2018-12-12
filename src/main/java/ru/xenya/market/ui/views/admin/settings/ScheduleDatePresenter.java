@@ -10,6 +10,7 @@ import ru.xenya.market.ui.components.ScheduleDatesComponent;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -39,7 +40,7 @@ public class ScheduleDatePresenter {
         return service.findAll();
     }
 
-    public List<ScheduleDates> getDatesFromCurrent() {
+    public Set<ScheduleDates> getDatesFromCurrent() {
           return service.findDatesAfterCurrent(LocalDate.now());
     }
 }

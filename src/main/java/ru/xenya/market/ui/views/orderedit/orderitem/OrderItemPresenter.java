@@ -11,6 +11,7 @@ import ru.xenya.market.backend.service.PriceService;
 import ru.xenya.market.ui.views.admin.settings.ScheduleDatePresenter;
 
 import java.util.List;
+import java.util.Set;
 
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -44,7 +45,7 @@ public class OrderItemPresenter {
         return datePresenter.updateList();
     }
 
-    public List<ScheduleDates> getDatesAfterNow() {
+    public Set<ScheduleDates> getDatesAfterNow() {
         return datePresenter.getDatesFromCurrent();
     }
 }

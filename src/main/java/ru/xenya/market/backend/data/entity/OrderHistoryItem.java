@@ -25,14 +25,6 @@ public class OrderHistoryItem extends AbstractEntity {
     @NotNull
     private User createdBy;
 
-//    @java.beans.ConstructorProperties({"newState", "message", "timestamp", "createdBy"})
-//    public OrderHistoryItem(OrderState newState, @NotBlank @Size(max = 255) String message, @NotNull LocalDateTime timestamp, @NotNull User createdBy) {
-//        this.newState = newState;
-//        this.message = message;
-//        this.timestamp = timestamp;
-//        this.createdBy = createdBy;
-//    }
-
     public OrderHistoryItem() {
     }
 
@@ -46,15 +38,15 @@ public class OrderHistoryItem extends AbstractEntity {
         return this.newState;
     }
 
-    public @NotBlank @Size(max = 255) String getMessage() {
+    public  String getMessage() {
         return this.message;
     }
 
-    public @NotNull LocalDateTime getTimestamp() {
+    public  LocalDateTime getTimestamp() {
         return this.timestamp;
     }
 
-    public @NotNull User getCreatedBy() {
+    public  User getCreatedBy() {
         return this.createdBy;
     }
 
@@ -62,27 +54,16 @@ public class OrderHistoryItem extends AbstractEntity {
         this.newState = newState;
     }
 
-    public void setMessage(@NotBlank @Size(max = 255) String message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 
-    public void setTimestamp(@NotNull LocalDateTime timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
-    public void setCreatedBy(@NotNull User createdBy) {
+    public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }
 
-
-
-
-
-    protected boolean canEqual(Object other) {
-        return other instanceof OrderHistoryItem;
-    }
-
-    public String toString() {
-        return "HistoryItem(newState=" + this.getNewState() + ", message=" + this.getMessage() + ", timestamp=" + this.getTimestamp() + ", createdBy=" + this.getCreatedBy() + ")";
-    }
 }

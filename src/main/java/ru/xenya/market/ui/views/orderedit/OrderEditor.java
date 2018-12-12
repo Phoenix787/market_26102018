@@ -192,8 +192,10 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     public void close() {
         setTotalPrice(0);
+        currentOrder=null;
         invoiceEditor.clear();
         save.setEnabled(false);
+        getModel().setItem(null);
     }
 
 

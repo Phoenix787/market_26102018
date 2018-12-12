@@ -31,16 +31,16 @@ import java.util.stream.Stream;
 @Tag("selected-dates")
 @HtmlImport("src/components/selected-dates.html")
 public class SelectedDates extends PolymerTemplate<SelectedDates.SelectedDatesModel>
-        implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<SelectedDates, List<ScheduleDates>>, List<ScheduleDates>> {
+        implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<SelectedDates, Set<ScheduleDates>>, Set<ScheduleDates>> {
 
     private final ScheduleDatesService datesService;
 
-    private List<ScheduleDates> currentDates;
+    private Set<ScheduleDates> currentDates;
 
     @Id("div")
     private Div div;
 
-    private final AbstractFieldSupport<SelectedDates, List<ScheduleDates>> fieldSupport;
+    private final AbstractFieldSupport<SelectedDates, Set<ScheduleDates>> fieldSupport;
     /*@Id("grid")
     private Grid<ScheduleDates> grid;
 */
@@ -49,7 +49,7 @@ public class SelectedDates extends PolymerTemplate<SelectedDates.SelectedDatesMo
      * @param datesService
      */
     public SelectedDates(ScheduleDatesService datesService) {
-        this.fieldSupport = new AbstractFieldSupport<>(this, Collections.emptyList(), Objects::equals, c ->  {});
+        this.fieldSupport = new AbstractFieldSupport<>(this, Collections.emptySet(), Objects::equals, c ->  {});
         this.datesService = datesService;
         div.setHeight("30vh");
         // You can initialise any data required for the connected UI components here.
@@ -59,7 +59,7 @@ public class SelectedDates extends PolymerTemplate<SelectedDates.SelectedDatesMo
     }
 
     @Override
-    public void setValue(List<ScheduleDates> value) {
+    public void setValue(Set<ScheduleDates> value) {
         fieldSupport.setValue(value);
         currentDates = value;
         if (value != null) {
@@ -90,12 +90,12 @@ public class SelectedDates extends PolymerTemplate<SelectedDates.SelectedDatesMo
     }
 
     @Override
-    public List<ScheduleDates> getValue() {
+    public Set<ScheduleDates> getValue() {
         return fieldSupport.getValue();
     }
 
     @Override
-    public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<SelectedDates, List<ScheduleDates>>> listener) {
+    public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<SelectedDates, Set<ScheduleDates>>> listener) {
         return fieldSupport.addValueChangeListener(listener);
                // grid.asMultiSelect().addValueChangeListener((ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<Grid<ScheduleDates>, Set<ScheduleDates>>>) listener);
     }
