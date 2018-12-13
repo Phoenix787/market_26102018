@@ -69,30 +69,12 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
     @Id("dates")
     private SelectedDates dates;
-
-
 //
 //    @Id("totalPrice")
 //    private Div totalPriceDiv;
 
-//    private final OrderItemPresenter presenter;
-    private final ScheduleDatesService datesService;
-    private final ScheduleDateProvider dateProvider;
-
-//    @Id("selectedDates")
-//    private Div selectedDates;
-//
-//    @Id("selected")
-//    private Span selected;
-//
     @Id("discount")
     private RadioButtonGroup<Discount> discountGroup;
-//
-//    @Id("dimensionsContainer")
-//    private Div dimensionsContainer;
-    //private final PriceService priceService;
-
-    private final AbstractFieldSupport<OrderItemsEditor, OrderItem> fieldSupport;
     @Id("metaContainer")
     private Div metaContainer;
     @Id("ItemId")
@@ -107,18 +89,14 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private ComboBox<Unit> unitCb;
     @Id("price")
     private ComboBox<PriceItem> priceCb;
-
     @Id("measureContainer")
     private Div measureContainer;
-
     @Id("amount")
     private TextField amount;
     @Id("summ")
     private TextField sum;
-
     @Id("autosum")
     private Button autosum;
-
     @Id("delete")
     private Button delete;
     @Id("add")
@@ -126,6 +104,9 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     @Id("cancel")
     private Button cancel;
 
+    private final AbstractFieldSupport<OrderItemsEditor, OrderItem> fieldSupport;
+    private final ScheduleDatesService datesService;
+    private final ScheduleDateProvider dateProvider;
     private boolean isItemNew;
     private Price defaultPrice;
     private BeanValidationBinder<OrderItem> binder = new BeanValidationBinder<>(OrderItem.class);
@@ -155,7 +136,6 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 //        this.presenter = presenter;
         this.datesService = datesService;
         this.dateProvider = provider;
-//        this.priceService = priceService;
         this.fieldSupport = new AbstractFieldSupport<>(this, null,
                 Objects::equals, c -> {
         });
@@ -166,9 +146,22 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
         heightField.getElement().setAttribute("style", "margin-light:0.5em; margin-right:0.5em;");
         heightField.setWidth("6em");
-//        widthField.addKeyPressListener(Key.ENTER, event->
-//                heightField.focus()
-//        );
+        widthField.addKeyPressListener(Key.ENTER, event->
+                heightField.focus()
+        );
+        heightField.addKeyDownListener(Key.ENTER, event -> {
+            countAmountBtn.focus();
+            countAmountBtn.click();
+        });
+
+//        countAmountBtn.addFocusListener(e->{
+//            if (e.getSource().isAutofocus()) {
+//                countAmountBtn.getStyle().set("background-color", "var(--lumo-primary-color-50pct)");
+//            } else{
+//                countAmountBtn.getStyle().set("background-color", "var(--lumo-primary-color-10pct)");
+//            }
+//        });
+        countAmountBtn.getElement().setAttribute("theme", "primary");
 
         measureContainer.add(widthField, label, heightField, countAmountBtn);
         measureContainer.setVisible(false);

@@ -31,6 +31,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,6 +62,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 
     private Price currentPrice;
     private OrderItem oldOrderItem;
+    private int totalPrice = 0;
 
 
     /**
@@ -101,6 +103,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
             OrderItemsEditor source = (OrderItemsEditor) e.getSource();
             OrderItem orderItem = source.getValue();
             setValue(getValue().stream().filter(element -> element != orderItem).collect(Collectors.toList()));
+            updateTotalPrice(getValue());
             dialog.setOpened(false);
         });
 
@@ -111,6 +114,8 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         });
 
     }
+
+
 
     private void createNew() {
         editor.read(new OrderItem(currentUser), true);
@@ -158,6 +163,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     public void setValue(List<OrderItem> items) {
         fieldSupport.setValue(items);
         orderItemList = items;
+        totalPrice = 0;
         hasChanges = false;
 
         if (items != null) {
@@ -181,6 +187,10 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         return fieldSupport.addValueChangeListener(listener);
     }
 
+    public Registration addPriceChangeListener(ComponentEventListener<TotalPriceEvent> listener) {
+        return addListener(TotalPriceEvent.class, listener);
+    }
+
     public Grid<OrderItem> getGrid() {
         return grid;
     }
@@ -196,15 +206,17 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     //    if (fields.isEmpty()){
             if (writeEntity(entity)){
                 if (isNew) {
-                    setValue(Stream.concat(getValue().stream(), Stream.of(entity)).collect(Collectors.toList()));
-                } else {
-
-                    List<OrderItem> items = getValue();
-
+                    List<OrderItem> items = Stream.concat(getValue().stream(), Stream.of(entity)).collect(Collectors.toList());
                     setValue(items);
+                    updateTotalPrice(items);
+                } else {
+                    List<OrderItem> items = getValue();
+                    setValue(items);
+                    updateTotalPrice(items);
                     oldOrderItem = null;
                 }
                 dialog.setOpened(false);
+
             }
 //        } else if (fields.get(0) instanceof Focusable) {
 //            ((Focusable<?>) fields.get(0)).focus();
@@ -244,6 +256,14 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
         } catch (NullPointerException e) {
             return false;
         }
+    }
+
+    private void updateTotalPrice(List<OrderItem> items) {
+        totalPrice = items.stream().map(OrderItem::getTotalPrice).reduce((x, y) -> x + y).orElse(0);
+//        final int delta = newItemPrice - oldItemPrice;
+//        totalPrice += delta;
+        setHasChanges(true);
+        fireEvent(new TotalPriceEvent(this, totalPrice));
     }
 
 

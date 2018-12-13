@@ -92,7 +92,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private ComboBox<Price> pricePlan;
 
 
-
     private InvoiceEditor invoiceEditor;
 
     private OrderItemsView orderItemsView;
@@ -157,19 +156,20 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         ComponentUtil.addListener(invoiceEditor, ru.xenya.market.ui.views.orderedit.invoice.ValueChangeEvent.class, e -> save.setEnabled(true));
         ComponentUtil.addListener(orderItemsView, ValueChangeEvent.class, e -> save.setEnabled(true));
 
+        orderItemsView.addPriceChangeListener(e -> setTotalPrice(e.getTotalPrice()));
+
         binder.bind(orderItemsView, "items");
-        binder.addValueChangeListener(e->{
+        binder.addValueChangeListener(e -> {
             if (e.getOldValue() != null) {
                 save.setEnabled(true);
             }
         });
 
 
-
         pricePlan.addValueChangeListener(e -> {
             Price price = e.getValue();
             if (price != null && currentOrder != null) {
-                if (currentOrder.getItems().size()==0) {
+                if (currentOrder.getItems().size() == 0) {
                     setDefaultPrice(price);
                     getModel().setPricePlan(DataProviderUtils.convertIfNotNull(price, Price::toString));
                 } else {
@@ -187,12 +187,12 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     private void addInvoice(Boolean value) {
         invoiceEditor.setInvoiceEnabled(value);
-     //   invoiceEditor.setHasChanges(true);
+        //   invoiceEditor.setHasChanges(true);
     }
 
     public void close() {
         setTotalPrice(0);
-        currentOrder=null;
+        currentOrder = null;
         invoiceEditor.clear();
         save.setEnabled(false);
         getModel().setItem(null);
@@ -208,13 +208,13 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             order.setCustomer(currentCustomer);
             order.setPricePlan(defaultPrice);
             pricePlan.setReadOnly(false);
-        }
-        else{
+        } else {
             orderItemsView.setDefaultPrice(order.getPricePlan());
             if (order.getItems().size() != 0) {
                 pricePlan.setReadOnly(true);
             }
-           getModel().setItem(order);
+            getModel().setItem(order);
+            setTotalPrice(order.getTotalPrice());
         }
 
         if (order.getInvoice() != null) {
@@ -233,7 +233,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         title.setVisible(isNew);
         metaContainer.setVisible(!isNew);
         customerName.setValue(order.getCustomer().getFullName());
-      //  pricePlan.setValue(order.getPricePlan());
+        //  pricePlan.setValue(order.getPricePlan());
 
         if (order.getOrderState() != null) {
             getModel().setStatus(order.getOrderState().name());
@@ -257,7 +257,29 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     }
 
 
-    public Binder<Order> getBinder() { return binder;}
+    public Binder<Order> getBinder() {
+        return binder;
+    }
+
+    @Override
+    public void setBinder(BeanValidationBinder<Order> binder) {
+        binder.forField(status)
+                .withValidator(new BeanValidator(Order.class, "orderState"))
+                .bind(Order::getOrderState, (o, s) -> {
+                    o.changeState(currentUser, s);
+                });
+        dueDate.setRequired(true);
+        binder.bind(dueDate, "dueDate");
+        payment.setItemLabelGenerator(createItemLabelGenerator(Payment::name));
+        payment.setDataProvider(DataProvider.ofItems(Payment.values()));
+        binder.bind(payment, "payment");
+        payment.setRequired(true);
+
+        binder.bind(customerName, "customer.fullName");
+        if (currentOrder != null) {
+            customerName.setValue(binder.getBean().getCustomer().getFullName());
+        }
+    }
 
     public Stream<HasValue<?, ?>> validate() {
         Stream<HasValue<?, ?>> errorFields = binder.validate().getFieldValidationErrors().stream()
@@ -291,33 +313,13 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         return null;
     }
 
-    public boolean hasChanges(){
+    public boolean hasChanges() {
         return getBinder().hasChanges();     // itemEditor.hasChanges();
     }
 
     @Override
     public HasText getTitle() {
         return title;
-    }
-
-    @Override
-    public void setBinder(BeanValidationBinder<Order> binder) {
-        binder.forField(status)
-                .withValidator(new BeanValidator(Order.class, "orderState"))
-                .bind(Order::getOrderState, (o, s) -> {
-                    o.changeState(currentUser, s);
-                });
-        dueDate.setRequired(true);
-        binder.bind(dueDate, "dueDate");
-        payment.setItemLabelGenerator(createItemLabelGenerator(Payment::name));
-        payment.setDataProvider(DataProvider.ofItems(Payment.values()));
-        binder.bind(payment, "payment");
-        payment.setRequired(true);
-
-        binder.bind(customerName, "customer.fullName");
-        if (currentOrder != null) {
-            customerName.setValue(binder.getBean().getCustomer().getFullName());
-        }
     }
 
     public void clear() {
@@ -363,14 +365,13 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         void setPricePlan(String pricePlan);
 
         @Include({"id", "dueDate", "orderState", "items.price.name", "items.quantity",
-                 "items.totalPrice", "history.message", "history.createdBy.firstName"})
+                "items.totalPrice", "history.message", "history.createdBy.firstName"})
         @Encode(value = LongToStringEncoder.class, path = "id")
         @Encode(value = LocalDateToStringEncoder.class, path = "dueDate")
         @Encode(value = OrderStateConverter.class, path = "orderState")
         @Encode(value = CurrencyFormatter.class, path = "items.totalPrice")
         void setItem(Order order);
     }
-
 
 
 }
