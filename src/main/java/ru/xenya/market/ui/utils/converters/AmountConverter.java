@@ -19,7 +19,7 @@ public class AmountConverter implements Converter<String, Integer> {
     @Override
     public com.vaadin.flow.data.binder.Result<Integer> convertToModel(String presentationValue, ValueContext context) {
         try {
-            return Result.ok((int) ((df.parse(presentationValue).doubleValue())*100));
+            return Result.ok((int) Math.round((df.parse(presentationValue).doubleValue())*100));
         } catch (ParseException e) {
             return Result.error("Неправильное число");
         }

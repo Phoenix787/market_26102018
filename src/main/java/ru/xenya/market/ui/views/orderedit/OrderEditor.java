@@ -214,7 +214,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             if (order.getItems().size() != 0) {
                 pricePlan.setReadOnly(true);
             }
-            getModel().setItem(order);
+           getModel().setItem(order);
         }
 
         if (order.getInvoice() != null) {

@@ -36,9 +36,9 @@ public class OrderItem extends AbstractEntity {
     //скидка
     private Discount discount;
 
-    @ManyToMany/*(
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE*//*CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE*//*},
-            fetch = FetchType.LAZY)*/
+    @ManyToMany(
+            cascade = {/*CascadeType.PERSIST, *//*CascadeType.MERGE, */CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE},
+            fetch = FetchType.LAZY)
     @JoinTable(name = "ORDER_ITEM_DATES",
             joinColumns = {@JoinColumn(name = "order_item_id")},
             inverseJoinColumns =  @JoinColumn(name = "dates_id"))

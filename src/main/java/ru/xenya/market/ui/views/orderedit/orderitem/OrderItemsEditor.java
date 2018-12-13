@@ -42,6 +42,7 @@ import ru.xenya.market.ui.utils.converters.AmountConverter;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 import ru.xenya.market.ui.views.admin.prices.utils.PriceConverter;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -165,9 +166,9 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
         heightField.getElement().setAttribute("style", "margin-light:0.5em; margin-right:0.5em;");
         heightField.setWidth("6em");
-        widthField.addKeyPressListener(Key.ENTER, event->
-                heightField.focus()
-        );
+//        widthField.addKeyPressListener(Key.ENTER, event->
+//                heightField.focus()
+//        );
 
         measureContainer.add(widthField, label, heightField, countAmountBtn);
         measureContainer.setVisible(false);
@@ -205,7 +206,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         amount.setRequired(true);
         amount.setRequiredIndicatorVisible(true);
      //   amount.setPattern("\\d+(\\,\\d?\\d?)?");
-        amount.setPattern("[0-9,]");
+        amount.setPattern("[0-9,.]");
         amount.setPreventInvalidInput(true);
         amount.addValueChangeListener(e -> {
             if (!e.getValue().equals("")){
@@ -248,7 +249,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
 
         cancel.addClickListener(e -> {
-            closeSilently();
+            setValue(currentOrderItem);
+//            closeSilently();
             fireEvent(new CancelEvent(this, false));
         });
 
@@ -266,9 +268,18 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
 
     private void countAmount() {
-        Double width = getDoubleFromString(widthField.getValue());
-        Double height = getDoubleFromString(heightField.getValue());
-        int result = (int) (width * height * 100);
+        int width = 0;
+        int height = 0;
+        try {
+            width = (int) Math.round(FormattingUtils.getUiAmountFormatter().parse(widthField.getValue()).doubleValue()*10);
+            height = (int) Math.round(FormattingUtils.getUiAmountFormatter().parse(heightField.getValue()).doubleValue()*10);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+         //getDoubleFromString(widthField.getValue());
+       // double height = getDoubleFromString(heightField.getValue());
+//        int result = (int) (width * height * 100);
+        int result = width * height;
         amount.setValue(FormattingUtils.formatAsDouble(result));
     }
 
@@ -284,10 +295,10 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         double selectedAmount = getDoubleFromString(value);
         PriceItem priceItem = priceCb.getValue();
         totalPrice = 0;
-        int size = grid.getSelectionModel().getSelectedItems().size();
+        int countOfDates = grid.getSelectionModel().getSelectedItems().size();
 
-        if (priceItem != null && size != 0) {
-            totalPrice = (int) (selectedAmount * priceItem.getPrice() * size);
+        if (priceItem != null && countOfDates != 0) {
+            totalPrice = (int) (selectedAmount * priceItem.getPrice() * countOfDates);
         }
         switch (discount) {
             case none:
