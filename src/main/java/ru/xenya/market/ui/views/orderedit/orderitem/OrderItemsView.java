@@ -219,7 +219,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
                     oldOrderItem = null;
                 }
                 dialog.setOpened(false);
-                editor.close();
+             //   editor.close();
 
             }
 //        } else if (fields.get(0) instanceof Focusable) {

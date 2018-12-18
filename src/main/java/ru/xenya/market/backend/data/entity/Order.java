@@ -42,17 +42,16 @@ public class Order extends AbstractEntity implements OrderSummary {
     @NotNull(message = "{market.payment.required}")
     private Payment payment;
 
-//    //множество позиций заказа
+   //множество позиций заказа
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true )
     @OrderColumn
     @JoinColumn
     @BatchSize(size = 100)
-//    @NotEmpty
     @Valid
     private List<OrderItem> items;
-//    //множество позиций платежей
+    //множество позиций платежей
 
-//    //счет
+    //счет
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn
     private Invoice invoice;

@@ -73,20 +73,22 @@
  <vaadin-form-layout id="form1">
   <vaadin-form-layout id="form2" colspan="7">
    <vaadin-form-item colspan="16">
-    <vaadin-combo-box items="[[items]]" id="service" label="Услуга" colspan="14"></vaadin-combo-box>
-    <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения" colspan="" tabindex="1"></vaadin-combo-box>
-    <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена" property="" property1="" property2="" tabindex="2"></vaadin-combo-box>
+    <vaadin-combo-box items="[[items]]" id="service" label="Услуга" colspan="14" tabindex="1" autofocus></vaadin-combo-box>
+    <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения" colspan="" tabindex="2"></vaadin-combo-box>
+    <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена" property="" property1="" property2="" tabindex="3"></vaadin-combo-box>
    </vaadin-form-item>
    <vaadin-form-item colspan="16">
-    <div id="measureContainer" tabindex="4">
-     <vaadin-text-field id="widthField"<!-- on-keydown="_onFocus"-->></vaadin-text-field>
+    <div id="measureContainer" tabindex="">
+     <vaadin-text-field id="widthField" tabindex="4">
+       &gt; 
+     </vaadin-text-field>
      <label>x</label>
-     <vaadin-text-field id="heightField"></vaadin-text-field>
+     <vaadin-text-field id="heightField" tabindex="5"></vaadin-text-field>
     </div>
    </vaadin-form-item>
    <vaadin-form-item colspan="16">
-    <vaadin-text-field id="amount" label="Количество" colspan="" style="width:6em;" class="self-start"></vaadin-text-field>
-    <vaadin-text-field id="summ" label="Сумма" colspan="" class="self-start" style="width:8em;"></vaadin-text-field>
+    <vaadin-text-field id="amount" label="Количество" colspan="" style="width:6em;" class="self-start" tabindex="6"></vaadin-text-field>
+    <vaadin-text-field id="summ" label="Сумма" colspan="" class="self-start" style="width:8em;" tabindex="7"></vaadin-text-field>
     <vaadin-button id="autosum" colspan="" theme="success">
       [[autosum]] 
     </vaadin-button>
@@ -109,17 +111,10 @@
   </vaadin-form-layout>
   <vaadin-form-layout id="form3" colspan="5">
    <div style="margin-bottom: 0.8em;"></div>
-   <label style="margin-bottom: 0.3em;" class="small-font  label">Даты заказа</label>
+   <label style="margin-bottom: 0.3em;" class="small-font  label" slot="">Даты заказа</label>
    <vaadin-grid items="[[items]]" id="grid" style="font-size: var(--lumo-font-size-s);" property=""></vaadin-grid>
   </vaadin-form-layout>
  </vaadin-form-layout>
- <!--<vaadin-horizontal-layout>-->
- <!--<div id="dimensionsContainer"></div>-->
- <!--<amount-field id="amount" max="9007199254740991" label="Количество"></amount-field>-->
- <!--<div id="totalPrice">-->
- <!--Сумма: [[totalPrice]] -->
- <!--</div>-->
- <!--</vaadin-horizontal-layout>-->
  <buttons-bar>
   <vaadin-button id="add" theme="primary" slot="left">
     [[buttonText]] 
@@ -171,14 +166,7 @@
                ];
            }
 
-          <!--_onFocus(event) {-->
-           <!--&lt;!&ndash;|| event.keyCode == 13&ndash;&gt;-->
-           <!---->
-          <!--if (event.key === 'Enter') {-->
-          <!--&lt;!&ndash;// In IE11 on button click commentField blur doesn't happen, and the value-change event is not fired&ndash;&gt;-->
-          <!--this.$.heightField.focus();-->
-          <!--&lt;!&ndash;this.$.heightField.select();&ndash;&gt;-->
-        <!--}-->
+
   }
         customElements.define(OrderItemsEditor.is, OrderItemsEditor);
 
