@@ -74,11 +74,15 @@
   <vaadin-form-layout id="form2" colspan="7">
    <vaadin-form-item colspan="16">
     <vaadin-combo-box items="[[items]]" id="service" label="Услуга" colspan="14"></vaadin-combo-box>
-    <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения" colspan=""></vaadin-combo-box>
-    <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена" property="" property1="" property2=""></vaadin-combo-box>
+    <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения" colspan="" tabindex="1"></vaadin-combo-box>
+    <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена" property="" property1="" property2="" tabindex="2"></vaadin-combo-box>
    </vaadin-form-item>
    <vaadin-form-item colspan="16">
-    <div id="measureContainer"></div>
+    <div id="measureContainer" tabindex="4">
+     <vaadin-text-field id="widthField"<!-- on-keydown="_onFocus"-->></vaadin-text-field>
+     <label>x</label>
+     <vaadin-text-field id="heightField"></vaadin-text-field>
+    </div>
    </vaadin-form-item>
    <vaadin-form-item colspan="16">
     <vaadin-text-field id="amount" label="Количество" colspan="" style="width:6em;" class="self-start"></vaadin-text-field>
@@ -150,23 +154,32 @@
             }
 
             ready() {
-        super.ready();
+               super.ready();
 
-        // Not using attributes since Designer does not support single-quote attributes
-        this.$.form1.responsiveSteps = [
-          {columns: 1, labelsPosition: 'top'},
-          {minWidth: '600px', columns: 12}
-        ];
-        this.$.form2.responsiveSteps = [
-          {columns: 1, labelsPosition: 'top'},
-          {minWidth: '360px', columns: 16, labelsPosition: 'top'}
-        ];
-        this.$.form3.responsiveSteps = [
-          {columns: 1},
-          {minWidth: '500px', columns: 1}
-        ];
-      }
-        }
+               // Not using attributes since Designer does not support single-quote attributes
+               this.$.form1.responsiveSteps = [
+                 {columns: 1, labelsPosition: 'top'},
+                 {minWidth: '600px', columns: 12}
+               ];
+               this.$.form2.responsiveSteps = [
+                 {columns: 1, labelsPosition: 'top'},
+                 {minWidth: '360px', columns: 16, labelsPosition: 'top'}
+               ];
+               this.$.form3.responsiveSteps = [
+                 {columns: 1},
+                 {minWidth: '500px', columns: 1}
+               ];
+           }
+
+          <!--_onFocus(event) {-->
+           <!--&lt;!&ndash;|| event.keyCode == 13&ndash;&gt;-->
+           <!---->
+          <!--if (event.key === 'Enter') {-->
+          <!--&lt;!&ndash;// In IE11 on button click commentField blur doesn't happen, and the value-change event is not fired&ndash;&gt;-->
+          <!--this.$.heightField.focus();-->
+          <!--&lt;!&ndash;this.$.heightField.select();&ndash;&gt;-->
+        <!--}-->
+  }
         customElements.define(OrderItemsEditor.is, OrderItemsEditor);
 
     </script>

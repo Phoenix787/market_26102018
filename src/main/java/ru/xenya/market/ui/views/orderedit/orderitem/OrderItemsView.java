@@ -48,7 +48,7 @@ import java.util.stream.Stream;
 public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsViewModel>
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<OrderItemsView, List<OrderItem>>, List<OrderItem>> {
 
-    private final User currentUser;
+//    private final User currentUser;
     private final AbstractFieldSupport<OrderItemsView, List<OrderItem>> fieldSupport;
     @Id("grid")
     private Grid<OrderItem> grid;
@@ -68,8 +68,11 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     /**
      * Creates a new OrderItemsView.
      */
-    public OrderItemsView(/*OrderItemsEditor editor,*/PriceDataProvider priceDataProvider, ScheduleDateProvider provider, ScheduleDatesService datesService, User user) {
-        currentUser = user;
+    public OrderItemsView(/*OrderItemsEditor editor,*/PriceDataProvider priceDataProvider,
+                                                      ScheduleDateProvider provider,
+                                                      ScheduleDatesService datesService/*,
+                                                      User user*/) {
+//        currentUser = user;
         this.editor = new OrderItemsEditor(provider, datesService);
         setDefaultPrice(priceDataProvider.getDefaultPrice());
 
@@ -118,9 +121,9 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 
 
     private void createNew() {
-        editor.read(new OrderItem(currentUser), true);
+        editor.read(new OrderItem(/*currentUser*/), true);
         editor.setAddButtonText("Добавить");
-        editor.setCurrentPrice(currentPrice);
+      //  editor.setCurrentPrice(currentPrice);
         dialog.add(editor);
         dialog.open();
     }
@@ -202,7 +205,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
 
     private void save(OrderItem entity, boolean isNew) {
         setHasChanges(true);
-        List<HasValue<?, ?>> fields = editor.validate().collect(Collectors.toList());
+      //  List<HasValue<?, ?>> fields = editor.validate().collect(Collectors.toList());
     //    if (fields.isEmpty()){
             if (writeEntity(entity)){
                 if (isNew) {
@@ -216,6 +219,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
                     oldOrderItem = null;
                 }
                 dialog.setOpened(false);
+                editor.close();
 
             }
 //        } else if (fields.get(0) instanceof Focusable) {

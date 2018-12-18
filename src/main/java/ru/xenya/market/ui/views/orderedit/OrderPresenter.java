@@ -104,12 +104,7 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     }
 
     public void filter(String filter) {
-//            if (filter != null && !filter.isEmpty()){
-//              view.getGrid().setItems(updateList(filter));
-//            } else {
-//                view.getGrid().setItems(updateList());
-//            }
-        dataProvider.setFilter(new OrdersGridDataProvider.OrderFilter(filter, false));
+              view.getGrid().setItems(updateList(filter));
     }
 
     public List<Order> updateList(String filter) {
@@ -125,7 +120,7 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         this.currentCustomer = currentCustomer;
         orderService.setCurrentCustomer(currentCustomer);
         view.getForm().setCurrentCustomer(currentCustomer);
-        dataProvider.setFilter(new OrdersGridDataProvider.OrderFilter(currentCustomer.getFullName(), false));
+        dataProvider.setFilter(new OrdersGridDataProvider.OrderFilter(currentCustomer.getFullName(), currentCustomer.getId(), false));
         view.getGrid().setDataProvider(dataProvider);
 
     }
@@ -188,7 +183,7 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
                     } else {
                         view.showUpdateNotification("Заказ # " + e.getId());
                       //  view.getGrid().setItems(updateList());
-                        dataProvider.refreshAll();
+                        dataProvider.refreshItem(e);
 
                     }
 

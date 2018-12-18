@@ -179,7 +179,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         });
 
         pricePlan.setDataProvider(priceDataProvider);
-        pricePlan.setItemLabelGenerator(Price::toString);
+      //  pricePlan.setItemLabelGenerator(Price::toString);
 
         binder.bind(pricePlan, "pricePlan");
     }

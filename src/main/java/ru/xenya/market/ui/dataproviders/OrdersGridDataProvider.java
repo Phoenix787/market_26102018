@@ -25,24 +25,43 @@ public class OrdersGridDataProvider
         extends FilterablePageableDataProvider<Order,OrdersGridDataProvider.OrderFilter> {
 
     public static class OrderFilter implements Serializable {
-        private String filter;
+       private String filter;
+        private Long filterId;
         private boolean showPrevious;
 
         public String getFilter() {
             return filter;
         }
+        public Long getFilterId(){ return filterId;}
+//        public String getFilter() {
+//            return filter;
+//        }
 
         public boolean isShowPrevious() {
             return showPrevious;
         }
 
-        public OrderFilter(String filter, boolean showPrevious) {
+        public OrderFilter(String filter, Long filterId, boolean showPrevious) {
             this.filter = filter;
+            this.filterId = filterId;
             this.showPrevious = showPrevious;
         }
 
+        public OrderFilter(String filter, boolean showPrevious) {
+            this.filter = filter;
+            this.filterId = 0L;
+            this.showPrevious = showPrevious;
+        }
+//public OrderFilter(String filter, boolean showPrevious) {
+//            this.filter = filter;
+//            this.showPrevious = showPrevious;
+//        }
+
+//        public static OrderFilter getEmptyFilter() {
+//            return new OrderFilter("", false);
+//        }
         public static OrderFilter getEmptyFilter() {
-            return new OrderFilter("", false);
+            return new OrderFilter("", null,  false);
         }
     }
 
@@ -77,7 +96,7 @@ public class OrdersGridDataProvider
         OrderFilter filter = query.getFilter().orElse(OrderFilter.getEmptyFilter());
 //        Page<Order> page = orderService.findAnyMatchingAfterDueDate(Optional.ofNullable(filter.getFilter()),
 //                getFilterDate(filter.isShowPrevious()), pageable);
-        Page<Order> page = orderService.findAnyMatching(Optional.ofNullable(filter.getFilter()), pageable);
+        Page<Order> page = orderService.findAnyMatching(Optional.of(filter.getFilterId()), Optional.ofNullable(filter.getFilter()), pageable);
         if (pageObserver != null) {
             pageObserver.accept(page);
         }
@@ -96,7 +115,8 @@ public class OrdersGridDataProvider
         OrderFilter filter = query.getFilter().orElse(OrderFilter.getEmptyFilter());
 //        return (int)orderService.countAnyMatchingAfterDueDate(Optional.ofNullable(filter.getFilter()),
 //                getFilterDate(filter.isShowPrevious()));
-        return (int)orderService.countAnyMatching(Optional.ofNullable(filter.getFilter()));
+//        return (int)orderService.countAnyMatching(Optional.ofNullable(filter.getFilter()), Optional.ofNullable(filter.getFilterId()));
+        return (int)orderService.countAnyMatching(Optional.ofNullable(filter.getFilterId()));
     }
 
     private Optional<LocalDate> getFilterDate(boolean showPrevious) {

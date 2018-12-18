@@ -22,6 +22,7 @@ import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.shared.Registration;
+import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.vaadin.olli.NumberInput;
 import ru.xenya.market.backend.data.Discount;
@@ -59,7 +60,7 @@ import java.util.stream.Stream;
 @Tag("order-items-editor")
 @HtmlImport("src/views/orderedit/order-items/order-items-editor.html")
 //@SpringComponent
-//@UIScope
+@UIScope
 public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItemsEditorModel>
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<OrderItemsEditor, OrderItem>, OrderItem> {
 
@@ -116,13 +117,18 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private OrderItemsView orderItemsView;
 
     private int totalPrice;
-    private TextField widthField = new TextField("Ширина");
-    private TextField heightField = new TextField("Высота");
+//    private TextField widthField = new TextField("Ширина");
+//    private TextField heightField = new TextField("Высота");
     private Label label = new Label("X");
     private Button countAmountBtn = new Button(VaadinIcon.ARROW_DOWN.create());
 
     private boolean hasChanges = false;
     private Set<ScheduleDates> orderItemDates;
+    private Set<ScheduleDates> datesForGrid;
+    @Id("widthField")
+    private TextField widthField;
+    @Id("heightField")
+    private TextField heightField;
 //    private List<ScheduleDates> orderItemDates;
 
 
@@ -147,23 +153,17 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         heightField.getElement().setAttribute("style", "margin-light:0.5em; margin-right:0.5em;");
         heightField.setWidth("6em");
         widthField.addKeyPressListener(Key.ENTER, event->
-                heightField.focus()
-        );
+                heightField.focus());
+
+
         heightField.addKeyDownListener(Key.ENTER, event -> {
             countAmountBtn.focus();
             countAmountBtn.click();
         });
 
-//        countAmountBtn.addFocusListener(e->{
-//            if (e.getSource().isAutofocus()) {
-//                countAmountBtn.getStyle().set("background-color", "var(--lumo-primary-color-50pct)");
-//            } else{
-//                countAmountBtn.getStyle().set("background-color", "var(--lumo-primary-color-10pct)");
-//            }
-//        });
         countAmountBtn.getElement().setAttribute("theme", "primary");
 
-        measureContainer.add(widthField, label, heightField, countAmountBtn);
+        measureContainer.add(/*widthField, label, heightField,*/ countAmountBtn);
         measureContainer.setVisible(false);
         setupDiscountGroup();
         setupGrid(provider);
@@ -243,12 +243,13 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
         cancel.addClickListener(e -> {
             setValue(currentOrderItem);
-//            closeSilently();
+        //    closeSilently();
             fireEvent(new CancelEvent(this, false));
         });
 
         setPrice();
 
+        getDatesAfterCurrent(LocalDate.now());
     }
 
     private List<PriceItem> getPriceItems(Unit unit, Service service) {
@@ -337,7 +338,10 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
        }
 
     private Set<ScheduleDates> getDatesAfterCurrent(LocalDate date) {
-        return datesService.findDatesAfterCurrent(date);
+        if (datesForGrid == null || !date.equals(LocalDate.now())){
+            datesForGrid = datesService.findDatesAfterCurrent(date);
+        }
+        return datesForGrid; /*datesService.findDatesAfterCurrent(date);*/
     }
 
     private void setupDiscountGroup() {
@@ -359,36 +363,48 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     @Override
     public void setValue(OrderItem value) {
         currentOrderItem = value;
-//        orderItemDates = value.getDates();
-        orderItemDates = value.getDates();
-//        orderItemDates.sort(Comparator.comparing(ScheduleDates::getDate));
+
         fieldSupport.setValue(value);
         binder.setBean(value);
         setPrice();
         hasChanges=false;
 
-        if (orderItemDates.size() > 0) {
-             List<ScheduleDates> temp = new ArrayList<>(orderItemDates);
-             temp.sort(Comparator.comparing(ScheduleDates::getDate));
-             dates.setValue(orderItemDates);
-             if (Collections.disjoint(getDatesAfterCurrent(LocalDate.now()), temp)){
-                 temp.addAll(getDatesAfterCurrent(temp.get(temp.size()-1).getDate()));
-                 grid.setItems(temp);
-             } else if (temp.removeAll(getDatesAfterCurrent(LocalDate.now()))){
-                 temp.addAll(getDatesAfterCurrent(LocalDate.now()));
-                 grid.setItems(temp);
-             } else{
-                 grid.setItems(getDatesAfterCurrent(LocalDate.now()));
-             }
-             setGridData(orderItemDates);
-         } else {
-             grid.setItems(getDatesAfterCurrent(LocalDate.now()));
-         }
+        if (value != null){
+            orderItemDates = value.getDates();
+            if (orderItemDates.size() > 0) {
+                List<ScheduleDates> temp = new ArrayList<>(orderItemDates);
+                temp.sort(Comparator.comparing(ScheduleDates::getDate));
+                dates.setValue(orderItemDates);
 
-         if (value.getHeight() == 0 || value.getHeight() == null){
-             heightField.setValue("0");
-             widthField.setValue("0");
-         }
+                //Collections.disjoint --> Отсутствие общих элементов возвращает true
+                //Он проверяет, есть ли у двух коллекций пересечения,
+                // то есть хоть один одинаковый элемент. Если нет — возвращает true, если есть — false.
+                if (Collections.disjoint(getDatesAfterCurrent(LocalDate.now()), temp)){
+                    //в getDatesAfterCurrent передаем последнюю дату во временном листе (в котором хранятся даты из заказа)
+                    //getDatesAfterCurrent(temp.get(temp.size()-1).getDate()) <-- этим мы добавляем set из дат следующих после последней даты из заказа
+                    temp.addAll(getDatesAfterCurrent(LocalDate.now()/*temp.get(temp.size()-1).getDate()*/));
+                    grid.setItems(temp);
+                    getDatesAfterCurrent(LocalDate.now());
+                    //boolean removeAll (Collection<?> other)	Удаляет из текущего набора данных все элементы,
+                    // содержащиеся в наборе other. Возвращает true, если в результате вызова метода набор данных изменился.
+                } else if (temp.removeAll(getDatesAfterCurrent(LocalDate.now()))){
+                    temp.addAll(getDatesAfterCurrent(LocalDate.now()));
+                    grid.setItems(temp);
+                } else{
+                    grid.setItems(getDatesAfterCurrent(LocalDate.now()));
+                }
+                setGridData(orderItemDates);
+            } else {
+                grid.setItems(getDatesAfterCurrent(LocalDate.now()));
+            }
+
+            if (value.getHeight() == 0 || value.getHeight() == null){
+                heightField.setValue("0");
+                widthField.setValue("0");
+            }
+        }
+
+
 
          //if (orderItemDates.size() > 0) {
         //             List<ScheduleDates> temp = new ArrayList<>(orderItemDates);
@@ -431,7 +447,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     }
 
     public void closeSilently() {
-        binder.readBean(null);
+       // binder.readBean(null);
+        setValue(null);
         grid.asMultiSelect().deselectAll();
         setTotalPrice(0);
     }

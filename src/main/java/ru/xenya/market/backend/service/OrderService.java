@@ -96,15 +96,30 @@ public class OrderService implements CrudService<Order> {
             }
         }
     }
-    public Page<Order> findAnyMatching(Optional<String> optionalFilter,
+//    public Page<Order> findAnyMatching(Optional<String> optionalFilter,
+//
+//                                                   Pageable pageable) {
+//        if (optionalFilter.isPresent() && !optionalFilter.get().isEmpty()) {
+//
+////                return orderRepository.findByCustomerFullNameContainingIgnoreCase(optionalFilter.get(), pageable);
+//                return orderRepository.findByCustomerFullNameContainingIgnoreCase(optionalFilter.get(), pageable);
+//        } else {
+//
+//                return orderRepository.findAll(pageable);
+//
+//        }
+//    }
 
-                                                   Pageable pageable) {
+    public Page<Order> findAnyMatching(Optional<Long> optionalId, Optional<String> optionalFilter, Pageable pageable) {
         if (optionalFilter.isPresent() && !optionalFilter.get().isEmpty()) {
-
+            if (optionalId.isPresent() && optionalId.get() != 0){
+                return orderRepository.findByCustomerIdAndCustomerFullNameContainingIgnoreCase(optionalId.get(), optionalFilter.get(), pageable);
+            } else {
                 return orderRepository.findByCustomerFullNameContainingIgnoreCase(optionalFilter.get(), pageable);
+            }
         } else {
 
-                return orderRepository.findAll(pageable);
+            return orderRepository.findAll(pageable);
 
         }
     }
@@ -244,9 +259,16 @@ public class OrderService implements CrudService<Order> {
 
     }
 
-    public long countAnyMatching(Optional<String> filter) {
-        return filter.map(s -> orderRepository.countByCustomerFullNameContainingIgnoreCase(s)).orElseGet(() -> orderRepository.count());
+//    public long countAnyMatching(Optional<String> filter) {
+//        return filter.map(s -> orderRepository.countByCustomerFullNameContainingIgnoreCase(s)).orElseGet(() -> orderRepository.count());
+//
+//
+//    }
+
+    public long countAnyMatching(Optional<Long> filter) {
+        return filter.map(s -> orderRepository.countByCustomerId(s)).orElseGet(() -> orderRepository.count());
 
 
     }
+
 }

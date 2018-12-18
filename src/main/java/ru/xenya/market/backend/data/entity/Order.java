@@ -2,6 +2,7 @@ package ru.xenya.market.backend.data.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.annotations.BatchSize;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.Payment;
 
@@ -45,17 +46,18 @@ public class Order extends AbstractEntity implements OrderSummary {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true )
     @OrderColumn
     @JoinColumn
+    @BatchSize(size = 100)
 //    @NotEmpty
     @Valid
     private List<OrderItem> items;
 //    //множество позиций платежей
 
 //    //счет
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn
     private Invoice invoice;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @OrderColumn
     @JoinColumn(name = "fk_oder_id")
     private List<OrderHistoryItem> history;

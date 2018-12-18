@@ -22,7 +22,7 @@ import ru.xenya.market.ui.MainView;
 
 @SpringBootApplication(scanBasePackageClasses = {SecurityConfiguration.class, MainView.class, MarketApplication.class,
         CustomerService.class, UserService.class, PriceService.class}, exclude = ErrorMvcAutoConfiguration.class)
-@EnableJpaRepositories(basePackageClasses = {UserRepository.class, CustomerRepository.class, PriceRepository.class})
+@EnableJpaRepositories(basePackageClasses = {UserRepository.class/*, CustomerRepository.class, PriceRepository.class*/})
 @EntityScan(basePackageClasses = {User.class})
 //@EnableJdbcHttpSession
 

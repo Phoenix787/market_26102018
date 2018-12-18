@@ -37,11 +37,11 @@ public class OrderItem extends AbstractEntity {
     private Discount discount;
 
     @ManyToMany(
-            cascade = {/*CascadeType.PERSIST, *//*CascadeType.MERGE, */CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE},
+            cascade = {/*CascadeType.PERSIST, *//*CascadeType.MERGE, */CascadeType.REFRESH, CascadeType.DETACH/*, CascadeType.REMOVE*/},
             fetch = FetchType.LAZY)
-    @JoinTable(name = "ORDER_ITEM_DATES",
-            joinColumns = {@JoinColumn(name = "order_item_id")},
-            inverseJoinColumns =  @JoinColumn(name = "dates_id"))
+//    @JoinTable(name = "ORDER_ITEM_DATES",
+//            joinColumns = {@JoinColumn(name = "order_item_id")},
+//            inverseJoinColumns =  @JoinColumn(name = "dates_id"))
     @NotEmpty
     @Valid
 //    private List<ScheduleDates> dates;
@@ -55,13 +55,16 @@ public class OrderItem extends AbstractEntity {
 
 
     public OrderItem() {
-    }
-
-    public OrderItem(User createdBy) {
         this.discount = Discount.none;
 //        this.dates = new ArrayList<>();
         this.dates = new HashSet<>();
     }
+
+//    public OrderItem(User createdBy) {
+//        this.discount = Discount.none;
+////        this.dates = new ArrayList<>();
+//        this.dates = new HashSet<>();
+//    }
 
     //конструктор копирования
     public OrderItem(OrderItem other) {

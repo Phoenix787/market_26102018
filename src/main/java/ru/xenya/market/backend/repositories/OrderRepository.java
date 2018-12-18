@@ -28,6 +28,9 @@ public interface OrderRepository extends JpaRepository<Order, Long>/*, OrderRepo
     Page<Order> findByCustomerFullNameContainingIgnoreCase(String searchQuery, Pageable pageable);
 
     @EntityGraph(value = Order.ENTITY_GRAPTH_BRIEF, type = EntityGraph.EntityGraphType.LOAD)
+    Page<Order> findByCustomerIdAndCustomerFullNameContainingIgnoreCase(Long id, String searchQuery, Pageable pageable);
+
+    @EntityGraph(value = Order.ENTITY_GRAPTH_BRIEF, type = EntityGraph.EntityGraphType.LOAD)
     Page<Order> findByCustomerFullNameContainingIgnoreCaseAndDueDateAfter(String searchQuery, LocalDate dueDate, Pageable pageable);
 
     @Override
@@ -47,6 +50,8 @@ public interface OrderRepository extends JpaRepository<Order, Long>/*, OrderRepo
     long countByDueDateAfter(LocalDate date);
 
     long countByCustomerFullNameContainingIgnoreCase(String searchQuery);
+    long countByCustomerFullNameContainingIgnoreCaseAndCustomerId(String searchQuery, Long searchCustomerId);
+    long countByCustomerId(Long searchCustomerId);
 
     List<Order> findByCustomerAndDueDate(Customer customer, LocalDate dueDateFilter);
 
