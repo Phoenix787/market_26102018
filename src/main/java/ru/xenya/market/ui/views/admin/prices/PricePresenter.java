@@ -40,8 +40,8 @@ public class PricePresenter {
         this.view = view;
         System.err.println(this.entityPresenter.getView().getClass().getName());
         view.getGrid().setItems(updateList());
-        view.getForm().setCurrentPrice(currentPrice);
-        view.getForm().setCurrentUser(currentUser);
+      //  view.getForm().setCurrentPrice(currentPrice);
+     //   view.getForm().setCurrentUser(currentUser);
         view.getForm().addCancelListener(e -> cancel());
         view.getForm().addSaveListener(e -> save());
         view.getForm().addDeleteListener(e -> delete());

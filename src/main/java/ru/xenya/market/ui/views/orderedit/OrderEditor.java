@@ -39,10 +39,7 @@ import ru.xenya.market.ui.events.DeleteEvent;
 import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.TemplateUtils;
-import ru.xenya.market.ui.utils.converters.CurrencyFormatter;
-import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
-import ru.xenya.market.ui.utils.converters.LongToStringEncoder;
-import ru.xenya.market.ui.utils.converters.OrderStateConverter;
+import ru.xenya.market.ui.utils.converters.*;
 import ru.xenya.market.ui.views.orderedit.invoice.InvoiceEditor;
 import ru.xenya.market.ui.views.orderedit.orderitem.OrderItemsView;
 import ru.xenya.market.ui.views.orderedit.orderitem.ValueChangeEvent;
@@ -365,11 +362,12 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         void setPricePlan(String pricePlan);
 
         @Include({"id", "dueDate", "orderState", "items.price.name", "items.quantity",
-                "items.totalPrice", "history.message", "history.createdBy.firstName"})
+                "items.totalPrice", "history.message", "history.createdBy.firstName", "history.timestamp"})
         @Encode(value = LongToStringEncoder.class, path = "id")
         @Encode(value = LocalDateToStringEncoder.class, path = "dueDate")
         @Encode(value = OrderStateConverter.class, path = "orderState")
         @Encode(value = CurrencyFormatter.class, path = "items.totalPrice")
+        @Encode(value = LocalDateTimeConverter.class, path = "history.timestamp")
         void setItem(Order order);
     }
 

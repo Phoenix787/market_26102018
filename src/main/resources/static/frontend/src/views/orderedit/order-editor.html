@@ -47,8 +47,13 @@
             }
 
             .history-line {
-        margin: var(--lumo-space-xs) 0;
-      }
+                margin: var(--lumo-space-xs) 0;
+            }
+
+            .secondary {
+                font-size: var(--lumo-font-size-xs);
+                line-height: var(--lumo-font-size-xl);
+            }
 
       .comment {
         font-size: var(--lumo-font-size-s);
@@ -95,7 +100,7 @@
     <template is="dom-repeat" items="[[item.history]]" as="event">
      <div class="history-line" label-position="top">
       <span class="bold" style="font-weight:bold">[[event.createdBy.firstName]]</span>
-      <span class="secondary"></span>
+      <span class="secondary">[[event.timestamp]]</span>
      </div>
      <div class="comment">
        [[event.message]] 

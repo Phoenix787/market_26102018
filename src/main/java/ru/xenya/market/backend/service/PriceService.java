@@ -49,7 +49,6 @@ public class PriceService implements FilterableCrudService<Price> {
     }
 
     @Override
-    @org.springframework.transaction.annotation.Transactional
     public Page<Price> findAnyMatching(Optional<String> filter, Pageable pageable) {
 
         if (filter.isPresent()) {

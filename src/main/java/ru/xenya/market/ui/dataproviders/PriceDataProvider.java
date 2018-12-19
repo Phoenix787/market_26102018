@@ -3,6 +3,8 @@ package ru.xenya.market.ui.dataproviders;
 import com.vaadin.flow.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
 import ru.xenya.market.backend.data.Service;
 import ru.xenya.market.backend.data.Unit;
@@ -15,6 +17,7 @@ import java.util.stream.Stream;
 
 
 @SpringComponent
+//@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PriceDataProvider extends AbstractBackEndDataProvider<Price, String> {
 
     private final PriceService priceService;

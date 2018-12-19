@@ -24,7 +24,6 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.templatemodel.TemplateModel;
-import org.vaadin.olli.NumberInput;
 import ru.xenya.market.backend.data.Discount;
 import ru.xenya.market.backend.data.Service;
 import ru.xenya.market.backend.data.Unit;
@@ -67,13 +66,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
     @Id("grid")
     private Grid<ScheduleDates> grid;
-
     @Id("dates")
     private SelectedDates dates;
-//
-//    @Id("totalPrice")
-//    private Div totalPriceDiv;
-
     @Id("discount")
     private RadioButtonGroup<Discount> discountGroup;
     @Id("metaContainer")
@@ -92,6 +86,10 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private ComboBox<PriceItem> priceCb;
     @Id("measureContainer")
     private Div measureContainer;
+    @Id("widthField")
+    private TextField widthField;
+    @Id("heightField")
+    private TextField heightField;
     @Id("amount")
     private TextField amount;
     @Id("summ")
@@ -125,10 +123,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private boolean hasChanges = false;
     private Set<ScheduleDates> orderItemDates;
     private Set<ScheduleDates> datesForGrid;
-    @Id("widthField")
-    private TextField widthField;
-    @Id("heightField")
-    private TextField heightField;
+
 //    private List<ScheduleDates> orderItemDates;
 
 
@@ -152,8 +147,13 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
 
         heightField.getElement().setAttribute("style", "margin-light:0.5em; margin-right:0.5em;");
         heightField.setWidth("6em");
-        widthField.addKeyPressListener(Key.ENTER, event->
-                heightField.focus());
+        widthField.addKeyPressListener(Key.ENTER, event -> {
+                    if (heightField.getValue().equals("0")) {
+                        heightField.clear();
+                    }
+                    heightField.focus();
+                }
+        );
 
 
         heightField.addKeyDownListener(Key.ENTER, event -> {

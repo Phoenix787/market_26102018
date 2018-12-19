@@ -57,4 +57,16 @@ public class FormattingUtils {
         int size = list.size();
         return String.valueOf(size);
     }
+
+    /**
+     * Formats hours with am/pm. E.g: 2:00 PM
+     */
+    public static final DateTimeFormatter HOUR_FORMATTER = DateTimeFormatter
+            .ofPattern("HH:mm", MarketConst.APP_LOCALE);
+
+    /**
+     * Full date format. E.g: 03.03.2001
+     */
+    public static final DateTimeFormatter FULL_DATE_FORMATTER = DateTimeFormatter
+            .ofPattern("dd.MM.yyyy", MarketConst.APP_LOCALE);
 }

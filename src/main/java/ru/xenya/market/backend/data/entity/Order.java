@@ -19,15 +19,20 @@ import java.util.List;
 ),@NamedEntityGraph(name = Order.ENTITY_GRAPTH_FULL, attributeNodes = {
         @NamedAttributeNode("customer"),
         @NamedAttributeNode("invoice"),
-        @NamedAttributeNode("pricePlan"),
+        @NamedAttributeNode(value = "pricePlan", subgraph = "priceGraph"),
         @NamedAttributeNode("history"),
         @NamedAttributeNode(value = "items", subgraph = "itemsGraph")
 },
             subgraphs = {
                     @NamedSubgraph(name = "itemsGraph",attributeNodes = {
                             @NamedAttributeNode(value = "dates")
+                    }),
+                    @NamedSubgraph(name = "priceGraph",attributeNodes = {
+                            @NamedAttributeNode(value = "itemsPrice")
                     })
-})})
+
+            }
+)})
 @Entity(name = "orders")
 public class Order extends AbstractEntity implements OrderSummary {
 

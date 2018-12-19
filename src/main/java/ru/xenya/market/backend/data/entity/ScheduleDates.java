@@ -16,9 +16,6 @@ public class ScheduleDates extends AbstractEntity {
 
     private String weekDay;
 
-//    @ManyToMany(mappedBy = "dates", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE})
-//    private List<OrderItem> orderItem;
-
     public ScheduleDates() {
     }
 
@@ -43,11 +40,5 @@ public class ScheduleDates extends AbstractEntity {
         this.weekDay = weekDay;
     }
 
-//    public List<OrderItem> getOrderItems() {
-//        return orderItem;
-//    }
-//
-//    public void setOrderItems(List<OrderItem> orderItems) {
-//        this.orderItem = orderItems;
-//    }
+
 }

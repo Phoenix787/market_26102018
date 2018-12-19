@@ -15,9 +15,16 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+@NamedEntityGraphs({@NamedEntityGraph(name = Price.ENTITY_GRAPH_BRIEF, attributeNodes = {
+        @NamedAttributeNode("itemsPrice"),
+        @NamedAttributeNode("history")
+})
 
+})
 @Entity(name = "prices")
 public class Price extends AbstractEntity implements PriceSummary {
+
+    public static final String ENTITY_GRAPH_BRIEF = "Price.brief";
 
     @NotNull(message = "{market.due.dueDate.required}")
     private LocalDate date;

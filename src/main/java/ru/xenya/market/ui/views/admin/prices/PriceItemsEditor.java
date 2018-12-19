@@ -1,8 +1,10 @@
 package ru.xenya.market.ui.views.admin.prices;
 
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValueAndElement;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.dom.Element;
@@ -18,6 +20,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 public class PriceItemsEditor extends Div
         implements HasValueAndElement<ComponentValueChangeEvent<PriceItemsEditor,List<PriceItem>>, List<PriceItem>> {
 
@@ -30,6 +33,7 @@ public class PriceItemsEditor extends Div
     private PriceItem currentPriceItem;
 
     public PriceItemsEditor() {
+
 
         this.fieldSupport = new AbstractFieldSupport<>(this, Collections.emptyList(),
                 Objects::equals, c -> {
@@ -136,5 +140,14 @@ public class PriceItemsEditor extends Div
         if (hasChanges) {
             fireEvent(new ru.xenya.market.ui.views.admin.prices.events.ValueChangeEvent(this));
         }
+    }
+
+    @Override
+    public void add(Component... components) {
+        super.add(components);
+
+        components[components.length-1]
+                .getElement()
+                .callFunction("scrollIntoView");
     }
 }

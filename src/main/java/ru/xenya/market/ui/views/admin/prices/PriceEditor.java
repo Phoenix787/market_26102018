@@ -69,9 +69,9 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {
 
     private PriceItemsEditor itemsEditor;
 
-    private User currentUser;
+ //   private User currentUser;
 
-    private Price currentPrice;
+//    private Price currentPrice;
 
     BeanValidationBinder<Price> binder = new BeanValidationBinder<>(Price.class);
 
@@ -91,14 +91,14 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {
                 .setToday("сегодня")
                 .setCancel("отмена")
                 .setFirstDayOfWeek(1)
-        .setMonthNames(Arrays.asList("январь", "февраль", "март",
+                .setMonthNames(Arrays.asList("январь", "февраль", "март",
                 "апрель", "май", "июнь",
                 "июль", "август", "сентябрь",
                 "октябрь", "ноябрь", "декабрь"))
                 .setWeekdays(
                         Arrays.asList("воскресенье", "понедельник", "вторник",
                         "среда", "четверг", "пятница", "суббота"))
-        .setWeekdaysShort(Arrays.asList("вс", "пн", "вт", "ср", "чт", "пт", "сб")));
+                .setWeekdaysShort(Arrays.asList("вс", "пн", "вт", "ср", "чт", "пт", "сб")));
         date.setLocale(Locale.UK);
         date.setRequired(true);
         binder.bind(date, Price::getDate, Price::setDate);
@@ -125,11 +125,11 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {
 
     }
 
-    public void setCurrentPrice(Price currentPrice) {
-        this.currentPrice = currentPrice;
-    }
+ //   public void setCurrentPrice(Price currentPrice) {
+ //       this.currentPrice = currentPrice;
+ //   }
 
-    public Price getCurrentPrice() { return currentPrice; }
+ //   public Price getCurrentPrice() { return currentPrice; }
 
 
 //    public Registration addCancelListener(ComponentEventListener<CancelEvent> listener) {
@@ -196,9 +196,9 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {
 
     }
 
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
-    }
+//    public void setCurrentUser(User currentUser) {
+//        this.currentUser = currentUser;
+//    }
 
 
     public Stream<HasValue<?, ?>> validate() {
@@ -207,4 +207,6 @@ public class PriceEditor extends PolymerTemplate<TemplateModel> {
                 .map(BindingValidationStatus::getField);
         return Stream.concat(errorFields, itemsEditor.validate());
     }
+
+
 }

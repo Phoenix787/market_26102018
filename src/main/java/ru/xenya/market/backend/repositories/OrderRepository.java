@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 //@Transactional(readOnly = true)
-public interface OrderRepository extends JpaRepository<Order, Long>/*, OrderRepositoryCustom*/ {
+public interface OrderRepository extends JpaRepository<Order, Long> {
     @EntityGraph(value = Order.ENTITY_GRAPTH_BRIEF, type = EntityGraph.EntityGraphType.LOAD)
     Page<Order> findByDueDateAfter(LocalDate filterDate, Pageable pageable);
 

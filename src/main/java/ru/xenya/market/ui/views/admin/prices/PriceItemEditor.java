@@ -57,6 +57,7 @@ public class PriceItemEditor extends PolymerTemplate<PriceItemEditor.Model>
     public PriceItemEditor() {
         this.fieldSupport = new AbstractFieldSupport<>(this, null, Objects::equals, c -> {
         });
+        service.focus();
         service.setItemLabelGenerator(createItemLabelGenerator(Service::toString));
         service.setDataProvider(DataProvider.ofItems(Service.values()));
         service.addValueChangeListener(e -> {

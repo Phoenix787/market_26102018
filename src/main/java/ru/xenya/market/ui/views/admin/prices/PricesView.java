@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -37,6 +38,7 @@ import static ru.xenya.market.ui.utils.MarketConst.*;
 @Tag("prices-view")
 @HtmlImport("src/views/admin/prices/prices-view.html")
 @Route(value = PAGE_PRODUCTS, layout = MainView.class)
+@StyleSheet("frontend://styles/styles.css")
 @PageTitle(TITLE_PRODUCTS)
 @Secured(Role.ADMIN)
 
@@ -60,6 +62,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
 
     @Autowired
     public PricesView(PriceEditor priceEditor, PricePresenter presenter) {
+
         this.priceEditor = priceEditor;
         this.presenter = presenter;
         this.presenter.init(this);

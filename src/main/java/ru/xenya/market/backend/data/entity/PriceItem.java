@@ -31,14 +31,6 @@ public class PriceItem extends AbstractEntity {
     @Max(value = 100000, message = "{market.price.limits}" )
     private Integer price;
 
-//    @ManyToOne
-//    @NotNull
-//    private Price owner;
-
-//    public PriceItem(Price currentPrice) {
-//        setOwner(currentPrice);
-//    }
-
 
     public PriceItem() {
     }
@@ -58,14 +50,6 @@ public class PriceItem extends AbstractEntity {
     public void setPrice(Integer price) {
         this.price = price;
     }
-
-//    public Price getOwner() {
-//        return owner;
-//    }
-//
-//    public void setOwner(Price owner) {
-//        this.owner = owner;
-//    }
 
     public Service getService() {
         return service;

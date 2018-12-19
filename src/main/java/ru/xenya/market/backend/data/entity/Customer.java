@@ -31,7 +31,6 @@ public class Customer extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @OrderColumn
     @JoinColumn
-    //  @NotEmpty
     private List<Order> orders = new ArrayList<>();
 
     public Customer() {
