@@ -74,7 +74,7 @@ public class OrdersGridDataProvider
     public OrdersGridDataProvider(OrderService orderService) {
 
         this.orderService = orderService;
-        setSortOrders(MarketConst.DEFAULT_SORT_DIRECTION, MarketConst.ORDER_SORT_FIELDS);
+       setSortOrders(MarketConst.DEFAULT_SORT_DIRECTION, MarketConst.ORDER_SORT_FIELDS);
 
     }
 

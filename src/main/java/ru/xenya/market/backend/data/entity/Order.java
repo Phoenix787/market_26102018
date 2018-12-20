@@ -49,7 +49,7 @@ public class Order extends AbstractEntity implements OrderSummary {
 
    //множество позиций заказа
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true )
-    @OrderColumn
+    @OrderColumn(nullable = false)
     @JoinColumn
     @BatchSize(size = 100)
     @Valid

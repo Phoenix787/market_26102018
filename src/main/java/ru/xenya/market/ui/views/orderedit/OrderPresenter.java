@@ -172,6 +172,7 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     public void save() {
 
         currentOrder = entityPresenter.getEntity();
+       // currentOrder.addHistoryItem(currentUser, "Заказ изменён");
         List<HasValue<?, ?>> fields = view.validate().collect(Collectors.toList());
         if (fields.isEmpty()){
             if(writeEntity(currentOrder)){
@@ -184,7 +185,6 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
                         view.showUpdateNotification("Заказ # " + e.getId());
                       //  view.getGrid().setItems(updateList());
                         dataProvider.refreshItem(e);
-
                     }
 
                     close();

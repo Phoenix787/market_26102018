@@ -129,4 +129,8 @@ public class ScheduleDatesService /*implements FilterableCrudService<ScheduleDat
         return Math.toIntExact(repository.count());
     }
 
+    public void delete(ScheduleDates date){
+        repository.delete(date);
+    }
+
 }

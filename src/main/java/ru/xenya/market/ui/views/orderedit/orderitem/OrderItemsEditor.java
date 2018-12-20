@@ -11,6 +11,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -123,6 +124,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     private boolean hasChanges = false;
     private Set<ScheduleDates> orderItemDates;
     private Set<ScheduleDates> datesForGrid;
+    @Id("vaadinHorizontalLayout")
+    private HorizontalLayout vaadinHorizontalLayout;
 
 //    private List<ScheduleDates> orderItemDates;
 
@@ -145,7 +148,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         label.getElement().setAttribute("style", "margin-right:0.5em;");
         widthField.setWidth("6em");
 
-        heightField.getElement().setAttribute("style", "margin-light:0.5em; margin-right:0.5em;");
+        heightField.getElement().setAttribute("style", "margin-left:0.5em; margin-right:0.5em;");
         heightField.setWidth("6em");
         widthField.addKeyPressListener(Key.ENTER, event -> {
                     if (heightField.getValue().equals("0")) {
@@ -169,6 +172,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         setupGrid(provider);
         setAddButtonText("Добавить");
 
+        vaadinHorizontalLayout.expand(serviceCb);
         serviceCb.setItems(Service.values());
         unitCb.setItems(Unit.values());
         unitCb.addValueChangeListener(e -> {
@@ -250,6 +254,7 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
         setPrice();
 
         getDatesAfterCurrent(LocalDate.now());
+
     }
 
     private List<PriceItem> getPriceItems(Unit unit, Service service) {

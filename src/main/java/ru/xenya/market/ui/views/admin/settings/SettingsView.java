@@ -5,8 +5,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.TemplateModel;
@@ -58,6 +60,13 @@ public class SettingsView extends PolymerTemplate<TemplateModel> {
         grid.addColumn(ScheduleDates::getId).setWidth("70px").setHeader("№").setFlexGrow(0);
         grid.addColumn(ScheduleDates::getDate).setWidth("70px").setHeader("Дата");
         grid.addColumn(ScheduleDates::getWeekDay).setWidth("100px").setHeader("День недели").setFlexGrow(5);
+        grid.addComponentColumn(item -> new NativeButton("X", evt -> {
+            presenter.remove(item);
+            grid.setItems(presenter.updateList());
+//            ListDataProvider<ScheduleDates> dataProvider = (ListDataProvider<ScheduleDates>) grid.getDataProvider();
+//            dataProvider.getItems().remove(item);
+//            dataProvider.refreshAll();
+        })).setHeader("Действия");
 
     }
 

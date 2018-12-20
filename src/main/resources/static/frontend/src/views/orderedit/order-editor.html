@@ -18,11 +18,14 @@
 <link rel="import" href="../../../styles/shared-styles.html">
 
 <link rel="import" href="invoice/invoice-editor.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/src/vaadin-grid.html">
+<link rel="import" href="../../../bower_components/vaadin-ordered-layout/src/vaadin-horizontal-layout.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/src/vaadin-grid-column.html">
 
 <dom-module id="order-editor">
 
     <template>
-<style include="shared-style">
+<style include="shared-styles">
             :host {
                     display: flex;
                     flex-direction: column;
@@ -64,15 +67,16 @@
  <div class="meta-row" id="metaContainer">
   <!--<vaadin-combo-box class="status" id="status">Статус</vaadin-combo-box>-->
   <span class="dim">Заказ # <span id="orderNumber"></span></span>
+  <span class="dim">Контрагент:<span id="customer" style="padding-left:0.2em; font-weight: bold;"></span></span>
  </div>
  <vaadin-form-layout id="form1">
   <vaadin-form-layout id="form2">
-   <vaadin-date-picker label="Дата заказа" id="dueDate"></vaadin-date-picker>
-   <vaadin-combo-box id="status" label="Статус заказа">
-    <iron-icon slot="prefix" iron="vaadin:clock"></iron-icon>
+   <vaadin-date-picker label="Дата заказа" id="dueDate" stop-keyboard-event-propagation></vaadin-date-picker>
+   <vaadin-combo-box id="status" label="Статус заказа" colspan="2">
+    <iron-icon slot="prefix" icon="vaadin:clock"></iron-icon>
    </vaadin-combo-box>
    <vaadin-combo-box id="payment" label="Форма оплаты" colspan="2">
-    <iron-icon slot="prefix" iron="vaadin:at"></iron-icon>
+    <iron-icon slot="prefix" icon="vaadin:cash"></iron-icon>
    </vaadin-combo-box>
    <vaadin-form-item>
     <label slot="label"></label>
@@ -85,9 +89,9 @@
    <vaadin-combo-box items="[[items]]" id="pricePlan" label="План цен"></vaadin-combo-box>
   </vaadin-form-layout>
   <vaadin-form-layout id="form3" colspan="3">
-   <vaadin-text-field id="customerName" label="Customer" colspan="2">
-    <iron-icon slot="prefix" icon="vaadin:user"></iron-icon>
-   </vaadin-text-field>
+   <!--<vaadin-text-field id="customerName" label="Контрагент" colspan="2">-->
+   <!--<iron-icon slot="prefix" icon="vaadin:user"></iron-icon>-->
+   <!--</vaadin-text-field>-->
    <!--<vaadin-text-field id="customerPhone" label="Phone number">-->
    <!--<iron-icon slot="prefix" icon="vaadin:phone"></iron-icon>-->
    <!--</vaadin-text-field>-->
@@ -106,6 +110,22 @@
        [[event.message]] 
      </div>
     </template>
+   </vaadin-form-item>
+   <vaadin-form-item colspan="2">
+    <label slot="label">Платежи</label>
+    <vaadin-grid items="[[items]]" id="gridPays" height-by-rows>
+     <vaadin-grid-column width="50px"></vaadin-grid-column>
+     <vaadin-grid-column width="70px"></vaadin-grid-column>
+     <vaadin-grid-column width="70px"></vaadin-grid-column>
+    </vaadin-grid>
+    <vaadin-horizontal-layout>
+     <vaadin-button id="addPay" class="self-start" theme="primary">
+      <iron-icon icon="vaadin:plus"></iron-icon>
+     </vaadin-button>
+     <vaadin-button id="deletePay" class="self-start">
+      <iron-icon icon="vaadin:minus"></iron-icon>
+     </vaadin-button>
+    </vaadin-horizontal-layout>
    </vaadin-form-item>
   </vaadin-form-layout>
  </vaadin-form-layout>

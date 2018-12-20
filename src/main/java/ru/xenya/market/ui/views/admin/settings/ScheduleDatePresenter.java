@@ -43,4 +43,8 @@ public class ScheduleDatePresenter {
     public Set<ScheduleDates> getDatesFromCurrent() {
           return service.findDatesAfterCurrent(LocalDate.now());
     }
+
+    public void remove(ScheduleDates item) {
+        service.delete(item);
+    }
 }

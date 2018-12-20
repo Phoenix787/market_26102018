@@ -7,6 +7,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
@@ -70,8 +71,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private DatePicker dueDate;
     @Id("payment")
     private ComboBox<Payment> payment;
-    @Id("customerName")
-    private TextField customerName;
+//    @Id("customerName")
+//    private TextField customerName;
 
     @Id("cancel")
     private Button cancel;
@@ -87,6 +88,10 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private Div invoiceContainer;
     @Id("pricePlan")
     private ComboBox<Price> pricePlan;
+    @Id("history")
+    private FormItem history;
+    @Id("customer")
+    private Span customer;
 
 
     private InvoiceEditor invoiceEditor;
@@ -99,8 +104,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private Price defaultPrice;
     private BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
     private LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
-    @Id("history")
-    private FormItem history;
+    @Id("gridPays")
+    private Grid vaadinGrid;
 
     @Autowired
     public OrderEditor(OrderItemsView orderItemsView, PriceDataProvider priceDataProvider) {
@@ -140,10 +145,10 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         needInvoice.addValueChangeListener(e -> addInvoice(e.getValue()));
         binder.bind(invoiceEditor, "invoice");
 
-        binder.bind(customerName, "customer.fullName");
+      //  binder.bind(customerName, "customer.fullName");
 
         if (currentOrder != null) {
-            customerName.setValue(binder.getBean().getCustomer().getFullName());
+          //  customerName.setValue(binder.getBean().getCustomer().getFullName());
 
             if (currentOrder.getInvoice() != null) {
                 invoiceEditor.setCurrentInvoice(currentOrder.getInvoice());
@@ -226,10 +231,11 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
         binder.readBean(order);
         this.orderNumber.setText(isNew ? "" : order.getId().toString());
+        this.customer.setText(order.getCustomer().getFullName());
 
         title.setVisible(isNew);
         metaContainer.setVisible(!isNew);
-        customerName.setValue(order.getCustomer().getFullName());
+        //customerName.setValue(order.getCustomer().getFullName());
         //  pricePlan.setValue(order.getPricePlan());
 
         if (order.getOrderState() != null) {
@@ -272,10 +278,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         binder.bind(payment, "payment");
         payment.setRequired(true);
 
-        binder.bind(customerName, "customer.fullName");
-        if (currentOrder != null) {
-            customerName.setValue(binder.getBean().getCustomer().getFullName());
-        }
     }
 
     public Stream<HasValue<?, ?>> validate() {

@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.notification.Notification;
@@ -131,11 +132,12 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
     private void setupGrid() {
         UnitConverter unitConverter = new UnitConverter();
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
-        grid.addColumn(OrderItem::getId).setHeader("#").setWidth("70px").setFlexGrow(0);
-        grid.addColumn(OrderItem::getService).setWidth("70px").setHeader("Услуга").setFlexGrow(1);
+        grid.setHeightByRows(true);
+        grid.addColumn(OrderItem::getId).setHeader("#").setResizable(true).setWidth("70px").setFlexGrow(0).setComparator((p1, p2)->p1.getId().compareTo(p2.getId()));
+        grid.addColumn(OrderItem::getService).setResizable(true).setWidth("70px").setHeader("Услуга").setFlexGrow(1);
         grid.addColumn(new ComponentRenderer<>(Div::new, (div, orderitem) -> div.setText(
                 FormattingUtils.formatAsDouble(orderitem.getQuantity()) + " " + unitConverter.encode(orderitem.getUnit()))
-        )).setWidth("70px").setHeader("Кол-во").setFlexGrow(2);
+        )).setResizable(true).setWidth("70px").setHeader("Кол-во").setFlexGrow(2);
         grid.addColumn(orderItem -> Integer.toString(orderItem.getDates().size())).setHeader("Выходы").setWidth("30px");
 //        grid.addColumn(orderItem -> FormattingUtils.formatListSize(orderItem.getDates())).setHeader("Выходы").setWidth("30px");
         grid.addColumn(orderItem->FormattingUtils.formatAsCurrency(orderItem.getTotalPrice())).setHeader("Сумма").setWidth("100px");
@@ -155,6 +157,7 @@ public class OrderItemsView extends PolymerTemplate<OrderItemsView.OrderItemsVie
                         grid.deselectAll();
                     });
                 });
+
     }
 
     @Override

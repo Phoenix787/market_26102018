@@ -10,6 +10,9 @@
 <link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid.html">
 <link rel="import" href="../../../components/selected-dates.html">
 
+<link rel="import" href="../../../../styles/shared-styles.html">
+<link rel="import" href="../../../../bower_components/vaadin-ordered-layout/src/vaadin-horizontal-layout.html">
+
 <dom-module id="order-items-editor">
     <template>
 <style include="shared-styles">
@@ -73,17 +76,19 @@
  <vaadin-form-layout id="form1">
   <vaadin-form-layout id="form2" colspan="7">
    <vaadin-form-item colspan="16">
-    <vaadin-combo-box items="[[items]]" id="service" label="Услуга" colspan="14" tabindex="1" autofocus></vaadin-combo-box>
-    <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения" colspan="" tabindex="2"></vaadin-combo-box>
+    <vaadin-horizontal-layout id="vaadinHorizontalLayout">
+     <vaadin-combo-box items="[[items]]" id="service" label="Услуга" colspan="" tabindex="1" autofocus></vaadin-combo-box>
+     <vaadin-combo-box items="[[items]]" id="unit" label="Ед. измерения" colspan="" tabindex="2"></vaadin-combo-box>
+    </vaadin-horizontal-layout>
     <vaadin-combo-box items="[[items]]" class="status" id="price" label="Цена" property="" property1="" property2="" tabindex="3"></vaadin-combo-box>
    </vaadin-form-item>
    <vaadin-form-item colspan="16">
     <div id="measureContainer" tabindex="">
-     <vaadin-text-field id="widthField" tabindex="4">
-       &gt; 
+     <vaadin-text-field id="widthField" tabindex="4" label="Ширина">
+      <!--&gt; -->
      </vaadin-text-field>
      <label>x</label>
-     <vaadin-text-field id="heightField" tabindex="5"></vaadin-text-field>
+     <vaadin-text-field id="heightField" tabindex="5" label="Высота"></vaadin-text-field>
     </div>
    </vaadin-form-item>
    <vaadin-form-item colspan="16">
