@@ -4,10 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.xenya.market.backend.data.OrderState;
-import ru.xenya.market.backend.data.entity.Customer;
-import ru.xenya.market.backend.data.entity.Order;
-import ru.xenya.market.backend.data.entity.Price;
-import ru.xenya.market.backend.data.entity.User;
+import ru.xenya.market.backend.data.entity.*;
 import ru.xenya.market.backend.repositories.OrderRepository;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 import ru.xenya.market.ui.utils.converters.OrderStateConverter;
@@ -270,5 +267,6 @@ public class OrderService implements CrudService<Order> {
 
 
     }
+
 
 }

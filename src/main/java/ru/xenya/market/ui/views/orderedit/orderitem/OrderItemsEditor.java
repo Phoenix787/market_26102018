@@ -134,7 +134,8 @@ public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItem
     /**
      * Creates a new OrderItemsEditor.
      */
-    public OrderItemsEditor(ScheduleDateProvider provider, ScheduleDatesService datesService/*OrderItemPresenter presenter, ScheduleDateProvider provider, ScheduleDatesService datesService, PriceService priceService*/) {
+    public OrderItemsEditor(ScheduleDateProvider provider,
+                            ScheduleDatesService datesService) {
         // You can initialise any data required for the connected UI components here.
 
 //        this.presenter = presenter;

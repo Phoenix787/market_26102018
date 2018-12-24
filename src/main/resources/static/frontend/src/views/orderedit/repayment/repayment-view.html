@@ -1,0 +1,60 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/vaadin-ordered-layout/src/vaadin-vertical-layout.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid.html">
+<link rel="import" href="../../../components/buttons-bar.html">
+<link rel="import" href="../../../../bower_components/vaadin-button/src/vaadin-button.html">
+<link rel="import" href="../../../../bower_components/vaadin-dialog/src/vaadin-dialog.html">
+
+<dom-module id="repayment-view">
+    <template>
+<style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            .delete {
+        min-width: 2em;
+        padding: 0;
+      }
+        </style>
+<vaadin-vertical-layout style="width: 100%; height: 100%;">
+ <vaadin-dialog id="dialog" on-opened-changed="_onDialogOpen"></vaadin-dialog>
+ <vaadin-grid items="[[items]]" id="grid" height-by-rows></vaadin-grid>
+</vaadin-vertical-layout>
+<buttons-bar>
+ <vaadin-button id="add" theme="primary" slot="left" index="[[index]]" class="delete">
+  <iron-icon icon="vaadin:plus" slot=""></iron-icon>
+ </vaadin-button>
+ <vaadin-button id="deleteBtn" slot="left" index="[[index]]" class="delete">
+  <iron-icon icon="vaadin:close-small" slot=""></iron-icon>
+ </vaadin-button>
+ <div slot="info">
+  <span id="totalSumSpan">[[totalSum]]</span>
+ </div>
+</buttons-bar>
+</template>
+
+    <script>
+        class RepaymentView extends Polymer.Element {
+            static get is() {
+                return 'repayment-view';
+            }
+
+            static get properties() {
+                return {
+                    // Declare your properties here.
+                };
+            }
+
+            // Workaround for styling the dialog content https://github.com/vaadin/vaadin-dialog-flow/issues/69
+      _onDialogOpen(e) {
+        if (!e.detail.value) {
+          return;
+        }
+        var content = this.$.dialog.$.overlay.content;
+        content.querySelector('flow-component-renderer').setAttribute('theme', 'dialog');
+      }
+        }
+        customElements.define(RepaymentView.is, RepaymentView);
+    </script>
+</dom-module>

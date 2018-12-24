@@ -54,7 +54,12 @@ public class Order extends AbstractEntity implements OrderSummary {
     @BatchSize(size = 100)
     @Valid
     private List<OrderItem> items;
+
     //множество позиций платежей
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OrderColumn(/*nullable = false*/)
+    @JoinColumn
+    private List<Repayment> repayments;
 
     //счет
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -90,6 +95,7 @@ public class Order extends AbstractEntity implements OrderSummary {
         setCustomer(customer);
         setPricePlan(price);
         this.items = new ArrayList<>();
+        this.repayments = new ArrayList<>();
         addHistoryItem(createdBy, "Заказ размещён");
     }
 
@@ -100,6 +106,8 @@ public class Order extends AbstractEntity implements OrderSummary {
         setCustomer(new Customer());
         addHistoryItem(createdBy, "Заказ размещен");
         this.items = new ArrayList<>();
+        this.repayments = new ArrayList<>();
+
 
     }
 
@@ -110,6 +118,13 @@ public class Order extends AbstractEntity implements OrderSummary {
             history = new LinkedList<>();
         }
         history.add(item);
+    }
+
+    public void addRepayment(Repayment repayment) {
+        if (repayments == null) {
+            repayments = new ArrayList<>();
+        }
+        repayments.add(repayment);
     }
 
     public LocalDate getDueDate() {
@@ -177,6 +192,14 @@ public class Order extends AbstractEntity implements OrderSummary {
         this.pricePlan = pricePlan;
     }
 
+    public List<Repayment> getRepayments() {
+        return repayments;
+    }
+
+    public void setRepayments(List<Repayment> repayments) {
+        this.repayments = repayments;
+    }
+
     public void changeState(User user, OrderState orderState) {
         boolean createHistory = this.orderState != orderState && this.orderState != null && orderState != null;
         this.orderState = orderState;
@@ -194,5 +217,8 @@ public class Order extends AbstractEntity implements OrderSummary {
 
     public Integer getTotalPrice(){
         return items.stream().map(i -> i.getTotalPrice()).reduce(0, Integer::sum);
+    }
+    public Integer getPaysTotalPrice(){
+        return repayments.stream().map(Repayment::getSum).reduce(0, Integer::sum);
     }
 }

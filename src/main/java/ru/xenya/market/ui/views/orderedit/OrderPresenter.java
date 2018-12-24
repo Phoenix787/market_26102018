@@ -7,10 +7,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import ru.xenya.market.backend.data.entity.Customer;
-import ru.xenya.market.backend.data.entity.Order;
-import ru.xenya.market.backend.data.entity.Price;
-import ru.xenya.market.backend.data.entity.User;
+import ru.xenya.market.backend.data.entity.*;
 import ru.xenya.market.backend.service.OrderService;
 import ru.xenya.market.backend.service.PriceService;
 import ru.xenya.market.ui.crud.EntityPresenter;
@@ -68,9 +65,19 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         view.getOpenedOrderEditor().addCancelListener(e -> cancel());
         view.getOpenedOrderEditor().addSaveListener(e -> save());
         view.getOpenedOrderEditor().addDeleteListener(e -> delete());
+    //    view.getOpenedOrderEditor().addDeletePayEventListener(e->deletePayItem(currentOrder, e.getPayItem()));
         setCurrentPrice(getDefaultPrice());
         //todo добавить OrderDetails
     }
+
+//    private void deletePayItem(Order order, Repayment payItem) {
+//        if (order.getRepayments() != null){
+//            order.getRepayments().remove(payItem);
+//        }
+//        entityPresenter.save(e->{
+//            view.showNotification("Позиция платежа удалена, заказ обновлен");
+//        });
+//    }
 
     void onNavigation(Long id, boolean edit) {
 

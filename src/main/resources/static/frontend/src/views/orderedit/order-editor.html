@@ -18,9 +18,6 @@
 <link rel="import" href="../../../styles/shared-styles.html">
 
 <link rel="import" href="invoice/invoice-editor.html">
-<link rel="import" href="../../../bower_components/vaadin-grid/src/vaadin-grid.html">
-<link rel="import" href="../../../bower_components/vaadin-ordered-layout/src/vaadin-horizontal-layout.html">
-<link rel="import" href="../../../bower_components/vaadin-grid/src/vaadin-grid-column.html">
 
 <dom-module id="order-editor">
 
@@ -113,19 +110,20 @@
    </vaadin-form-item>
    <vaadin-form-item colspan="2">
     <label slot="label">Платежи</label>
-    <vaadin-grid items="[[items]]" id="gridPays" height-by-rows>
-     <vaadin-grid-column width="50px"></vaadin-grid-column>
-     <vaadin-grid-column width="70px"></vaadin-grid-column>
-     <vaadin-grid-column width="70px"></vaadin-grid-column>
-    </vaadin-grid>
-    <vaadin-horizontal-layout>
-     <vaadin-button id="addPay" class="self-start" theme="primary">
-      <iron-icon icon="vaadin:plus"></iron-icon>
-     </vaadin-button>
-     <vaadin-button id="deletePay" class="self-start">
-      <iron-icon icon="vaadin:minus"></iron-icon>
-     </vaadin-button>
-    </vaadin-horizontal-layout>
+    <!--<vaadin-grid items="[[items]]" id="gridPays" height-by-rows>-->
+    <!--<vaadin-grid-column width="50px"></vaadin-grid-column>-->
+    <!--<vaadin-grid-column width="70px"></vaadin-grid-column>-->
+    <!--<vaadin-grid-column width="70px"></vaadin-grid-column>-->
+    <!--</vaadin-grid>-->
+    <!--<vaadin-horizontal-layout>-->
+    <!--<vaadin-button id="addPay" class="self-start" theme="primary">-->
+    <!--<iron-icon icon="vaadin:plus"></iron-icon>-->
+    <!--</vaadin-button>-->
+    <!--<vaadin-button id="deletePay" class="self-start">-->
+    <!--<iron-icon icon="vaadin:minus"></iron-icon>-->
+    <!--</vaadin-button>-->
+    <!--</vaadin-horizontal-layout>-->
+    <div id="paysContainer"></div>
    </vaadin-form-item>
   </vaadin-form-layout>
  </vaadin-form-layout>
