@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 @NamedEntityGraphs({@NamedEntityGraph(name = Order.ENTITY_GRAPTH_BRIEF, attributeNodes = {
-        @NamedAttributeNode("customer")
+        @NamedAttributeNode("customer"),
+        @NamedAttributeNode(value = "items")
 }
 ),@NamedEntityGraph(name = Order.ENTITY_GRAPTH_FULL, attributeNodes = {
         @NamedAttributeNode("customer"),

@@ -32,6 +32,7 @@ import ru.xenya.market.ui.components.SearchBar;
 import ru.xenya.market.ui.components.common.ConfirmDialog;
 import ru.xenya.market.ui.crud.CrudEntityPresenter;
 import ru.xenya.market.ui.crud.CrudView;
+import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.MarketConst;
 import ru.xenya.market.ui.utils.TemplateUtils;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
@@ -71,8 +72,6 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
 
     private OrderEditor form;
 
-    //  private final BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
-
     @Autowired
     public OrdersViewOfCustomer(OrderPresenter presenter, OrderEditor form) {
         // super(EntityUtil.getName(Order.class), form);
@@ -103,13 +102,14 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
 }
 
     private void setupGrid() {
-        LocalDateToStringEncoder dateConverter = new LocalDateToStringEncoder();
         grid.setHeight("100vh");
-        grid.addColumn(Order::getId).setWidth("80px").setFlexGrow(0);
+        grid.addColumn(Order::getId).setHeader("#").setWidth("80px").setFlexGrow(0);
         grid.addColumn(new LocalDateRenderer<>(Order::getDueDate,
                 DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Дата заказа").setFlexGrow(5);
-        grid.addColumn(Order::getOrderState).setWidth("150px").setHeader("Статус").setFlexGrow(5);
-        grid.addColumn(Order::getPayment).setWidth("150px").setHeader("Форма оплаты").setFlexGrow(5);
+       // grid.addColumn(Order::getOrderState).setWidth("150px").setHeader("Статус").setFlexGrow(5);
+      //  grid.addColumn(Order::getPayment).setWidth("150px").setHeader("Форма оплаты").setFlexGrow(5);
+        grid.addColumn(item -> FormattingUtils.formatAsCurrency(item.getTotalPrice())).setWidth("150px").setHeader("Начислено").setFlexGrow(5);
+        grid.addColumn(item -> FormattingUtils.formatAsCurrency(item.getPaysTotalPrice())).setWidth("150px").setHeader("Оплачено").setFlexGrow(5);
 //        grid.addColumn(new ComponentRenderer<>(this::createEditButton)).setFlexGrow(2);
 //        grid.addColumn(new ComponentRenderer<>(this::openOrdersButton)).setFlexGrow(2);
     }

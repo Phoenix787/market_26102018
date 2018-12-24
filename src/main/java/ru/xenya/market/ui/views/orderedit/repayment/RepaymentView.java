@@ -82,7 +82,6 @@ public class RepaymentView extends PolymerTemplate<RepaymentView.RepaymentViewMo
     private void setupListeners() {
         deleteBtn.addClickListener(e -> {
             grid.getSelectionModel().getFirstSelectedItem().ifPresent(item -> {
-                //todo написать удаление
                 setValue(getValue().stream().filter(element -> element != item).collect(Collectors.toList()));
                 updateTotalPrice(getValue());
                 //пускаем событие, чтобы пересчитать totalSum платежей

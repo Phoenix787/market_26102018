@@ -15,7 +15,6 @@
 //import javax.transaction.Transactional;
 //import java.util.Optional;
 //
-////todo как orderservice
 //@Service
 //public class PriceItemService implements FilterableCrudService<PriceItem> {
 //
