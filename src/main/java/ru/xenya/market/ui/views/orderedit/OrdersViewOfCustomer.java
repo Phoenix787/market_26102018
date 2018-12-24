@@ -110,8 +110,6 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
       //  grid.addColumn(Order::getPayment).setWidth("150px").setHeader("Форма оплаты").setFlexGrow(5);
         grid.addColumn(item -> FormattingUtils.formatAsCurrency(item.getTotalPrice())).setWidth("150px").setHeader("Начислено").setFlexGrow(5);
         grid.addColumn(item -> FormattingUtils.formatAsCurrency(item.getPaysTotalPrice())).setWidth("150px").setHeader("Оплачено").setFlexGrow(5);
-//        grid.addColumn(new ComponentRenderer<>(this::createEditButton)).setFlexGrow(2);
-//        grid.addColumn(new ComponentRenderer<>(this::openOrdersButton)).setFlexGrow(2);
     }
 
     public void setupEventListeners() {

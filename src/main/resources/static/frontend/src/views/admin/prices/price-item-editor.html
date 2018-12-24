@@ -9,7 +9,7 @@
 
 <dom-module id="price-item-editor">
     <template>
-        <style include="shared-styles">
+<style include="shared-styles">
             .price {
                 margin-bottom: 1em;
            }
@@ -35,22 +35,18 @@
            }
 
         </style>
-
-        <vaadin-form-layout id="form1">
-
-            <vaadin-form-layout id="form2" colspan="22" class="price" style="...">
-                <vaadin-combo-box id="services" colspan="6" label="Вид услуги" index="[[index]]"></vaadin-combo-box>
-                <vaadin-combo-box id="units" colspan="4" label="Ед. изм." index="[[index]]"></vaadin-combo-box>
-                <vaadin-text-field id="price" colspan="4"  label="Цена" index="[[index]]"></vaadin-text-field>
-                <vaadin-text-field id="name" colspan="22" placeholder="Наименование позиции прайса" index="[[index]]"></vaadin-text-field>
-            </vaadin-form-layout>
-
-            <vaadin-button class="delete self-start" id="delete" colspan="2" index="[[index]]">
-                <iron-icon icon="vaadin:close-small"></iron-icon>
-            </vaadin-button>
-
-        </vaadin-form-layout>
-    </template>
+<vaadin-form-layout id="form1">
+ <vaadin-form-layout id="form2" colspan="22" class="price" style="...">
+  <vaadin-combo-box id="services" colspan="6" label="Вид услуги" index="[[index]]"></vaadin-combo-box>
+  <vaadin-combo-box id="units" colspan="4" label="Ед. изм." index="[[index]]"></vaadin-combo-box>
+  <vaadin-text-field id="price" colspan="4" label="Цена" index="[[index]]"></vaadin-text-field>
+  <vaadin-text-field id="name" colspan="22" placeholder="Наименование позиции прайса" index="[[index]]"></vaadin-text-field>
+ </vaadin-form-layout>
+ <vaadin-button class="delete self-start" id="delete" colspan="2" index="[[index]]">
+  <iron-icon icon="lumo:cross"></iron-icon>
+ </vaadin-button>
+</vaadin-form-layout>
+</template>
 
     <script>
         class PriceItemEditor extends Polymer.Element {
