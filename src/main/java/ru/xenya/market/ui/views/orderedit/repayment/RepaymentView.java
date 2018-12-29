@@ -39,8 +39,6 @@ import java.util.stream.Stream;
 public class RepaymentView extends PolymerTemplate<RepaymentView.RepaymentViewModel>
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<RepaymentView, List<Repayment>>, List<Repayment>> {
 
-    //  private Dialog dialog;
-
     private final AbstractFieldSupport<RepaymentView, List<Repayment>> fieldSupport;
     private boolean hasChanges = false;
     private Integer totalSum = 0;
@@ -100,7 +98,6 @@ public class RepaymentView extends PolymerTemplate<RepaymentView.RepaymentViewMo
         dialog.open();
     }
 
-    //
     private void save(Repayment entity) {
         List<Repayment> items = Stream.concat(getValue().stream(), Stream.of(entity)).collect(Collectors.toList());
         setValue(items);
@@ -108,17 +105,13 @@ public class RepaymentView extends PolymerTemplate<RepaymentView.RepaymentViewMo
         dialog.setOpened(false);
     }
 
-    //
     private void updateTotalPrice(List<Repayment> items) {
         totalSum = 0;
         totalSum = items.stream().map(Repayment::getSum).reduce((x, y) -> x + y).orElse(0);
         setTotalSum(totalSum);
-     //   totalSumSpan.setText(FormattingUtils.formatAsCurrency(totalSum));
         setHasChanges(true);
-        // fireEvent(new TotalSumEvent(this, totalSum));
     }
 
-    //
     private void setupGrid() {
         grid.setHeightByRows(true);
         grid.addColumn(Repayment::getDate).setWidth("70px").setHeader("Дата").setResizable(true);
@@ -127,7 +120,6 @@ public class RepaymentView extends PolymerTemplate<RepaymentView.RepaymentViewMo
         grid.addSelectionListener(e -> {
             deleteBtn.setEnabled(true);
         });
-
     }
 
     @Override
@@ -175,6 +167,8 @@ public class RepaymentView extends PolymerTemplate<RepaymentView.RepaymentViewMo
         getModel().setTotalSum(FormattingUtils.formatAsCurrency(totalSum));
     }
 
+
+
     /**
      * This model binds properties between RepaymentView and repayment-view.html
      */
@@ -184,56 +178,4 @@ public class RepaymentView extends PolymerTemplate<RepaymentView.RepaymentViewMo
     }
 }
 
-//public class RepaymentView extends VerticalLayout
-//        implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<RepaymentView, List<Repayment>>, List<Repayment>> {
-//
-////    private Grid<Repayment> grid;
-////    private Button addRepayment;
-////    private Button deleteRepayment;
-////    private Span totalSumSpan;
-//    private Dialog dialog;
-//
-//    private boolean hasChanges = false;
-//    private final AbstractFieldSupport<RepaymentView, List<Repayment>> fieldSupport;
-//
-//    private Integer totalSum = 0;
-//    private Order currentOrder;
-//
-//    private RepaymentEditor editor;
-//    @Id("grid")
-//    private Grid<Repayment> grid;
-//    @Id("addPay")
-//    private Button addPay;
-//    @Id("add")
-//    private Button add;
-//    @Id("deleteBtn")
-//    private Button deleteBtn;
-//    @Id("totalSumSpan")
-//    private Span totalSumSpan;
-//    @Id("add")
-//    private Button vaadinButton;
-//
-//    public RepaymentView() {
-//        fieldSupport = new AbstractFieldSupport<>(this, new ArrayList<>(),
-//                Objects::equals, c -> {
-//        });
-//
-//        totalSumSpan = new Span();
-//        grid = new Grid<>();
-////        addRepayment = new Button(VaadinIcon.PLUS.create());
-////        deleteRepayment = new Button(VaadinIcon.MINUS.create());
-////        delete.setEnabled(false);
-//        dialog = new Dialog();
-//
-//        this.editor = new RepaymentEditor();
-//        dialog.add(editor);
-//
-//        setupGrid();
-//        setupListeners();
-//
-////        expand(grid);
-////        add(grid, new HorizontalLayout(addRepayment, deleteRepayment, totalSumSpan));
-//    }
-//
 
-//}
