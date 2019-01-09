@@ -3,6 +3,8 @@ package ru.xenya.market.backend.data.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.Payment;
 
@@ -52,6 +54,7 @@ public class Order extends AbstractEntity implements OrderSummary {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true )
     @OrderColumn(nullable = false)
     @JoinColumn
+    @Fetch(FetchMode.SELECT)
     @BatchSize(size = 100)
     @Valid
     private List<OrderItem> items;
@@ -59,6 +62,8 @@ public class Order extends AbstractEntity implements OrderSummary {
     //множество позиций платежей
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderColumn(/*nullable = false*/)
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 100)
     @JoinColumn
     private List<Repayment> repayments;
 

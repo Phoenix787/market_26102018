@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 
 import javax.persistence.*;
@@ -32,6 +35,8 @@ public class Price extends AbstractEntity implements PriceSummary {
     //множество позиций прайса
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderColumn
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 100)
     @JoinColumn(name = "item_id")
     private List<PriceItem> itemsPrice;
 

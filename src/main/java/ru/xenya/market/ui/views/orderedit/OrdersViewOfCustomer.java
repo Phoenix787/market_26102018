@@ -108,8 +108,8 @@ public class OrdersViewOfCustomer extends PolymerTemplate<TemplateModel>
                 DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Дата заказа").setFlexGrow(5);
        // grid.addColumn(Order::getOrderState).setWidth("150px").setHeader("Статус").setFlexGrow(5);
       //  grid.addColumn(Order::getPayment).setWidth("150px").setHeader("Форма оплаты").setFlexGrow(5);
-        grid.addColumn(item -> FormattingUtils.formatAsCurrency(item.getTotalPrice())).setWidth("150px").setHeader("Начислено").setFlexGrow(5);
-        grid.addColumn(item -> FormattingUtils.formatAsCurrency(item.getPaysTotalPrice())).setWidth("150px").setHeader("Оплачено").setFlexGrow(5);
+        grid.addColumn(order -> FormattingUtils.formatAsCurrency(order.getTotalPrice())).setWidth("150px").setHeader("Начислено").setFlexGrow(5);
+        grid.addColumn(order -> FormattingUtils.formatAsCurrency(order.getPaysTotalPrice())).setWidth("150px").setHeader("Оплачено").setFlexGrow(5);
     }
 
     public void setupEventListeners() {
