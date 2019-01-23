@@ -35,7 +35,7 @@ import static ru.xenya.market.ui.utils.MarketConst.PAGE_CUSTOMERS;
 @HtmlImport("src/views/customer/customer-view.html")
 @Route(value = PAGE_CUSTOMERS, layout = MainView.class)
 @PageTitle(MarketConst.TITLE_CUSTOMERS)
-public class CustomerViewTemplate extends CrudView<Customer, TemplateModel>/**/ {
+public class CustomerViewTemplate extends CrudView<Customer, TemplateModel> {
 
     @Id("search")
     private SearchBar search;
@@ -101,7 +101,7 @@ public class CustomerViewTemplate extends CrudView<Customer, TemplateModel>/**/ 
             ordersView.open(customer);
           //  getUI().ifPresent(ui -> ui.navigate(MarketConst.PAGE_STOREFRONT));
             dialog.add(ordersView);
-           dialog.open();
+            dialog.open();
         });
         return button;
     }

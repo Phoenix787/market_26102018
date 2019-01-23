@@ -8,12 +8,13 @@ import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.shared.communication.PushMode;
 import com.vaadin.flow.templatemodel.TemplateModel;
-//import ru.xenya.market.app.security.SecurityUtils;
 import ru.xenya.market.app.security.SecurityUtils;
 import ru.xenya.market.ui.components.AppNavigation;
 import ru.xenya.market.ui.components.common.ConfirmDialog;
 import ru.xenya.market.ui.entities.PageInfo;
+import ru.xenya.market.ui.exceptions.AccessDeniedException;
 import ru.xenya.market.ui.views.HasConfirmation;
 import ru.xenya.market.ui.views.admin.prices.PricesView;
 import ru.xenya.market.ui.views.admin.users.UserView;
@@ -22,46 +23,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ru.xenya.market.ui.utils.MarketConst.*;
-
+@Push(PushMode.AUTOMATIC)
 @Tag("main-view")
 @HtmlImport("src/main-view.html")
 
 @PageTitle("Учет рекламы в газете \"Магнитогорский металл\"")
 @Viewport(VIEWPORT)
 @Route(PAGE_ROOT)
-public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
+public class MainView extends PolymerTemplate<TemplateModel>
         implements RouterLayout, BeforeEnterObserver {
 
+    private final ConfirmDialog confirmationDialog;
     @Id("appNavigation")
-    private AppNavigation appNavigation/* = new AppNavigation()*/;
+    private AppNavigation appNavigation;
 
-
-    //private final ConfirmationDialog confirmationDialog;
-   private final ConfirmDialog confirmationDialog;
-
-   // @Autowired
     public MainView() {
         this.confirmationDialog = new ConfirmDialog();
-//        if (confirmationDialog == null) {
-//            System.err.println("==========Main confirmation dialog == null");
-//        }
-//        confirmationDialog.setCancelable(true);
-//        confirmationDialog.setConfirmButtonTheme("raised tertiary error");
-//        confirmationDialog.setCancelButtonTheme("raised tertiary");
-
         List<PageInfo> pages = new ArrayList<>();
         pages.add(new PageInfo(PAGE_STOREFRONT, ICON_STOREFRONT, TITLE_STOREFRONT));
         pages.add(new PageInfo(PAGE_CUSTOMERS, ICON_CUSTOMERS, TITLE_CUSTOMERS));
-        if (SecurityUtils.isAccessGranted(PricesView.class)){
+        if (SecurityUtils.isAccessGranted(PricesView.class)) {
             pages.add(new PageInfo(PAGE_PRODUCTS, ICON_PRODUCTS, TITLE_PRODUCTS));
         }
-        if (SecurityUtils.isAccessGranted(UserView.class)){
+        if (SecurityUtils.isAccessGranted(UserView.class)) {
             pages.add(new PageInfo(PAGE_USERS, ICON_USERS, TITLE_USERS));
         }
         pages.add(new PageInfo(PAGE_SETTINGS, ICON_SETTINGS, TITLE_SETTINGS));
         pages.add(new PageInfo(PAGE_LOGOUT, ICON_LOGOUT, TITLE_LOGOUT));
         appNavigation.init(pages, PAGE_DEFAULT, PAGE_LOGOUT);
-       // add(appNavigation);
 
         getElement().appendChild(confirmationDialog.getElement());
     }
@@ -69,10 +58,9 @@ public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
 
-//        if (SecurityUtils.isAccessGranted(event.getNavigationTarget())) {
-//            event.rerouteToError(AccessDeniedException.class);
-//        }
-
+        if (!SecurityUtils.isAccessGranted(event.getNavigationTarget())) {
+            event.rerouteToError(AccessDeniedException.class);
+        }
     }
 
     @Override
@@ -82,7 +70,7 @@ public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
         }
         this.confirmationDialog.setOpened(false);
         if (content instanceof HasConfirmation) {
-           ((HasConfirmation) content).setConfirmDialog(this.confirmationDialog);
+            ((HasConfirmation) content).setConfirmDialog(this.confirmationDialog);
         }
     }
 

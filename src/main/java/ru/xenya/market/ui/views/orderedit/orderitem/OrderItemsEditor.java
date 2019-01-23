@@ -23,6 +23,7 @@ import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.shared.Registration;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import ru.xenya.market.backend.data.Discount;
@@ -59,7 +60,7 @@ import java.util.stream.Stream;
  */
 @Tag("order-items-editor")
 @HtmlImport("src/views/orderedit/order-items/order-items-editor.html")
-//@SpringComponent
+@SpringComponent
 @UIScope
 public class OrderItemsEditor extends PolymerTemplate<OrderItemsEditor.OrderItemsEditorModel>
         implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<OrderItemsEditor, OrderItem>, OrderItem> {

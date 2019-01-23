@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="specification" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f9b66c78-f24f-47a4-b0a3-f2b3149636eb">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="order" class="ru.xenya.market.backend.data.entity.Order"/>
+	<queryString>
+		<![CDATA[select * from orders]]>
+	</queryString>
+	<variable name="id" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{id}+1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="47" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="10" width="80" height="20" uuid="c5badd6e-0f89-436f-be96-9dc744537f6b"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Плательщик:]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="ElementGroupHeight" x="80" y="10" width="474" height="20" uuid="bc1a7a19-200b-454f-8f00-0f5ddc80fd2b"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{order}.getCustomer().getFullName()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="80" y="33" width="474" height="10" uuid="40996b8c-58eb-4187-b389-91c090248fd8"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<text><![CDATA[(название предприятия)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="32">
+			<staticText>
+				<reportElement x="0" y="0" width="80" height="16" uuid="af6a46d8-a7f4-41b0-b411-22e1523ae9da"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Дата заказа:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="1" width="100" height="14" uuid="9817ffbf-67ed-4fda-8833-365bc81212dc"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{order}.getDueDate()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="190" y="-1" width="130" height="16" uuid="7c1143f5-f6bc-45cf-ae32-5fbf9cfe576e"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Спецификация к счету №:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="320" y="-1" width="90" height="16" uuid="1e3a9918-b620-4897-b74c-325ca7f546d0"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{order}.getInvoice().getNumberInvoice()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="410" y="-1" width="20" height="16" uuid="ae71511e-0b88-4f66-8943-037d02761137"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[от]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="430" y="-1" width="90" height="16" uuid="8c7230a4-081c-44c4-8d03-1a5f08746a45"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{order}.getInvoice().getDateInvoice()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="30" height="30" uuid="5e12b1d2-e261-42f8-83f4-1adcc576171f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffbf3aa9-a1c4-4f53-8510-1bdbf6579367"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[№ 
+п/п]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="0" width="140" height="30" uuid="29ccf5a4-8f34-4343-a329-95ece1eae82e">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="edd94fab-f8ac-4361-84c1-1ad574749e77"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Описание выполняемых работ, оказываемых услуг]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="0" width="60" height="30" uuid="a2630fed-57bb-4bc2-8c07-780480600423">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5d96cb25-147e-4d0e-96f6-2d345e3fc985"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Единица 
+измерения]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="230" y="0" width="100" height="30" uuid="281a0d33-228a-4612-a029-2d96b4c49f46">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="62c25975-35b6-4347-8e51-b2d15ea05e8e"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Цена за единицу 
+измерения, руб]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="0" width="50" height="30" uuid="b7a65581-eb3e-42f3-84c1-7837cffa571a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8354d1b3-0319-44c4-b419-b113384d2571"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Кол-во]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="0" width="70" height="30" uuid="8c73a134-b343-4a9f-a9a2-a67e3a1bb3a6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6ad9ddb4-4a3a-435f-b885-03ace7c0ecae"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Кол-во 
+выходов]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="450" y="0" width="60" height="30" uuid="6fb8ee69-1da9-4e40-9907-10853c545c11">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f62ba22e-1261-4a28-828b-be503be2f199"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Даты 
+выходов]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="510" y="0" width="44" height="30" uuid="8998bd40-1a45-4af0-b45f-c445f20cf8d1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="622fc7c3-5257-4b7c-a4a9-f8600e8735c0"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Скидка]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="117" splitType="Stretch">
+			<textField>
+				<reportElement x="30" y="0" width="140" height="20" uuid="61f6fae2-a6c4-4501-9b38-996474d1743c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="edd94fab-f8ac-4361-84c1-1ad574749e77"/>
+				</reportElement>
+				<box padding="2">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+			</textField>
+			<textField>
+				<reportElement x="170" y="0" width="60" height="20" uuid="fcc2fcc2-c556-416f-808c-ed1146a6bb94">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5d96cb25-147e-4d0e-96f6-2d345e3fc985"/>
+				</reportElement>
+				<box padding="2">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+			</textField>
+			<textField>
+				<reportElement x="230" y="0" width="100" height="20" uuid="8b3cee3c-75d9-4101-b366-02c4dab71cc3">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="62c25975-35b6-4347-8e51-b2d15ea05e8e"/>
+				</reportElement>
+				<box padding="2">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+			</textField>
+			<textField>
+				<reportElement x="330" y="0" width="50" height="20" uuid="c9f9e134-efc1-4298-ba81-38e1fb39926d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8354d1b3-0319-44c4-b419-b113384d2571"/>
+				</reportElement>
+				<box padding="2">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+			</textField>
+			<textField>
+				<reportElement x="380" y="0" width="70" height="20" uuid="f4804860-220b-400c-9a7c-8edc6cb7a118">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6ad9ddb4-4a3a-435f-b885-03ace7c0ecae"/>
+				</reportElement>
+				<box padding="2">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+			</textField>
+			<textField>
+				<reportElement x="450" y="0" width="60" height="20" uuid="54167f03-2749-4ea4-a42d-0cf2d6003f27">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f62ba22e-1261-4a28-828b-be503be2f199"/>
+				</reportElement>
+				<box padding="2">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+			</textField>
+			<textField>
+				<reportElement x="510" y="0" width="44" height="20" uuid="9a5b800a-2774-4855-8c36-97035af542c6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="622fc7c3-5257-4b7c-a4a9-f8600e8735c0"/>
+				</reportElement>
+				<box padding="2">
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="30" height="20" uuid="0135fb14-0457-4b86-bcef-f43f366845fe"/>
+				<box padding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{id}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="212">
+			<staticText>
+				<reportElement x="0" y="33" width="260" height="12" uuid="9da9307d-b02f-423c-addf-6118c31c50ff"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<text><![CDATA[Ведущий специалист группы рекламы и объявлений]]></text>
+			</staticText>
+			<line direction="BottomUp">
+				<reportElement x="434" y="31" width="8" height="10" uuid="6ef0e38f-36fd-49a6-856a-ee747c47e514"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="330" y="41" width="102" height="1" uuid="3dada685-b3a1-4328-8d7e-cbb6a4772354"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="440" y="41" width="102" height="1" uuid="90046694-3840-4fb2-a94b-9478ef08853f"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField pattern="dd.MM.yyyy">
+				<reportElement x="0" y="57" width="60" height="12" uuid="d2186374-c2a2-4087-8370-af4758eb7546"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm:ss">
+				<reportElement x="60" y="57" width="102" height="12" uuid="adf8b824-af82-4820-82ca-76c7eac9c4fe"/>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -4,6 +4,10 @@ import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -15,7 +19,11 @@ import ru.xenya.market.ui.dataproviders.OrdersGridDataProvider;
 import ru.xenya.market.ui.utils.MarketConst;
 import ru.xenya.market.ui.utils.messages.CrudErrorMessage;
 
-import java.util.List;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -130,6 +138,8 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         dataProvider.setFilter(new OrdersGridDataProvider.OrderFilter(currentCustomer.getFullName(), currentCustomer.getId(), false));
         view.getGrid().setDataProvider(dataProvider);
 
+
+
     }
 
     public void setCurrentPrice(Price currentPrice) {
@@ -147,6 +157,11 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 
 
     public void load(Long id) {
+//        try {
+//            view.getOpenedOrderEditor().setJasperPrint(exportToPDF(id));
+//        } catch (IOException | JRException e) {
+//            e.printStackTrace();
+//        }
 
         entityPresenter.loadEntity(id, this::open);
     }
@@ -165,10 +180,13 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         view.setOpened(true);
         if (edit) {
             view.getOpenedOrderEditor().read(order, entityPresenter.isNew());
-       } else {
+
+        } else {
             view.updateTitle(true);
             view.getOpenedOrderEditor().read(order, entityPresenter.isNew());
         }
+
+
     }
 
     public EntityPresenter<Order, OrdersViewOfCustomer> getEntityPresenter()
@@ -187,13 +205,14 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
                     if (entityPresenter.isNew()){
                         view.showCreatedNotification("Заказ");
                       //  view.getGrid().setItems(updateList());
-                        dataProvider.refreshAll();
+                       // dataProvider.refreshAll();
+                        view.getUI().ifPresent(ui->ui.access(dataProvider::refreshAll));
                     } else {
                         view.showUpdateNotification("Заказ # " + e.getId());
                       //  view.getGrid().setItems(updateList());
-                        dataProvider.refreshItem(e);
+                    //    dataProvider.refreshItem(e);
+                        view.getUI().ifPresent(ui->ui.access(()->dataProvider.refreshItem(e)));
                     }
-
                     close();
                 });
             }
@@ -247,6 +266,50 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
     public Price getDefaultPrice(){
         return priceService.findPriceByDefault(true);
     }
+
+//    public JasperPrint exportToPDF(Long id) throws IOException, JRException {
+//
+//        final InputStream jreport = this.getClass().getResourceAsStream("/jasper/specification.jasper");
+//        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(Collections.singleton(orderService.findById(id)));
+//       Map<String, Object> parameters = new HashMap<>();
+//        parameters.put("REPORT_LOCALE", MarketConst.APP_LOCALE );
+//        JasperPrint jasperPrint = JasperFillManager.fillReport(jreport, parameters, dataSource);
+//        return jasperPrint;
+//    }
+
+    public JasperPrint generateSpecFor(Order order) throws IOException, JRException {
+        final InputStream jReport = this.getClass().getResourceAsStream("/jasper/specification.jasper");
+        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(Collections.singletonList("Specification"));
+        Map<String, Object> parameters = parameters(order, MarketConst.APP_LOCALE);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jReport, parameters, dataSource);
+        return jasperPrint;
+    }
+
+    private Map<String, Object> parameters(Order order, Locale locale) {
+        final Map<String, Object> parameters = new HashMap<>();
+        parameters.put("order", order);
+        parameters.put("REPORT_LOCALE", locale);
+        return parameters;
+    }
+
+    private InputStream export(Order order) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        JasperPrint jasperPrint = null;
+        try {
+            jasperPrint = generateSpecFor(order);
+            JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+           // JasperExportManager.exportReportToPdfFile(jasperPrint, "/spec.pdf");
+        } catch (IOException | JRException e) {
+            e.printStackTrace();
+        }
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+
+//    private JasperReport loadTemplate() throws JRException {
+//        final InputStream reportInputStream = getClass().getResourceAsStream(invoice_template_path);
+//        final JasperDesign jasperDesign = JRXmlLoader.load(reportInputStream);
+//        return JasperCompileManager.compileReport(jasperDesign);
+//    }
 
 }
 

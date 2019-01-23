@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="p_report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="858aa0a8-9346-4ebe-a1cc-c6527a345abd">
+	<style name="Style1" mode="Opaque" fontName="Arial" fontSize="16" isBold="true"/>
+	<style name="Base" isDefault="true" hTextAlign="Center" vTextAlign="Middle" fontSize="10" pdfFontName="Tahoma" pdfEncoding="Cp1251" isPdfEmbedded="true">
+		<box padding="4">
+			<pen lineWidth="0.5"/>
+		</box>
+	</style>
+	<style name="Normal" fontName="Tahoma" pdfFontName="c:\windows\fonts\tahomabd.ttf" pdfEncoding="Cp1251"/>
+	<queryString>
+		<![CDATA[select * from product]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement style="Normal" mode="Opaque" x="0" y="0" width="550" height="30" forecolor="#FFFFFF" backcolor="#820907" uuid="13590715-11b4-403c-bdb7-ae88d1f2b838"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Отчет]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

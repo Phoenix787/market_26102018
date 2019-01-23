@@ -27,13 +27,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<!--Dependencies-->
-		<vaadin.version>10.0.8</vaadin.version>
-
+		<vaadin.version>10.0.6</vaadin.version>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
-
-
 		<!--Ovverides the old version specified by the Spring Boot parent-->
-
 		<selenium.version>3.11.0</selenium.version>
 
 		<!--Plugins-->
@@ -61,10 +57,10 @@
 
 
 		<repositories>
-			<repository>
-				<id>webjars</id>
-				<url>https://dl.bintray.com/webjars/maven</url>
-			</repository>
+			<!--<repository>-->
+				<!--<id>webjars</id>-->
+				<!--<url>https://dl.bintray.com/webjars/maven</url>-->
+			<!--</repository>-->
 
 				<repository>
 					<id>vaadin-prereleases</id>
@@ -257,12 +253,18 @@
 			<version>2.1.3</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.webjars.bowergithub.polymerelements</groupId>
+			<artifactId>iron-icons</artifactId>
+			<version>2.1.1</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<version>2.0.4.RELEASE</version>
 		</dependency>
+
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-radio-button-flow</artifactId>
@@ -288,7 +290,45 @@
 		</dependency>
 
 
-    </dependencies>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.7.0</version>
+		</dependency>
+
+		<!--Подключаем шрифты для отображения в пдф-->
+		<dependency>
+			<groupId>com.mpobjects.jasperreports.font</groupId>
+			<artifactId>jasperreports-fonts-liberation</artifactId>
+			<version>2.00.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>6.0.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.vaadin.reports</groupId>
+			<artifactId>report-ui</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+<!--PDF Viewer-->
+		<dependency>
+			<groupId>org.vaadin.alejandro</groupId>
+			<artifactId>pdf_browser</artifactId>
+			<version>1.0.0-alpha1</version>
+		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.webjars.bowergithub.ingressorapidowebcomponents</groupId>-->
+			<!--<artifactId>pdf-browser-viewer</artifactId>-->
+			<!--<version>1.0.6</version>-->
+		<!--</dependency>-->
+
+
+	</dependencies>
 
 
 	<!--<parent>-->

@@ -165,6 +165,10 @@ public class OrderService implements CrudService<Order> {
         return orderRepository.findByCustomer(currentCustomer);
     }
 
+    public Order findById(Long id) {
+        return orderRepository.findById(id).get();
+    }
+
     public Price getCurrentPrice() {
         return currentPrice;
     }

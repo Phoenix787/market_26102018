@@ -19,7 +19,7 @@ public class OrderItem extends AbstractEntity {
 
     //цена за единицу   {market.price.required}
     @NotNull(message = "выберите цену за единицу")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @Valid
 //    @JoinColumn
     private PriceItem price;
@@ -160,6 +160,8 @@ public class OrderItem extends AbstractEntity {
     public int getAllPrice() {
         return quantity == null || price == null || getDates().size() == 0 ? 0 : (int) (quantity * price.getPrice() * getDates().size());
     }
+
+    public Integer getTotalDates(){ return dates.size();}
 
     @Override
     public String toString() {

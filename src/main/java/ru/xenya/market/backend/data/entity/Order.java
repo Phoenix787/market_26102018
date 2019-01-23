@@ -85,7 +85,7 @@ public class Order extends AbstractEntity implements OrderSummary {
     //@JoinColumn(name = "customer_fk")
     private Customer customer;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 //    @JoinColumn
     private Price pricePlan;
 
@@ -227,4 +227,5 @@ public class Order extends AbstractEntity implements OrderSummary {
     public Integer getPaysTotalPrice(){
         return repayments.stream().map(Repayment::getSum).reduce(0, Integer::sum);
     }
+
 }

@@ -6,10 +6,14 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -18,14 +22,28 @@ import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.validator.BeanValidator;
+import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.function.SerializableSupplier;
+import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinServlet;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.templatemodel.Encode;
 import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.web.context.WebApplicationContext;
+import org.vaadin.reports.PrintPreviewReport;
+import ru.xenya.market.MarketApplication;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.Payment;
 import ru.xenya.market.backend.data.entity.*;
@@ -35,15 +53,18 @@ import ru.xenya.market.ui.dataproviders.DataProviderUtils;
 import ru.xenya.market.ui.dataproviders.PriceDataProvider;
 import ru.xenya.market.ui.events.*;
 import ru.xenya.market.ui.utils.FormattingUtils;
+import ru.xenya.market.ui.utils.MarketConst;
 import ru.xenya.market.ui.utils.TemplateUtils;
 import ru.xenya.market.ui.utils.converters.*;
+import ru.xenya.market.ui.views.SpecReports;
 import ru.xenya.market.ui.views.orderedit.invoice.InvoiceEditor;
 import ru.xenya.market.ui.views.orderedit.orderitem.OrderItemsView;
 import ru.xenya.market.ui.views.orderedit.orderitem.ValueChangeEvent;
 import ru.xenya.market.ui.views.orderedit.repayment.RepaymentView;
 
+import java.io.*;
 import java.time.LocalDate;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static ru.xenya.market.ui.dataproviders.DataProviderUtils.createItemLabelGenerator;
@@ -68,9 +89,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private DatePicker dueDate;
     @Id("payment")
     private ComboBox<Payment> payment;
-//    @Id("customerName")
-//    private TextField customerName;
-
     @Id("cancel")
     private Button cancel;
     @Id("save")
@@ -92,6 +110,15 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     @Id("paysContainer")
     private Div paysContainer;
 
+    @Id("specBtn")
+    private Button specBtn;
+
+    @Id("divSpec")
+    private Div divSpec;
+
+//    @Id("dialog")
+//    private Dialog dialog;
+
 
     private InvoiceEditor invoiceEditor;
     private OrderItemsView orderItemsView;
@@ -103,6 +130,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private Price defaultPrice;
     private BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
     private LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
+
+    private JasperPrint jasperPrint;
+    private SpecReports specReports;
 
 
     @Autowired
@@ -116,12 +146,16 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         orderItemsView.setDefaultPrice(defaultPrice);
         itemsContainer.add(orderItemsView);
 
+
         invoiceEditor = new InvoiceEditor();
 
         cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
         save.setEnabled(false);
         save.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
         delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
+
+
+
 
         status.setItemLabelGenerator(createItemLabelGenerator(OrderState::toString));
         status.setDataProvider(DataProvider.ofItems(OrderState.values()));
@@ -188,6 +222,24 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
       //  pricePlan.setItemLabelGenerator(Price::toString);
 
         binder.bind(pricePlan, "pricePlan");
+
+//        dialog.setHeight("100vh");
+//        dialog.setWidth("50vw");
+//        //divSpec.add(dialog);
+//        specBtn.addClickListener(e->{
+//            //specReports.setCurrentOrder(currentOrder);
+//            SpecReports spr = new SpecReports(currentOrder);
+//            //specReports.open();
+//            dialog.removeAll();
+//            dialog.add(spr);
+//            dialog.setOpened(true);
+//            // specBtn.getUI().ifPresent(ui -> ui.navigate("report"));
+//        });
+
+        StreamResource streamResource = new StreamResource("report.pdf", ()->export(currentOrder));
+        Anchor anchor = new Anchor(streamResource, "проба");
+        anchor.setTarget("_blank");
+        divSpec.add(anchor);
  }
 
 
@@ -214,7 +266,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 //        if (order.getRepayments() == null) {
 //            order.setRepayments(new ArrayList<>());
 //        }
-
+//todo что то происходит с планом цен
         if (isNew) {
             order.setCustomer(currentCustomer);
             order.setPricePlan(defaultPrice);
@@ -228,6 +280,12 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             }
             getModel().setItem(order);
             setTotalPrice(order.getTotalPrice());
+
+            //todo добавить данные для экпорта из презентера
+//            specReports.setCurrentOrder(order);
+//
+//            pricePlan.setValue(order.getPricePlan());
+
         }
 
         if (order.getInvoice() != null) {
@@ -247,7 +305,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         title.setVisible(isNew);
         metaContainer.setVisible(!isNew);
         //customerName.setValue(order.getCustomer().getFullName());
-        //  pricePlan.setValue(order.getPricePlan());
+//          pricePlan.setValue(order.getPricePlan());
 
         if (order.getOrderState() != null) {
             getModel().setStatus(order.getOrderState().name());
@@ -256,6 +314,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             getModel().setPricePlan(new LocalDateToStringEncoder().encode(order.getPricePlan().getDate()));
         }
 
+        currentOrder = order;
     }
 
     private void createInvoice(Invoice invoice) {
@@ -378,15 +437,70 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
         void setPricePlan(String pricePlan);
 
-        @Include({"id", "dueDate", "orderState", "items.price.name", "items.quantity",
+        @Include({"id", "dueDate", "orderState", /*"pricePlan.date", */"items.price.name", "items.quantity",
                 "items.totalPrice", "history.message", "history.createdBy.firstName", "history.timestamp"})
         @Encode(value = LongToStringEncoder.class, path = "id")
         @Encode(value = LocalDateToStringEncoder.class, path = "dueDate")
+       /* @Encode(value = LocalDateToStringEncoder.class, path = "pricePlan.date")*/
         @Encode(value = OrderStateConverter.class, path = "orderState")
         @Encode(value = CurrencyFormatter.class, path = "items.totalPrice")
         @Encode(value = LocalDateTimeConverter.class, path = "history.timestamp")
         void setItem(Order order);
     }
 
+
+    private InputStream export(Order order) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        JasperPrint jasperPrint = null;
+        try {
+            jasperPrint = generateSpecFor(order);
+            JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+        } catch (IOException | JRException e) {
+            e.printStackTrace();
+        }
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    public JasperPrint generateSpecFor(Order order) throws IOException, JRException {
+        final InputStream jReport = this.getClass().getResourceAsStream("/jasper/specification.jasper");
+        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(Collections.singletonList("Specification"));
+        Map<String, Object> parameters = parameters(order, MarketConst.APP_LOCALE);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jReport, parameters, dataSource);
+        return jasperPrint;
+    }
+
+    private Map<String, Object> parameters(Order order, Locale locale) {
+        final Map<String, Object> parameters = new HashMap<>();
+        parameters.put("order", order);
+        parameters.put("REPORT_LOCALE", locale);
+        return parameters;
+    }
+
+//    public InputStream export() {
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//
+//        JasperPrint jasperPrint = null;
+//        try {
+//            jasperPrint = getExportPdf();
+//        } catch (IOException | JRException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+////            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+////            jasperViewer.setVisible(true);
+//            JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+//
+//        } catch (JRException e) {
+//            e.printStackTrace();
+//        }
+//        return new ByteArrayInputStream(out.toByteArray());
+//    }
+//
+//    public void setJasperPrint(JasperPrint jasperPrint) {
+//        this.jasperPrint = jasperPrint;
+//    }
+//    public JasperPrint getExportPdf() throws IOException, JRException {
+//        return jasperPrint;
+//    }
 
 }

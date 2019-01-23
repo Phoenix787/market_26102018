@@ -39,10 +39,17 @@ public class LoginView extends PolymerTemplate<LoginView.Model> implements PageC
     public void configurePage(InitialPageSettings settings) {
         // Force login page to use Shady DOM to avoid problems with browsers and
         // password managers not supporting shadow DOM
+        //не правильно, так как не отображалось в Edge
+//        settings.addInlineWithContents(InitialPageSettings.Position.PREPEND,
+//                "window.customElements=window.customElements||{};" +
+//                        "window.customElements.forcePolyfill=true;" +
+//                        "window.ShadyDOM={force:true};", InitialPageSettings.WrapMode.JAVASCRIPT);
+
         settings.addInlineWithContents(InitialPageSettings.Position.PREPEND,
-                "window.customElements=window.customElements||{};" +
+                "if(window.customElements) {" +
                         "window.customElements.forcePolyfill=true;" +
-                        "window.ShadyDOM={force:true};", InitialPageSettings.WrapMode.JAVASCRIPT);
+                        "window.ShadyDOM={force:true}};", InitialPageSettings.WrapMode.JAVASCRIPT);
+
 
     }
 
