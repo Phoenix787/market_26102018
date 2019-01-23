@@ -110,8 +110,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     @Id("paysContainer")
     private Div paysContainer;
 
-    @Id("specBtn")
-    private Button specBtn;
+//    @Id("specBtn")
+//    private Button specBtn;
 
     @Id("divSpec")
     private Div divSpec;
@@ -237,8 +237,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 //        });
 
         StreamResource streamResource = new StreamResource("report.pdf", ()->export(currentOrder));
-        Anchor anchor = new Anchor(streamResource, "проба");
+        Anchor anchor = new Anchor(streamResource, "");
         anchor.setTarget("_blank");
+        anchor.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
         divSpec.add(anchor);
  }
 
@@ -280,12 +281,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             }
             getModel().setItem(order);
             setTotalPrice(order.getTotalPrice());
-
-            //todo добавить данные для экпорта из презентера
-//            specReports.setCurrentOrder(order);
-//
-//            pricePlan.setValue(order.getPricePlan());
-
         }
 
         if (order.getInvoice() != null) {
@@ -465,8 +460,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         final InputStream jReport = this.getClass().getResourceAsStream("/jasper/specification.jasper");
         final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(Collections.singletonList("Specification"));
         Map<String, Object> parameters = parameters(order, MarketConst.APP_LOCALE);
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jReport, parameters, dataSource);
-        return jasperPrint;
+        return JasperFillManager.fillReport(jReport, parameters, dataSource);
     }
 
     private Map<String, Object> parameters(Order order, Locale locale) {
@@ -475,32 +469,5 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         parameters.put("REPORT_LOCALE", locale);
         return parameters;
     }
-
-//    public InputStream export() {
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//
-//        JasperPrint jasperPrint = null;
-//        try {
-//            jasperPrint = getExportPdf();
-//        } catch (IOException | JRException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-////            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
-////            jasperViewer.setVisible(true);
-//            JasperExportManager.exportReportToPdfStream(jasperPrint, out);
-//
-//        } catch (JRException e) {
-//            e.printStackTrace();
-//        }
-//        return new ByteArrayInputStream(out.toByteArray());
-//    }
-//
-//    public void setJasperPrint(JasperPrint jasperPrint) {
-//        this.jasperPrint = jasperPrint;
-//    }
-//    public JasperPrint getExportPdf() throws IOException, JRException {
-//        return jasperPrint;
-//    }
 
 }
