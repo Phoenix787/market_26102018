@@ -2,6 +2,7 @@ package ru.xenya.market.backend.data.entity;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -40,5 +41,8 @@ public class ScheduleDates extends AbstractEntity {
         this.weekDay = weekDay;
     }
 
-
+    @Override
+    public String toString() {
+        return new LocalDateToStringEncoder().encode(date);
+    }
 }

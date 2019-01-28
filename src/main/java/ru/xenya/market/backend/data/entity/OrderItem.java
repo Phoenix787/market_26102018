@@ -2,20 +2,24 @@ package ru.xenya.market.backend.data.entity;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.jsoup.select.Collector;
 import org.springframework.transaction.annotation.Transactional;
 import ru.xenya.market.backend.data.Discount;
 import ru.xenya.market.backend.data.Service;
 import ru.xenya.market.backend.data.Unit;
+import ru.xenya.market.backend.data.entity.util.OrderItemSummary;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
-public class OrderItem extends AbstractEntity {
+public class OrderItem extends AbstractEntity/* implements OrderItemSummary*/ {
 
     //цена за единицу   {market.price.required}
     @NotNull(message = "выберите цену за единицу")
@@ -159,6 +163,10 @@ public class OrderItem extends AbstractEntity {
 
     public int getAllPrice() {
         return quantity == null || price == null || getDates().size() == 0 ? 0 : (int) (quantity * price.getPrice() * getDates().size());
+    }
+
+    public String getDatesString(){
+        return dates.stream().map(ScheduleDates::toString).collect(Collectors.joining(", ")); //.map(LocalDate::toString)
     }
 
     public Integer getTotalDates(){ return dates.size();}

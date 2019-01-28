@@ -7,6 +7,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.Payment;
+import ru.xenya.market.backend.data.entity.util.OrderItemSummary;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -149,9 +150,14 @@ public class Order extends AbstractEntity implements OrderSummary {
         this.payment = payment;
     }
 
+    @Override
     public List<OrderItem> getItems() {
         return items;
     }
+
+//    public List<OrderItemSummary> getItemsSummary(){
+//        return new ArrayList<>(items);
+//    }
 
     public void setItems(List<OrderItem> items) {
         this.items = items;

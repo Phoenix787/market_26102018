@@ -6,7 +6,7 @@
 	<groupId>ru.xenya</groupId>
 	<artifactId>market</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>market</name>
 	<description>Project with Spring Boot</description>

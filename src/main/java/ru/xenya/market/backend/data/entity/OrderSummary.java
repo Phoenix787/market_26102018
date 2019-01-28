@@ -1,6 +1,7 @@
 package ru.xenya.market.backend.data.entity;
 
 import ru.xenya.market.backend.data.OrderState;
+import ru.xenya.market.backend.data.entity.util.OrderItemSummary;
 
 import java.time.LocalDate;
 import java.util.List;

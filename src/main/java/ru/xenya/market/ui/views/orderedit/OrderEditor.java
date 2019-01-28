@@ -33,11 +33,10 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.templatemodel.Encode;
 import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -47,6 +46,7 @@ import ru.xenya.market.MarketApplication;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.Payment;
 import ru.xenya.market.backend.data.entity.*;
+import ru.xenya.market.backend.data.entity.util.OrderItemSummary;
 import ru.xenya.market.ui.components.FormButtonsBar;
 import ru.xenya.market.ui.crud.CrudView.CrudForm;
 import ru.xenya.market.ui.dataproviders.DataProviderUtils;
@@ -457,10 +457,13 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     }
 
     public JasperPrint generateSpecFor(Order order) throws IOException, JRException {
-        final InputStream jReport = this.getClass().getResourceAsStream("/jasper/specification.jasper");
-        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(Collections.singletonList("Specification"));
+//        final JasperReport report = loadTemplate();
+//        List<OrderItemSummary> list = order.getItemsSummary();
+        final InputStream report = this.getClass().getResourceAsStream("/jasper/specification.jasper");
+        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(order.getItems()/*list*/);
         Map<String, Object> parameters = parameters(order, MarketConst.APP_LOCALE);
-        return JasperFillManager.fillReport(jReport, parameters, dataSource);
+        parameters.put("itemDataSource", dataSource);
+        return JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
     }
 
     private Map<String, Object> parameters(Order order, Locale locale) {
@@ -468,6 +471,14 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         parameters.put("order", order);
         parameters.put("REPORT_LOCALE", locale);
         return parameters;
+    }
+
+    private final String invoice_template_path = "/jasper/specification.jrxml";
+
+    private JasperReport loadTemplate() throws JRException {
+        final InputStream reportInputStream = getClass().getResourceAsStream(invoice_template_path);
+        final JasperDesign jasperDesign = JRXmlLoader.load(reportInputStream);
+        return JasperCompileManager.compileReport(jasperDesign);
     }
 
 }
