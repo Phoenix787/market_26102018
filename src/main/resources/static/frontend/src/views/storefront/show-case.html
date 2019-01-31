@@ -1,0 +1,66 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/src/vaadin-grid.html">
+<link rel="import" href="../../../bower_components/vaadin-dialog/src/vaadin-dialog.html">
+
+
+<link rel="import" href="../../components/search-bar.html">
+<link rel="import" href="../../components/utils-mixin.html">
+<link rel="import" href="order-card.html">
+
+
+<dom-module id="show-case">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
+
+        </style>
+
+        <search-bar id="search" show-checkbox></search-bar>
+        <vaadin-grid id="grid" theme="orders no-row-borders"></vaadin-grid>
+        <vaadin-dialog id="dialog" on-opened-changed="_onDialogOpen"></vaadin-dialog>
+
+
+    </template>
+
+    <script>
+        class ShowCase extends Polymer.Element {
+            static get is() {
+                return 'show-case';
+            }
+
+            ready() {
+                super.ready();
+
+                // There is no way for theming the dialog-overlay but using private API
+                this.$.dialog.$.overlay.setAttribute('theme', 'middle');
+
+                // This code is needed to measure the page load performance and can be safely removed
+                // if there is no need for that.
+                const grid = this.$.grid;
+                const listener = () => {
+                  if (!grid.loading && window.performance.mark) {
+                    window.performance.mark('market-page-loaded');
+                    grid.removeEventListener('loading-changed', listener);
+                  }
+                };
+                grid.addEventListener('loading-changed', listener);
+            }
+
+      // Workaround for styling the dialog content https://github.com/vaadin/vaadin-dialog-flow/issues/69
+      _onDialogOpen(e) {
+        if (!e.detail.value) {
+          return;
+        }
+        var content = this.$.dialog.$.overlay.content;
+        content.querySelector('flow-component-renderer').setAttribute('theme', 'dialog');
+      }
+    }
+        customElements.define(ShowCase.is, ShowCase);
+
+    </script>
+</dom-module>

@@ -40,7 +40,7 @@ public class MainView extends PolymerTemplate<TemplateModel>
     public MainView() {
         this.confirmationDialog = new ConfirmDialog();
         List<PageInfo> pages = new ArrayList<>();
-        pages.add(new PageInfo(PAGE_STOREFRONT, ICON_STOREFRONT, TITLE_STOREFRONT));
+        pages.add(new PageInfo(PAGE_SHOWCASE, ICON_SHOWCASE, TITLE_SHOWCASE));
         pages.add(new PageInfo(PAGE_CUSTOMERS, ICON_CUSTOMERS, TITLE_CUSTOMERS));
         if (SecurityUtils.isAccessGranted(PricesView.class)) {
             pages.add(new PageInfo(PAGE_PRODUCTS, ICON_PRODUCTS, TITLE_PRODUCTS));

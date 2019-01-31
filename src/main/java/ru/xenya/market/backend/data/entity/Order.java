@@ -18,8 +18,13 @@ import java.util.LinkedList;
 import java.util.List;
 @NamedEntityGraphs({@NamedEntityGraph(name = Order.ENTITY_GRAPTH_BRIEF, attributeNodes = {
         @NamedAttributeNode("customer"),
-        @NamedAttributeNode(value = "items")
-}
+        @NamedAttributeNode(value = "items", subgraph = "itemsGraph")
+},
+        subgraphs = {
+                @NamedSubgraph(name = "itemsGraph",attributeNodes = {
+                        @NamedAttributeNode(value = "dates")
+                })
+        }
 ),@NamedEntityGraph(name = Order.ENTITY_GRAPTH_FULL, attributeNodes = {
         @NamedAttributeNode("customer"),
         @NamedAttributeNode("invoice"),

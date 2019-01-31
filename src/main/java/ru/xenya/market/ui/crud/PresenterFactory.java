@@ -20,6 +20,7 @@ import ru.xenya.market.backend.service.UserService;
 import ru.xenya.market.ui.views.admin.prices.PricesView;
 import ru.xenya.market.ui.views.orderedit.OrderEditor;
 import ru.xenya.market.ui.views.orderedit.OrdersViewOfCustomer;
+import ru.xenya.market.ui.views.storefront.ShowCase;
 
 @Configuration
 public class PresenterFactory {
@@ -57,6 +58,15 @@ public class PresenterFactory {
                                                                      User currentUser){
         return new EntityPresenter<>(crudService, currentUser);
     }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public  EntityPresenter<Order, ShowCase> showOrderEntityPresenter(OrderService crudService,
+                                                                              User currentUser){
+        return new EntityPresenter<>(crudService, currentUser);
+    }
+
+
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)

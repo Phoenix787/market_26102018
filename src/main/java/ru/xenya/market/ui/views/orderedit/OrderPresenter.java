@@ -18,6 +18,7 @@ import ru.xenya.market.ui.crud.EntityPresenter;
 import ru.xenya.market.ui.dataproviders.OrdersGridDataProvider;
 import ru.xenya.market.ui.utils.MarketConst;
 import ru.xenya.market.ui.utils.messages.CrudErrorMessage;
+import ru.xenya.market.ui.views.storefront.beans.OrderCardHeader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -54,6 +55,11 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         this.currentUser = currentUser;
 
         this.priceService = priceService;
+
+        //если делать витрину заказов
+//        headersGenerator = new OrderCardHeaderGenerator();
+//        headersGenerator.resetHeaderChain(false);
+//        dataProvider.setPageObserver(p -> headersGenerator.ordersRead(p.getContent()));
     }
 
     public void setView(OrdersViewOfCustomer view) {
@@ -157,12 +163,6 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 
 
     public void load(Long id) {
-//        try {
-//            view.getOpenedOrderEditor().setJasperPrint(exportToPDF(id));
-//        } catch (IOException | JRException e) {
-//            e.printStackTrace();
-//        }
-
         entityPresenter.loadEntity(id, this::open);
     }
 
@@ -267,6 +267,10 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
         return priceService.findPriceByDefault(true);
     }
 
+//    OrderCardHeader getHeaderByOrderId(Long id){
+//        return headersGenerator.get(id);
+//    }
+
 //    public JasperPrint exportToPDF(Long id) throws IOException, JRException {
 //
 //        final InputStream jreport = this.getClass().getResourceAsStream("/jasper/specification.jasper");
@@ -277,39 +281,39 @@ public class OrderPresenter/* extends CrudEntityPresenter<Order>*/ {
 //        return jasperPrint;
 //    }
 
-    public JasperPrint generateSpecFor(Order order) throws IOException, JRException {
-        final InputStream jReport = this.getClass().getResourceAsStream("/jasper/specification.jasper");
-        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(Collections.singletonList("Specification"));
-        Map<String, Object> parameters = parameters(order, MarketConst.APP_LOCALE);
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jReport, parameters, dataSource);
-        return jasperPrint;
-    }
-
-    private Map<String, Object> parameters(Order order, Locale locale) {
-        final Map<String, Object> parameters = new HashMap<>();
-        parameters.put("order", order);
-        parameters.put("REPORT_LOCALE", locale);
-        return parameters;
-    }
-
-    private InputStream export(Order order) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        JasperPrint jasperPrint = null;
-        try {
-            jasperPrint = generateSpecFor(order);
-            JasperExportManager.exportReportToPdfStream(jasperPrint, out);
-           // JasperExportManager.exportReportToPdfFile(jasperPrint, "/spec.pdf");
-        } catch (IOException | JRException e) {
-            e.printStackTrace();
-        }
-        return new ByteArrayInputStream(out.toByteArray());
-    }
-
-//    private JasperReport loadTemplate() throws JRException {
-//        final InputStream reportInputStream = getClass().getResourceAsStream(invoice_template_path);
-//        final JasperDesign jasperDesign = JRXmlLoader.load(reportInputStream);
-//        return JasperCompileManager.compileReport(jasperDesign);
+//    public JasperPrint generateSpecFor(Order order) throws IOException, JRException {
+//        final InputStream jReport = this.getClass().getResourceAsStream("/jasper/specification.jasper");
+//        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(Collections.singletonList("Specification"));
+//        Map<String, Object> parameters = parameters(order, MarketConst.APP_LOCALE);
+//        JasperPrint jasperPrint = JasperFillManager.fillReport(jReport, parameters, dataSource);
+//        return jasperPrint;
 //    }
+//
+//    private Map<String, Object> parameters(Order order, Locale locale) {
+//        final Map<String, Object> parameters = new HashMap<>();
+//        parameters.put("order", order);
+//        parameters.put("REPORT_LOCALE", locale);
+//        return parameters;
+//    }
+//
+//    private InputStream export(Order order) {
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        JasperPrint jasperPrint = null;
+//        try {
+//            jasperPrint = generateSpecFor(order);
+//            JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+//           // JasperExportManager.exportReportToPdfFile(jasperPrint, "/spec.pdf");
+//        } catch (IOException | JRException e) {
+//            e.printStackTrace();
+//        }
+//        return new ByteArrayInputStream(out.toByteArray());
+//    }
+//
+////    private JasperReport loadTemplate() throws JRException {
+////        final InputStream reportInputStream = getClass().getResourceAsStream(invoice_template_path);
+////        final JasperDesign jasperDesign = JRXmlLoader.load(reportInputStream);
+////        return JasperCompileManager.compileReport(jasperDesign);
+////    }
 
 }
 

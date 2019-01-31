@@ -155,8 +155,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         delete.addClickListener(e -> fireEvent(new DeleteEvent(this, false)));
 
 
-
-
         status.setItemLabelGenerator(createItemLabelGenerator(OrderState::toString));
         status.setDataProvider(DataProvider.ofItems(OrderState.values()));
         status.addValueChangeListener(
@@ -267,7 +265,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 //        if (order.getRepayments() == null) {
 //            order.setRepayments(new ArrayList<>());
 //        }
-//todo что то происходит с планом цен
         if (isNew) {
             order.setCustomer(currentCustomer);
             order.setPricePlan(defaultPrice);
@@ -443,7 +440,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         void setItem(Order order);
     }
 
-
+//для экспорта спецификации
     private InputStream export(Order order) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         JasperPrint jasperPrint = null;
@@ -458,9 +455,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     public JasperPrint generateSpecFor(Order order) throws IOException, JRException {
 //        final JasperReport report = loadTemplate();
-//        List<OrderItemSummary> list = order.getItemsSummary();
         final InputStream report = this.getClass().getResourceAsStream("/jasper/specification.jasper");
-        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(order.getItems()/*list*/);
+        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(order.getItems());
         Map<String, Object> parameters = parameters(order, MarketConst.APP_LOCALE);
         parameters.put("itemDataSource", dataSource);
         return JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());

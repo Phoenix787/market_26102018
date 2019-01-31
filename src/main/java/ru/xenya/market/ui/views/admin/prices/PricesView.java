@@ -90,7 +90,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
             });
         });
 
-        search.setActionText("Новый прайс");
+        search.setActionText("Новый");
         search.setPlaceHolder("Поиск");
         search.addActionClickListener(e->presenter.createNewPrice());
         search.addFilterChangeListener(e->presenter.filter(search.getFilter()));

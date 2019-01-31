@@ -8,6 +8,8 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +20,9 @@ public class FormattingUtils {
     public static final DateTimeFormatter WEEKDAY_FULLNAME_FORMATTER = DateTimeFormatter.ofPattern("EEEE", MarketConst.APP_LOCALE);
 
     public static final DateTimeFormatter FULL_DAY_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy", MarketConst.APP_LOCALE);
+
+    //чтобы получить неделю года из local date
+    public static final TemporalField WEEK_IN_YEAR_FIELD = WeekFields.of(MarketConst.APP_LOCALE).weekOfWeekBasedYear();
 
     public static String getFullMonthName(LocalDate date) {
         return date.getMonth().getDisplayName(TextStyle.FULL, MarketConst.APP_LOCALE);

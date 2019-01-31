@@ -4,10 +4,13 @@ import com.vaadin.flow.data.renderer.TemplateRenderer;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.OrderItem;
 import ru.xenya.market.backend.data.entity.OrderSummary;
+import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.OrderStateConverter;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static ru.xenya.market.ui.utils.FormattingUtils.WEEK_IN_YEAR_FIELD;
 
 /**
  * Help class to get ready to use TemplateRenderer for displaying order card list on the Storefront and Dashboard grids.
@@ -29,9 +32,9 @@ public class OrderCard {
     public static TemplateRenderer<Order> getTemplate() {
         return TemplateRenderer.of(
                 "<order-card"
-                + " header='[[item.header]]'"
-                + " order-card='[[item.orderCard]]'"
-                + "on-card-click='cardClick'>"
+                + "  header='[[item.header]]'"
+                + "  order-card='[[item.orderCard]]'"
+                + "  on-card-click='cardClick'>"
                 + "</order-card>");
     }
 
@@ -63,9 +66,9 @@ public class OrderCard {
         return order.getCustomer().getFullName();
     }
 
-//    public List<OrderItem> getItems(){
-//        return order.getItems();
-//    }
+    public String getShortDay() {return FormattingUtils.FULL_DAY_FORMATTER.format(order.getDueDate()); }
+
+    public List<OrderItem> getItems(){        return order.getItems();    }
 
 
 }

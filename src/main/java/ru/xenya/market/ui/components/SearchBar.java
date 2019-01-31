@@ -16,11 +16,11 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 public class SearchBar extends PolymerTemplate<SearchBar.Model> {
 
     public interface Model extends TemplateModel {
-        boolean isCheckBoxChecked();
+        boolean isCheckboxChecked();
 
-        void setCheckBoxChecked(boolean checkBoxChecked);
+        void setCheckboxChecked(boolean checkboxChecked);
 
-        void setCheckBoxText(String checkBoxText);
+        void setCheckboxText(String checkboxText);
 
         void setButtonText(String actionText);
     }
@@ -36,31 +36,26 @@ public class SearchBar extends PolymerTemplate<SearchBar.Model> {
 
     public SearchBar() {
         textField.setValueChangeMode(ValueChangeMode.EAGER);
-
         ComponentUtil.addListener(textField, SearchValueChanged.class,
                 e -> fireEvent(new FilterChanged(this, false)));
         clearButton.addClickListener(e -> {
             textField.clear();
-            getModel().setCheckBoxChecked(false);
+            getModel().setCheckboxChecked(false);
         });
 
         getElement().addPropertyChangeListener("checkboxChecked",
                 e -> fireEvent(new FilterChanged(this, false)));
-
     }
 
-    public String getFilter(){
+    public String getFilter() {
         return textField.getValue();
     }
 
-    public TextField getFilterTextField(){
-        return textField;
+    public boolean isCheckboxChecked() {
+        return getModel().isCheckboxChecked();
     }
 
-    public boolean isCheckBoxChecked() {
-        return getModel().isCheckBoxChecked();
-    }
-    public void setPlaceHolder(String placeHolder){
+    public void setPlaceHolder(String placeHolder) {
         textField.setPlaceholder(placeHolder);
     }
 
@@ -68,8 +63,12 @@ public class SearchBar extends PolymerTemplate<SearchBar.Model> {
         getModel().setButtonText(actionText);
     }
 
-    public void setCheckboxText(String checkboxText){
-        getModel().setCheckBoxText(checkboxText);
+    public void setCheckboxText(String checkboxText) {
+        getModel().setCheckboxText(checkboxText);
+    }
+
+    public void setActionButtonVisible(boolean isVisible) {
+         actionButton.setVisible(isVisible);
     }
 
     public void addFilterChangeListener(ComponentEventListener<FilterChanged> listener) {
@@ -80,30 +79,14 @@ public class SearchBar extends PolymerTemplate<SearchBar.Model> {
         actionButton.addClickListener(listener);
     }
 
-    @DomEvent(value = "value-changed",
-            debounce = @DebounceSettings(timeout = 300, phases = DebouncePhase.TRAILING))
+    @DomEvent(value = "value-changed", debounce = @DebounceSettings(timeout = 300, phases = DebouncePhase.TRAILING))
     public static class SearchValueChanged extends ComponentEvent<TextField> {
-        /**
-         * Creates a new event using the given source and indicator whether the
-         * event originated from the client side or the server side.
-         *
-         * @param source     the source component
-         * @param fromClient <code>true</code> if the event originated from the client
-         */
         public SearchValueChanged(TextField source, boolean fromClient) {
             super(source, fromClient);
         }
     }
 
-
     public static class FilterChanged extends ComponentEvent<SearchBar> {
-        /**
-         * Creates a new event using the given source and indicator whether the
-         * event originated from the client side or the server side.
-         *
-         * @param source     the source component
-         * @param fromClient <code>true</code> if the event originated from the client
-         */
         public FilterChanged(SearchBar source, boolean fromClient) {
             super(source, fromClient);
         }
