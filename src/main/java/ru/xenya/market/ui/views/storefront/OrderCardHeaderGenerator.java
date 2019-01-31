@@ -121,29 +121,21 @@ public class OrderCardHeaderGenerator {
         List<HeaderWrapper> headerChain = new ArrayList<>();
         LocalDate today = LocalDate.now();
         LocalDate startOfTheWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
-//        LocalDate yesterday = today.minusDays(1);
+        headerChain.add(new HeaderWrapper(today::equals, getTodayHeader()));
+
         if (showPrevious) {
             LocalDate yesterday = today.minusDays(1);
+            headerChain.add(new HeaderWrapper(yesterday::equals, this.getYesterdayHeader()));
 //            // Week starting on Monday
+            if (startOfTheWeek.isBefore(yesterday)) {
+                headerChain.add(new HeaderWrapper(d -> d.isBefore(yesterday) && d.isAfter(startOfTheWeek),
+                        this.getThisWeekBeforeYesterdayHeader()));
+            }
             headerChain.add(new HeaderWrapper(d -> d.isBefore(startOfTheWeek), this.getRecentHeader()));
-//            if (startOfTheWeek.isBefore(yesterday)) {
-//                headerChain.add(new HeaderWrapper(d -> d.isBefore(yesterday) && !d.isAfter(startOfTheWeek),
-//                        this.getThisWeekBeforeYesterdayHeader()));
-//            }
-//            headerChain.add(new HeaderWrapper(yesterday::equals, this.getYesterdayHeader()));
         }
 
-//        headerChain.add(new HeaderWrapper(d -> d.isBefore(today) || !d.isAfter(startOfTheWeek),
-//                this.getThisWeekBeforeYesterdayHeader()));
 //        headerChain.add(new HeaderWrapper(d -> d.isBefore(startOfTheWeek), this.getRecentHeader()));
-
-//            if (startOfTheWeek.isBefore(today)) {
-//                headerChain.add(new HeaderWrapper(d -> d.isBefore(today) && !d.isAfter(startOfTheWeek),
-//                        this.getThisWeekBeforeYesterdayHeader()));
-//            }
-//        headerChain.add(new HeaderWrapper(today::equals, getTodayHeader()));
-        headerChain.add(new HeaderWrapper(d -> d.isBefore(startOfTheWeek), this.getRecentHeader()));
-        headerChain.add(new HeaderWrapper(today.minusDays(1)::equals, this.getYesterdayHeader()));
+//        headerChain.add(new HeaderWrapper(today.minusDays(1)::equals, this.getYesterdayHeader()));
 
         return headerChain;
     }
